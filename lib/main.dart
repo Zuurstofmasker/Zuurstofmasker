@@ -9,23 +9,23 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'dart:typed_data';
 
 void main() async {
-  // readFromSerialPort('COM2', (data) {
-  //   print('Data Length: ${data.length}');
+  readFromSerialPort('COM2', (data) {
+    print('Data Length: ${data.length}');
 
-  //   if (data.length == 0) return;
-  //   print("Data: ${data[0]}");
-  // });
+    if (data.length == 0) return;
+    print("Data: ${data[0]}");
+  });
 
-  // Uint8List data = Uint8List(1);
-  // data[0] = 23;
-  // writeToSerialPort('COM1', data);
+  Uint8List data = Uint8List(1);
+  data[0] = 23;
+  writeToSerialPort('COM1', data);
 
-  // String path = 'assets/file.txt';
+  String path = 'assets/file.txt';
 
-  // print(await getDataFromFile(path));
-  // await setDataInFile(path, 'Updated data');
-  // print(await getDataFromFile(path));
-  // await setDataInFile('assets/newFile.txt', 'New data');
+  print(await getDataFromFile(path));
+  await setDataInFile(path, 'Updated data');
+  print(await getDataFromFile(path));
+  await setDataInFile('assets/newFile.txt', 'New data');
 
   runApp(const MyApp());
 }
