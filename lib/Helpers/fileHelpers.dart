@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:zuurstofmasker/Helpers/csvHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 
 // Reading from file
@@ -12,8 +13,8 @@ Future<File> stringToFile(String path, String data,
     await File(path).writeAsString(data, mode: fileMode);
 
 // Appending to file
-Future<File> stringAppendToFile(String path, String content) =>
-    stringToFile(path, content, FileMode.append);
+Future<File> appendStringToFile(String path, String content) async =>
+    await stringToFile(path, content, FileMode.append);
 
 // Retrieving map from file
 Future<Map<String, dynamic>> getMapFromFile(String path) async =>
@@ -33,7 +34,7 @@ Future<File> writeListToFile<T>(List<T> data, String path) async =>
 
 // Append item to json in file
 Future<List<T>> appendItemToListFile<T>(T item, String path) async =>
-    appendItemsToListFile([item], path);
+    await appendItemsToListFile([item], path);
 
 // Append items to json in file
 Future<List<T>> appendItemsToListFile<T>(List<T> items, String path) async {
@@ -69,7 +70,7 @@ Future<List<T>> updateItemInListFile<T>(T item, int index, String path) async {
 Future<T> getItemInListFile<T>(int index, String path) async =>
     (await getListFromFile<T>(path))[index];
 
-    // Delete item by index
+// Delete item by index
 Future<List<T>> deleteItemInListFile<T>(int index, String path) async {
   // Retrieving current items
   List<T> items = await getListFromFile<T>(path);
@@ -83,3 +84,15 @@ Future<List<T>> deleteItemInListFile<T>(int index, String path) async {
   // Returing all items
   return items;
 }
+
+// Writing csv to a file
+Future<File> csvToFile<T>(List<List<T>> csv, String path) async =>
+    await stringToFile(path, listToCsv(csv));
+
+// Retrieve csv from a file
+Future<List<List<T>>> csvFromFile<T>(String path) async =>
+    csvToList<T>(await stringFromFile(path));
+
+// Apending csv to a file
+Future<File> appendCsvToFile<T>(List<List<T>> csv, String path) async =>
+    await appendStringToFile(path, '\n${listToCsv(csv)}');

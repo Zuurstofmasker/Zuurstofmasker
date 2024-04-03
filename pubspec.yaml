@@ -38,6 +38,7 @@ dependencies:
   flutter_libserialport: ^0.4.0
   camera_windows: ^0.2.1+9
   fl_chart: ^0.66.2
+  csv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
