@@ -8,6 +8,9 @@ import 'dart:io';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'dart:typed_data';
 
+import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
+import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
+
 void main() async {
   readFromSerialPort('COM2', (data) {
     print('Data Length: ${data.length}');
@@ -19,25 +22,16 @@ void main() async {
   Uint8List data = Uint8List(1);
   data[0] = 23;
   writeToSerialPort('COM1', data);
+  print(jsonToList('["Test", "Test2"]'));
 
   String path = 'assets/file.txt';
 
-  print(await getDataFromFile(path));
-  await setDataInFile(path, 'Updated data');
-  print(await getDataFromFile(path));
-  await setDataInFile('assets/newFile.txt', 'New data');
+  print(await stringFromFile(path));
+  await stringToFile(path, 'Updated data');
+  print(await stringFromFile(path));
+  await stringToFile('assets/newFile.txt', 'New data');
 
   runApp(const MyApp());
-}
-
-Future<String> getDataFromFile(String path) async {
-  File myFile = File(path);
-  return await myFile.readAsString();
-}
-
-Future setDataInFile(String path, String content) async {
-  File myFile = File(path);
-  await myFile.writeAsString(content);
 }
 
 void readFromSerialPort(String name, Function(Uint8List data) onData) {
