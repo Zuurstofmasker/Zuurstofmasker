@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Dashborad/main.dart';
+import 'package:zuurstofmasker/Dashboard/main.dart';
 import 'package:zuurstofmasker/TestPage.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/main.dart';
+import 'package:zuurstofmasker/mainold.dart';
 
 import 'navItem.dart' as navItem;
 
@@ -22,12 +23,14 @@ class Nav extends StatelessWidget {
     navItem.NavItem(
         text: 'Dashborad',
         icon: Icons.home,
-        page: MaterialPageRoute(builder: (context) => const Dashborad())),
+        page: MaterialPageRoute(
+            builder: (context) => const MyHomePage(
+                  title: "dit is een title",
+                ))),
     navItem.NavItem(
         text: 'HomePage',
         icon: Icons.add_chart,
-        page: MaterialPageRoute(
-            builder: (context) => MyHomePage(title: "test title"))),
+        page: MaterialPageRoute(builder: (context) => const Dashboard())),
     navItem.NavItem(
         text: 'testPAge',
         icon: Icons.photo,
@@ -169,7 +172,7 @@ class MenuItemBase extends StatelessWidget {
       ),
       onPressed: () {
         MenuIndex.index = index;
-        navigatorKey.currentState?.pushAndRemoveUntil(page!, (r) => false);
+        navigatorKey.currentState!.pushAndRemoveUntil(page!, (r) => false);
       },
       child: child,
     );

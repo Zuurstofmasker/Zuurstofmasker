@@ -1,176 +1,29 @@
-import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
-import 'dart:typed_data';
-import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
-import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
-import 'package:zuurstofmasker/Widgets/buttons.dart';
-import 'package:zuurstofmasker/Widgets/charts.dart';
-import 'package:zuurstofmasker/nav.dart';
+import 'package:zuurstofmasker/TestPage.dart';
+import 'package:zuurstofmasker/config.dart';
+import 'package:zuurstofmasker/mainold.dart';
 
-void main() async {
-  readFromSerialPort('COM2', (data) {
-    print('Data Length: ${data.length}');
+void main() {
+  // Setting the default styles for the popups
 
-    if (data.length == 0) return;
-    print("Data: ${data[0]}");
-  });
-
-  Uint8List data = Uint8List(1);
-  data[0] = 23;
-  writeToSerialPort('COM1', data);
-  print(jsonToList('["Test", "Test2"]'));
-
-  String path = 'assets/file.txt';
-
-  print(await stringFromFile(path));
-  await stringToFile(path, 'Updated data');
-  print(await stringFromFile(path));
-  await stringToFile('assets/newFile.txt', 'New data');
-
-  runApp(const MyApp());
+  runApp(Maasgroep18App());
 }
 
-void readFromSerialPort(String name, Function(Uint8List data) onData) {
-  SerialPort port = SerialPort(name);
-  port.openRead();
-  SerialPortReader reader = SerialPortReader(port);
-  reader.stream.listen((event) {
-    onData(event);
-  });
-}
-
-void writeToSerialPort(String name, Uint8List data) {
-  SerialPort port = SerialPort(name);
-  port.openWrite();
-  port.write(data);
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Maasgroep18App extends StatelessWidget {
+  Maasgroep18App({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      navigatorKey: navigatorKey,
+      title: 'Maasgroep 18 Applicatie',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Opvang'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  final List<TimeChartData> timeChartItems = [];
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  List<FlSpot> chartData = [const FlSpot(0, 60)];
-  void startUpdateChart() {
-    Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-      setState(() {
-        // Adding new chart item
-        timeChartItems.add(
-            TimeChartData(y: Random().nextInt(40) + 60, time: DateTime.now()));
-
-        chartData.add(FlSpot(chartData.last.x + 40, chartData.last.y + 2));
-      });
-    });
-  }
-
-  List<FlSpot> randomSpots(
-    int xMin,
-    int xMax,
-    int yMin,
-    int yMax,
-    int xChange,
-  ) {
-    final List<FlSpot> spots = [];
-    int currentX = xMin;
-
-    for (int i = 0; i <= ((xMax - xMin) / xChange); i++) {
-      spots.add(
-        FlSpot(
-          currentX.toDouble(),
-          Random().nextInt((yMax - yMin)).toDouble() + yMin,
-        ),
-      );
-      currentX += xChange;
-    }
-
-    return spots;
-  }
-
-  @override
-  void initState() {
-    startUpdateChart();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Nav(
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(),
-        ],
+      home: const MyHomePage(
+        title: "Dit is ook een title",
       ),
     );
   }

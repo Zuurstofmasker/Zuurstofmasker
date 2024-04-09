@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/nav.dart';
 
 void main() async {
-  runApp(const Dashborad());
+  runApp(const Dashboard());
 }
 
-class Dashborad extends StatelessWidget {
-  const Dashborad({super.key});
+class Dashboard extends StatelessWidget {
+  const Dashboard({super.key});
 
   // This widget is the root of your application.
   @override
