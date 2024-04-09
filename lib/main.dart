@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/widgets.dart';
-import 'dart:io';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'dart:typed_data';
+import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
+import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
+import 'package:zuurstofmasker/Widgets/buttons.dart';
+import 'package:zuurstofmasker/Widgets/charts.dart';
 
 import 'package:zuurstofmasker/nav.dart';
 
@@ -21,25 +22,16 @@ void main() async {
   Uint8List data = Uint8List(1);
   data[0] = 23;
   writeToSerialPort('COM1', data);
+  print(jsonToList('["Test", "Test2"]'));
 
   String path = 'assets/file.txt';
 
-  print(await getDataFromFile(path));
-  await setDataInFile(path, 'Updated data');
-  print(await getDataFromFile(path));
-  await setDataInFile('assets/newFile.txt', 'New data');
+  print(await stringFromFile(path));
+  await stringToFile(path, 'Updated data');
+  print(await stringFromFile(path));
+  await stringToFile('assets/newFile.txt', 'New data');
 
   runApp(const MyApp());
-}
-
-Future<String> getDataFromFile(String path) async {
-  File myFile = File(path);
-  return await myFile.readAsString();
-}
-
-Future setDataInFile(String path, String content) async {
-  File myFile = File(path);
-  await myFile.writeAsString(content);
 }
 
 void readFromSerialPort(String name, Function(Uint8List data) onData) {
@@ -109,6 +101,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final List<TimeChartData> timeChartItems = [];
 
   void _incrementCounter() {
     setState(() {
@@ -121,10 +114,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  List<FlSpot> chartData = [FlSpot(0, 60)];
+  List<FlSpot> chartData = [const FlSpot(0, 60)];
   void startUpdateChart() {
-    Timer.periodic(Duration(milliseconds: 500), (timer) {
+    Timer.periodic(const Duration(milliseconds: 1000), (timer) {
       setState(() {
+        // Adding new chart item
+        timeChartItems.add(TimeChartData(y: Random().nextInt(40) + 60, time: DateTime.now()));
+
         chartData.add(FlSpot(chartData.last.x + 40, chartData.last.y + 2));
       });
     });
@@ -235,10 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 25),
-                  Chart(
-                    chartData: randomSpots(0, 400, 60, 100, 10),
-                    color: Colors.red,
-                  ),
+                  TimeChart(chartData: timeChartItems, color: Colors.red,),
                   const SizedBox(height: 25),
                   Chart(
                     chartData: randomSpots(0, 400, 60, 100, 10),
@@ -255,88 +248,6 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-}
-
-class Chart extends StatelessWidget {
-  const Chart({super.key, required this.chartData, required this.color});
-
-  final List<FlSpot> chartData;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: LineChart(
-        chartRendererKey: GlobalKey(),
-        LineChartData(
-          titlesData: const FlTitlesData(
-            topTitles: AxisTitles(),
-            rightTitles: AxisTitles(),
-          ),
-          clipData: const FlClipData.all(),
-          lineBarsData: [
-            LineChartBarData(
-              belowBarData: BarAreaData(
-                show: true,
-                color: color.withAlpha(100),
-              ),
-              isCurved: true,
-              spots: chartData,
-              color: color,
-            )
-          ],
-          minY: 60,
-          maxX: 400,
-          maxY: 100,
-        ),
-      ),
-    );
-  }
-}
-
-class Button extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final bool selected;
-  const Button({
-    super.key,
-    required this.icon,
-    required this.text,
-    this.selected = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        elevation: MaterialStateProperty.all(0),
-        iconColor: MaterialStateProperty.all(Colors.white),
-        foregroundColor: MaterialStateProperty.all(Colors.white),
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            5,
-          ),
-        )),
-        backgroundColor: MaterialStateProperty.all(
-          selected ? Colors.white.withAlpha(50) : Colors.blue,
-        ),
-      ),
-      onPressed: () {},
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          children: [
-            Icon(icon),
-            const SizedBox(
-              width: 15,
-            ),
-            Text(text),
-          ],
-        ),
-      ),
     );
   }
 }
