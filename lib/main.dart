@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'dart:typed_data';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/charts.dart';
-
 import 'package:zuurstofmasker/nav.dart';
 
 void main() async {
@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Opvanggggggg'),
+      home: const MyHomePage(title: 'Opvang'),
     );
   }
 }
@@ -119,7 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Timer.periodic(const Duration(milliseconds: 1000), (timer) {
       setState(() {
         // Adding new chart item
-        timeChartItems.add(TimeChartData(y: Random().nextInt(40) + 60, time: DateTime.now()));
+        timeChartItems.add(
+            TimeChartData(y: Random().nextInt(40) + 60, time: DateTime.now()));
 
         chartData.add(FlSpot(chartData.last.x + 40, chartData.last.y + 2));
       });
@@ -163,91 +164,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey.withAlpha(100),
-        leadingWidth: 250,
-        leading: Container(
-          height: double.infinity,
-          color: Colors.blueGrey,
-          width: 550,
-          child: const Center(
-            child: Text(
-              'Add logomain',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-              ),
-            ),
-          ),
-        ),
-        title: Text(widget.title),
-      ),
-      body: Row(
+    return Nav(
+      child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MyNavBar(),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Column(
-                // Column is also a layout widget. It takes a list of children and
-                // arranges them vertically. By default, it sizes itself to fit its
-                // children horizontally, and tries to be as tall as its parent.
-                //
-                // Column has various properties to control how it sizes itself and
-                // how it positions its children. Here we use mainAxisAlignment to
-                // center the children vertically; the main axis here is the vertical
-                // axis because Columns are vertical (the cross axis would be
-                // horizontal).
-                //
-                // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-                // action in the IDE, or press "p" in the console), to see the
-                // wireframe for each widget.
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const SizedBox(height: 50),
-                  Flexible(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'You have pushed the button this many times:',
-                        ),
-                        Text(
-                          '$_counter',
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  Chart(
-                    chartData: chartData,
-                    color: Colors.blue,
-                  ),
-                  const SizedBox(height: 25),
-                  TimeChart(chartData: timeChartItems, color: Colors.red,),
-                  const SizedBox(height: 25),
-                  Chart(
-                    chartData: randomSpots(0, 400, 60, 100, 10),
-                    color: Colors.purple,
-                  ),
-                ],
-              ),
-            ),
-          ),
+          Container(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

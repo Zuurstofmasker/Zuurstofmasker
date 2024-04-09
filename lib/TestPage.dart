@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/nav.dart';
 
 void main() async {
-  runApp(const Dashborad());
+  runApp(const TestPage());
 }
 
-class Dashborad extends StatelessWidget {
-  const Dashborad({super.key});
+class TestPage extends StatelessWidget {
+  const TestPage({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Nav(
       title: const Text(
-        "Maak een keuze",
+        "TestPage",
         style: TextStyle(
           color: Colors.white,
         ),

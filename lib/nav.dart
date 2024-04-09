@@ -1,129 +1,177 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Dashborad/main.dart';
+import 'package:zuurstofmasker/TestPage.dart';
+import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/main.dart';
 
-void main() async {
-  runApp(const MyNavBar());
+import 'navItem.dart' as navItem;
+
+class MenuIndex {
+  static int? index = 0;
 }
 
-class MyNavBar extends StatelessWidget {
-  const MyNavBar({super.key});
+class Nav extends StatelessWidget {
+  final Widget child;
+  final Widget? title;
+  final List<Widget>? actions;
+  final double appBarHeight;
+  final bool centerTitle;
 
-  // This widget is the root of your application.
+  //fil the list of custom InputField classes
+  final List<navItem.NavItem> menuItems = [
+    navItem.NavItem(
+        text: 'Dashborad',
+        icon: Icons.home,
+        page: MaterialPageRoute(builder: (context) => const Dashborad())),
+    navItem.NavItem(
+        text: 'HomePage',
+        icon: Icons.add_chart,
+        page: MaterialPageRoute(
+            builder: (context) => MyHomePage(title: "test title"))),
+    navItem.NavItem(
+        text: 'testPAge',
+        icon: Icons.photo,
+        page: MaterialPageRoute(builder: (context) => const TestPage())),
+  ];
+
+  Nav({
+    required this.child,
+    this.title,
+    this.actions,
+    this.appBarHeight = kToolbarHeight,
+    this.centerTitle = true,
+  });
+
+  //get and put the menu items from the list to the widgets for non mobile
+  List<Widget> getMenuItems(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    List<Widget> items = [];
+    int i = 0;
+
+    items.add(
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Image.asset(
+          "assets/logo.jpg",
+          height: 30,
+          width: 30,
+        ),
+      ),
+    );
+    for (navItem.NavItem menuitem in menuItems) {
+      items.add(
+        MenuItemBase(
+          page: menuitem.page,
+          index: i,
+          child: MenuItemDesktop(
+            text: menuitem.text,
+            icon: menuitem.icon,
+            selected: (i == MenuIndex.index),
+          ),
+        ),
+      );
+      i++;
+    }
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          leadingWidth: 250,
-          leading: Container(
-            height: double.infinity,
-            color: Colors.blue,
-            width: 250,
-            child: const Center(
-              child: Text(
-                'Add logo nav',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 40,
+    return Scaffold(
+      appBar: (title != null
+          ? AppBar(
+              centerTitle: centerTitle,
+              shadowColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(10 * 2),
                 ),
+              ),
+              backgroundColor: Colors.white,
+              title: title,
+              elevation: 2,
+              actions: actions,
+              toolbarHeight: appBarHeight,
+            )
+          : null),
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            width: 250,
+            color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: getMenuItems(context),
               ),
             ),
           ),
-        ),
-        body: Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              color: Colors.blue,
-              width: 250,
-              child: const Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Column(
-                      children: [
-                        Button(
-                          text: 'Opvang',
-                          icon: Icons.home,
-                          selected: true,
-                        ),
-                        SizedBox(height: 10),
-                        Button(
-                          text: 'Geschiedenis',
-                          icon: Icons.list,
-                        ),
-                        SizedBox(height: 10),
-                        Button(
-                          text: 'Instellingen',
-                          icon: Icons.settings,
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
+          Expanded(
+            child: child,
+          ),
+        ],
       ),
     );
   }
 }
 
-class Button extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final bool selected;
+class MenuItemDesktop extends StatelessWidget {
+  final String? text;
+  final IconData? icon;
+  final bool? selected;
 
-  const Button({
-    super.key,
-    required this.icon,
-    required this.text,
-    this.selected = false,
-  });
+  const MenuItemDesktop({this.text, this.icon, this.selected});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 25,
+            color: selected! ? Colors.white : Colors.white,
+          ),
+          const SizedBox(width: 20),
+          Text(
+            text!,
+            style: TextStyle(
+                color: selected! ? Colors.white : Colors.white,
+                fontSize: 12,
+                height: 1.5),
+            overflow: TextOverflow.ellipsis,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class MenuItemBase extends StatelessWidget {
+  final int? index;
+  final Widget? child;
+  final Route? page;
+
+  MenuItemBase({required this.index, required this.child, required this.page});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ButtonStyle(
-        elevation: MaterialStateProperty.all(0),
-        iconColor: MaterialStateProperty.all(Colors.white),
-        foregroundColor: MaterialStateProperty.all(Colors.white),
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            5,
-          ),
-        )),
-        backgroundColor: MaterialStateProperty.all(
-          selected ? Colors.white.withAlpha(50) : Colors.blue,
-        ),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.zero,
+        elevation: 0,
+        alignment: Alignment.center,
+        backgroundColor:
+            index == MenuIndex.index ? Colors.lightBlue : Colors.blue,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
-      // onPressed: onPressed,
       onPressed: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const MyMainPage()));
+        MenuIndex.index = index;
+        navigatorKey.currentState?.pushAndRemoveUntil(page!, (r) => false);
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          children: [
-            Icon(icon),
-            const SizedBox(
-              width: 15,
-            ),
-            Text(text),
-          ],
-        ),
-      ),
+      child: child,
     );
   }
 }
