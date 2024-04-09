@@ -8,6 +8,8 @@ import 'dart:io';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'dart:typed_data';
 
+import 'package:zuurstofmasker/nav.dart';
+
 void main() async {
   readFromSerialPort('COM2', (data) {
     print('Data Length: ${data.length}');
@@ -82,7 +84,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Opvang'),
+      home: const MyHomePage(title: 'Opvanggggggg'),
     );
   }
 }
@@ -167,32 +169,15 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Colors.grey.withAlpha(100),
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         leadingWidth: 250,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            child: Text(
-              'About',
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-                color: Colors.blueAccent,
-              ),
-            ),
-          )
-        ],
         leading: Container(
           height: double.infinity,
           color: Colors.blueGrey,
           width: 550,
           child: const Center(
             child: Text(
-              'Add logo',
+              'Add logomain',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 15,
@@ -206,36 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            color: Colors.blue,
-            width: 250,
-            child: const Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      Button(
-                        text: 'Opvang',
-                        icon: Icons.home,
-                        selected: true,
-                      ),
-                      SizedBox(height: 10),
-                      Button(
-                        text: 'Geschiedenis',
-                        icon: Icons.add,
-                      ),
-                      SizedBox(height: 10),
-                      Button(
-                        text: 'Instellingen',
-                        icon: Icons.list,
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
+          MyNavBar(),
           Flexible(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
