@@ -2,23 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/nav.dart';
 
 void main() async {
-  runApp(const TestPage());
+  runApp(const Settings());
 }
 
-class TestPage extends StatelessWidget {
-  const TestPage({super.key});
+class Settings extends StatelessWidget {
+  const Settings({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Nav(
-      title: const Text(
-        "TestPage",
-        style: TextStyle(
-          color: Colors.white,
-        ),
+      child: const Text(
+        'test page',
       ),
-      child: Container(),
     );
   }
 }

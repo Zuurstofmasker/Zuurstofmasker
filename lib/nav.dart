@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Dashboard/main.dart';
-import 'package:zuurstofmasker/TestPage.dart';
+import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+import 'package:zuurstofmasker/Pages/Instellingen/Settings.dart';
+import 'package:zuurstofmasker/Pages/TerugKijken/terugkijken.dart';
 import 'package:zuurstofmasker/config.dart';
-import 'package:zuurstofmasker/main.dart';
 import 'package:zuurstofmasker/mainold.dart';
 
 import 'navItem.dart' as navItem;
@@ -21,20 +21,24 @@ class Nav extends StatelessWidget {
   //fil the list of custom InputField classes
   final List<navItem.NavItem> menuItems = [
     navItem.NavItem(
-        text: 'Dashborad',
-        icon: Icons.home,
-        page: MaterialPageRoute(
-            builder: (context) => const MyHomePage(
-                  title: "dit is een title",
-                ))),
-    navItem.NavItem(
-        text: 'HomePage',
-        icon: Icons.add_chart,
+        text: 'Opvang',
+        icon: Icons.play_arrow,
         page: MaterialPageRoute(builder: (context) => const Dashboard())),
     navItem.NavItem(
-        text: 'testPAge',
-        icon: Icons.photo,
-        page: MaterialPageRoute(builder: (context) => const TestPage())),
+        text: 'Terugkijken',
+        icon: Icons.loop_rounded,
+        page: MaterialPageRoute(builder: (context) => const Terugkijken())),
+    navItem.NavItem(
+        text: 'Instellingen',
+        icon: Icons.settings,
+        page: MaterialPageRoute(builder: (context) => const Settings())),
+    navItem.NavItem(
+        text: 'oude main',
+        icon: Icons.settings,
+        page: MaterialPageRoute(
+            builder: (context) => const MyHomePage(
+                  title: "hoii",
+                ))),
   ];
 
   Nav({
@@ -55,9 +59,9 @@ class Nav extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Image.asset(
-          "assets/logo.jpg",
-          height: 30,
-          width: 30,
+          "assets/logo.png",
+          height: 130,
+          width: 100,
         ),
       ),
     );

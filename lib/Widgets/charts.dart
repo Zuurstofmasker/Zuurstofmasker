@@ -101,7 +101,7 @@ class TimeChart extends StatelessWidget {
     List<FlSpot> items = [];
     for (TimeChartData data in chartData) {
       items.add(
-        FlSpot(differenceToSecdonds(data.time, startTime! ).toDouble(), data.y),
+        FlSpot(differenceToSecdonds(data.time, startTime!).toDouble(), data.y),
       );
     }
     return items;

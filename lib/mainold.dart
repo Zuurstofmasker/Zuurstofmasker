@@ -6,7 +6,6 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'dart:typed_data';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
-import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/charts.dart';
 import 'package:zuurstofmasker/nav.dart';
 

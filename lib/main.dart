@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/TestPage.dart';
+import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
 import 'package:zuurstofmasker/config.dart';
-import 'package:zuurstofmasker/mainold.dart';
 
 void main() {
   // Setting the default styles for the popups
 
-  runApp(Maasgroep18App());
+  runApp(App());
 }
 
-class Maasgroep18App extends StatelessWidget {
-  Maasgroep18App({super.key});
+class App extends StatelessWidget {
+  App({super.key});
 
   // This widget is the root of your application.
   @override
@@ -22,9 +21,7 @@ class Maasgroep18App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(
-        title: "Dit is ook een title",
-      ),
+      home: const Dashboard(),
     );
   }
 }

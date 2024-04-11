@@ -12,13 +12,9 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Nav(
-      title: const Text(
-        "Maak een keuze",
-        style: TextStyle(
-          color: Colors.white,
-        ),
+      child: const Text(
+        'test page',
       ),
-      child: Container(),
     );
   }
 }
