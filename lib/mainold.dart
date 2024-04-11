@@ -7,7 +7,7 @@ import 'dart:typed_data';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 import 'package:zuurstofmasker/Widgets/charts.dart';
-import 'package:zuurstofmasker/nav.dart';
+import 'package:zuurstofmasker/Widgets/nav.dart';
 
 void mainOld() async {
   readFromSerialPort('COM2', (data) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/nav.dart';
+import 'package:zuurstofmasker/Widgets/nav.dart';
 
 void main() async {
   runApp(const Dashboard());
