@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'dart:typed_data';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
+import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/charts.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 
@@ -113,17 +113,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<FlSpot> chartData = [const FlSpot(0, 60)];
-  void startUpdateChart() {
-    Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-      setState(() {
-        // Adding new chart item
-        timeChartItems.add(
-            TimeChartData(y: Random().nextInt(40) + 60, time: DateTime.now()));
+  // void startUpdateChart() {
+  //   Timer.periodic(const Duration(milliseconds: 1000), (timer) {
+  //     setState(() {
+  //       // Adding new chart item
+  //       timeChartItems.add(
+  //           TimeChartData(y: Random().nextInt(40) + 60, time: DateTime.now()));
 
-        chartData.add(FlSpot(chartData.last.x + 40, chartData.last.y + 2));
-      });
-    });
-  }
+  //       chartData.add(FlSpot(chartData.last.x + 40, chartData.last.y + 2));
+  //     });
+  //   });
+  // }
 
   List<FlSpot> randomSpots(
     int xMin,
@@ -150,7 +150,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    startUpdateChart();
+    // startUpdateChart();
+
+    // Starting the mocking of the serial port to create a graph
+    SerialPort('').listen((data) {
+      // Updating the ui with a new item added the the graph
+      setState(() {
+        timeChartItems
+            .add(TimeChartData(y: data[0].toDouble(), time: DateTime.now()));
+      });
+    });
     super.initState();
   }
 
@@ -213,6 +222,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   TimeChart(
                     chartData: timeChartItems,
                     color: Colors.red,
+                    minY: 70,
+                    maxY: 190,
                   ),
                   const SizedBox(height: 25),
                   Chart(

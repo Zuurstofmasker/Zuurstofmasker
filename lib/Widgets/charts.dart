@@ -76,6 +76,7 @@ class Chart extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class TimeChart extends StatelessWidget {
   TimeChart({
     super.key,
