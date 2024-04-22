@@ -4,6 +4,7 @@ import 'package:zuurstofmasker/Models/sessionDetail.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
+import 'package:zuurstofmasker/Widgets/form.dart';
 
 TextEditingController nameController = TextEditingController();
 TextEditingController noteController = TextEditingController();
@@ -28,6 +29,7 @@ class StartSession extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        const PatientForm(),
         InputField(
           controller: nameController,
           hintText: "Moeder naam",
