@@ -33,11 +33,6 @@ Future<List<T>> getListFromFile<T>(
 ]) async =>
     jsonToList<T>(await stringFromFile(path), jsonToObject);
 
-// Retrieving list from file
-Future<List<T>> getListFromFileOpZijnTims<T>(
-        String path, T Function(Map<String, dynamic>) fromJson) async =>
-    jsonToListOpTims<T>(await stringFromFile(path), fromJson);
-
 // Write map to file
 Future<File> writeMapToFile(Map<String, dynamic> data, String path) async =>
     await stringToFile(path, genericToJson(data));

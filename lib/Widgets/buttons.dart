@@ -1,42 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/Config.dart';
+import 'package:zuurstofmasker/Helpers/responsiveHelper.dart';
 
 class Button extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final bool selected;
-  const Button({
-    super.key,
-    required this.icon,
-    required this.text,
-    this.selected = false,
-  });
+  final IconData? icon;
+  final String? text;
+  final Function() onTap;
+  final Color color;
+  final EdgeInsets padding;
+  final bool isFullWidth;
+  const Button(
+      {super.key,
+      this.icon,
+      this.text,
+      required this.onTap,
+      this.padding = const EdgeInsets.all(0),
+      this.color = mainColor,
+      this.isFullWidth = true});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        elevation: MaterialStateProperty.all(0),
-        iconColor: MaterialStateProperty.all(Colors.white),
-        foregroundColor: MaterialStateProperty.all(Colors.white),
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            5,
-          ),
-        )),
-        backgroundColor: MaterialStateProperty.all(
-          selected ? Colors.white.withAlpha(50) : Colors.blue,
-        ),
-      ),
-      onPressed: () {},
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          children: [
-            Icon(icon),
-            const SizedBox(
-              width: 15,
+    return SizedBox(
+      width: getResponsiveWidth(context, isFullWidth: isFullWidth),
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          padding: padding,
+          minimumSize: const Size(10, 48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              borderRadius,
             ),
-            Text(text),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null)
+              Icon(
+                icon,
+                color: Colors.white,
+              ),
+            if (text != null && icon != null)
+              const SizedBox(
+                width: 5,
+              ),
+            if (text != null)
+              Text(
+                text!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white),
+              )
           ],
         ),
       ),

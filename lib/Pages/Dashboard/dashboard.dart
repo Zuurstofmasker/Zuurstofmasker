@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
-import 'package:zuurstofmasker/Models/sessionDetail.dart';
-import 'package:zuurstofmasker/Widgets/buttons.dart';
+import 'package:zuurstofmasker/Pages/StartSessie/startsession.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 
 void main() async {
@@ -24,19 +22,13 @@ class Dashboard extends StatelessWidget {
         ),
         TextButton(
             onPressed: () {
-              startSession();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const StartSession()),
+              );
             },
-            child: Text("Start calibration"))
+            child: const Text("Start calibration"))
       ],
     ));
-  }
-
-  void startSession() {
-    saveSession(SessionDetail(
-        nameMother: 'Pieter',
-        // birthTime: DateTime.now(),
-        id: 1,
-        note: "hoi",
-        weight: 1300));
   }
 }
