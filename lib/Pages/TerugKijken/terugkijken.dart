@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
+import 'package:zuurstofmasker/Models/sessionDetail.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 
-void main() async {
-  runApp(const Terugkijken());
+class TerugKijken extends StatefulWidget {
+  const TerugKijken({super.key});
+
+  @override
+  State<TerugKijken> createState() => _terugkijkenState();
 }
 
-class Terugkijken extends StatelessWidget {
-  const Terugkijken({super.key});
+List<SessionDetail> sessions = [];
 
-  // This widget is the root of your application.
+class _terugkijkenState extends State<TerugKijken> {
+  @override
+  void initState() {
+    super.initState();
+    loadSessions();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Nav(
-      child: const Text(
-        'test page',
+      child: SingleChildScrollView(
+        child: Column(
+          children: getTerugKijkItems(context),
+        ),
       ),
     );
   }
+}
+
+List<Widget> getTerugKijkItems(BuildContext context) {
+  List<Widget> items = [];
+  for (SessionDetail item in sessions) {
+    items.add(Text("${item.id} ${item.nameMother}"));
+  }
+  return items;
+}
+
+void loadSessions() async {
+  sessions = await getSessions();
 }
