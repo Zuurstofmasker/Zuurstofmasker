@@ -23,22 +23,91 @@ class _terugkijkenState extends State<TerugKijken> {
   Widget build(BuildContext context) {
     return Nav(
       child: SingleChildScrollView(
-        child: Column(
-          children: getTerugKijkItems(context),
-        ),
+        child: const DataTableExample(),
       ),
     );
   }
 }
 
-List<Widget> getTerugKijkItems(BuildContext context) {
-  List<Widget> items = [];
+class DataTableExample extends StatelessWidget {
+  const DataTableExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DataTable(
+      columns: const <DataColumn>[
+        DataColumn(
+          label: Expanded(
+            child: Text(
+              'ID',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+        ),
+        DataColumn(
+          label: Expanded(
+            child: Text(
+              'Naam moeder',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+        ),
+        DataColumn(
+          label: Expanded(
+            child: Text(
+              'Opmerking',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+        ),
+      ],
+      rows: getTerugKijkItems(),
+      //  const <DataRow>[
+      //   DataRow(
+      //     cells: <DataCell>[
+      //       DataCell(Text('Sarah')),
+      //       DataCell(Text('19')),
+      //       DataCell(Text('Student')),
+      //     ],
+      //   ),
+      //   DataRow(
+      //     cells: <DataCell>[
+      //       DataCell(Text('Janine')),
+      //       DataCell(Text('43')),
+      //       DataCell(Text('Professor')),
+      //     ],
+      //   ),
+      //   DataRow(
+      //     cells: <DataCell>[
+      //       DataCell(Text('William')),
+      //       DataCell(Text('27')),
+      //       DataCell(Text('Associate Professor')),
+      //     ],
+      //   ),
+      // ],
+    );
+  }
+}
+
+List<DataRow> getTerugKijkItems() {
+  List<DataRow> items = [];
+
   for (SessionDetail item in sessions) {
-    items.add(Text("${item.id} ${item.nameMother}"));
+    var row = DataRow(
+      cells: <DataCell>[
+        DataCell(Text(item.id.toString())),
+        DataCell(Text(item.nameMother.toString())),
+        DataCell(Text(item.note.toString())),
+      ],
+    );
+    items.add(row);
   }
   return items;
 }
 
 void loadSessions() async {
   sessions = await getSessions();
+  // createState(() {
+  // sessions = sessions;
+  // });
 }
