@@ -9,9 +9,7 @@ class TerugKijken extends StatelessWidget {
   Widget build(BuildContext context) {
     return Nav(
       child: const SingleChildScrollView(
-        child: Column(
-          children: getTerugKijkItems(context),
-        ),
+        child: DataTableExample(),
       ),
     );
   }
@@ -67,9 +65,15 @@ class DataTableExample extends StatelessWidget {
 
 List<DataRow> getTerugKijkItems(List<SessionDetail> sessions) {
   List<DataRow> items = [];
-
-  for (SessionDetail item in sessions) {
-    items.add(Text("${item.id} ${item.nameMother}"));
+  for (var session in sessions) {
+    var row = DataRow(
+      cells: <DataCell>[
+        DataCell(Text(session.id.toString())),
+        DataCell(Text(session.nameMother.toString())),
+        DataCell(Text(session.note.toString())),
+      ],
+    );
+    items.add(row);
   }
   return items;
 }
