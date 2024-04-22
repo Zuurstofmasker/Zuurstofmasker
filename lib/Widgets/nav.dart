@@ -51,7 +51,6 @@ class Nav extends StatelessWidget {
 
   //get and put the menu items from the list to the widgets for non mobile
   List<Widget> getMenuItems(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     List<Widget> items = [];
     int i = 0;
 
