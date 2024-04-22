@@ -4,7 +4,8 @@ import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/config.dart';
 
 Future<List<SessionDetail>> getSessions() async {
-  return await getListFromFile<SessionDetail>(SessionPath);
+  return await getListFromFile<SessionDetail>(
+      SessionPath, SessionDetail.fromJson);
 }
 
 saveSession(SessionDetail session) async {
