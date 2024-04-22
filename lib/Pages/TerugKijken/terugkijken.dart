@@ -9,7 +9,7 @@ class TerugKijken extends StatelessWidget {
   Widget build(BuildContext context) {
     return Nav(
       child: const SingleChildScrollView(
-        child: DataTableExample(),
+        child: const DataTableExample(),
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:zuurstofmasker/Helpers/csvHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
@@ -20,66 +19,101 @@ Future<File> appendStringToFile(String path, String content) async =>
 Future<Map<String, dynamic>> getMapFromFile(String path) async =>
     jsonToMap(await stringFromFile(path));
 
+// Retrieving generic from file
+Future<T> getGenericFromFile<T>(
+  String path, [
+  JsonToObject<T> jsonToObject,
+]) async =>
+    jsonToGeneric<T>(await stringFromFile(path), jsonToObject);
+
 // Retrieving list from file
-Future<List<T>> getListFromFile<T>(String path) async =>
-    jsonToList<T>(await stringFromFile(path));
+Future<List<T>> getListFromFile<T>(
+  String path, [
+  JsonToObject<T> jsonToObject,
+]) async =>
+    jsonToList<T>(await stringFromFile(path), jsonToObject);
 
 // Write map to file
 Future<File> writeMapToFile(Map<String, dynamic> data, String path) async =>
-    await stringToFile(path, jsonEncode(data));
+    await stringToFile(path, genericToJson(data));
+
+// Write generic to file
+Future<File> writeGenericToFile<T>(T data, String path) async =>
+    await stringToFile(path, genericToJson(data));
 
 // Write list to file
 Future<File> writeListToFile<T>(List<T> data, String path) async =>
-    await stringToFile(path, jsonEncode(data));
+    await stringToFile(path, listToJson(data));
 
 // Append item to json in file
-Future<List<T>> appendItemToListFile<T>(T item, String path) async =>
-    await appendItemsToListFile([item], path);
+Future<List<T>> appendItemToListFile<T>(
+  T item,
+  String path, [
+  JsonToObject<T> jsonToObject,
+]) async =>
+    await appendItemsToListFile([item], path, jsonToObject);
 
 // Append items to json in file
-Future<List<T>> appendItemsToListFile<T>(List<T> items, String path) async {
+Future<List<T>> appendItemsToListFile<T>(
+  List<T> items,
+  String path, [
+  JsonToObject<T> jsonToObject,
+]) async {
   // Retrieving current items
-  List<T> items = await getListFromFile<T>(path);
+  List<T> currentItems = await getListFromFile<T>(path, jsonToObject);
 
   // Adding new item
-  items.addAll(items);
+  currentItems.addAll(items);
 
   // Updating the file
-  writeListToFile(items, path);
+  await writeListToFile<T>(currentItems, path);
 
   // Returing all items
-  return items;
+  return currentItems;
 }
 
 // Updating item by index
-Future<List<T>> updateItemInListFile<T>(T item, int index, String path) async {
+Future<List<T>> updateItemInListFile<T>(
+  T item,
+  int index,
+  String path, [
+  JsonToObject<T> jsonToObject,
+]) async {
   // Retrieving current items
-  List<T> items = await getListFromFile<T>(path);
+  List<T> items = await getListFromFile<T>(path, jsonToObject);
 
   // Updating the given item
   items[index] = item;
 
   // Updating the file
-  writeListToFile(items, path);
+  await writeListToFile(items, path);
 
   // Returing all items
   return items;
 }
 
 // Retrieve item by index
-Future<T> getItemInListFile<T>(int index, String path) async =>
-    (await getListFromFile<T>(path))[index];
+Future<T> getItemInListFile<T>(
+  int index,
+  String path, [
+  JsonToObject<T> jsonToObject,
+]) async =>
+    (await getListFromFile<T>(path, jsonToObject))[index];
 
 // Delete item by index
-Future<List<T>> deleteItemInListFile<T>(int index, String path) async {
+Future<List<T>> deleteItemInListFile<T>(
+  int index,
+  String path, [
+  JsonToObject<T> jsonToObject,
+]) async {
   // Retrieving current items
-  List<T> items = await getListFromFile<T>(path);
+  List<T> items = await getListFromFile<T>(path, jsonToObject);
 
   // Updating the given item
   items.removeAt(index);
 
   // Updating the file
-  writeListToFile(items, path);
+  await writeListToFile(items, path);
 
   // Returing all items
   return items;
