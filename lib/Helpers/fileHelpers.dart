@@ -2,6 +2,15 @@ import 'dart:io';
 import 'package:zuurstofmasker/Helpers/csvHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 
+// Creation of files and folders
+Future<File> createFile(String path) async => await File(path).create();
+
+Future<Directory> createFolder(String path) async =>
+    await Directory(path).create(recursive: true);
+
+Future<FileSystemEntity> deleteFile(String path) async =>
+    await File(path).delete();
+
 // Reading from file
 Future<String> stringFromFile(String path) async =>
     await File(path).readAsString();
@@ -130,6 +139,3 @@ Future<List<List<T>>> csvFromFile<T>(String path) async =>
 // Apending csv to a file
 Future<File> appendCsvToFile<T>(List<List<T>> csv, String path) async =>
     await appendStringToFile(path, '\n${listToCsv(csv)}');
-
-Future<FileSystemEntity> deleteFile(String path) async =>
-    await File(path).delete();

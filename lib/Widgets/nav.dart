@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
-import 'package:zuurstofmasker/Pages/Instellingen/Settings.dart';
-import 'package:zuurstofmasker/Pages/TerugKijken/terugkijken.dart';
+import 'package:zuurstofmasker/Pages/Settings/settings.dart';
+import 'package:zuurstofmasker/Pages/SessionHistory/sessionHistory.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/mainold.dart';
 
@@ -27,18 +27,20 @@ class Nav extends StatelessWidget {
     navItem.NavItem(
         text: 'Terugkijken',
         icon: Icons.loop_rounded,
-        page: MaterialPageRoute(builder: (context) => const TerugKijken())),
+        page: MaterialPageRoute(builder: (context) => const SessionHistory())),
     navItem.NavItem(
         text: 'Instellingen',
-        icon: Icons.settings,
+        icon: Icons.tune,
         page: MaterialPageRoute(builder: (context) => const Settings())),
     navItem.NavItem(
-        text: 'oude main',
-        icon: Icons.settings,
-        page: MaterialPageRoute(
-            builder: (context) => const MyHomePage(
-                  title: "hoii",
-                ))),
+      text: 'oude main',
+      icon: Icons.settings,
+      page: MaterialPageRoute(
+        builder: (context) => const MyHomePage(
+          title: "hoii",
+        ),
+      ),
+    ),
   ];
 
   Nav({
@@ -56,11 +58,14 @@ class Nav extends StatelessWidget {
 
     items.add(
       Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Image.asset(
-          "assets/logo.png",
-          height: 130,
-          width: 100,
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: SizedBox(
+          width: 80,
+          height: 80,
+          child: Image.asset(
+            "Assets/Images/logo.png",
+            width: 10,
+          ),
         ),
       ),
     );
@@ -105,7 +110,7 @@ class Nav extends StatelessWidget {
         children: [
           Container(
             width: 250,
-            color: Colors.white,
+            color: primaryColor,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -170,7 +175,7 @@ class MenuItemBase extends StatelessWidget {
         elevation: 0,
         alignment: Alignment.center,
         backgroundColor:
-            index == MenuIndex.index ? Colors.lightBlue : Colors.blue,
+            index == MenuIndex.index ? secondaryColor : primaryColor,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
       onPressed: () {
