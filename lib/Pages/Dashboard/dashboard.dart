@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
-import 'package:zuurstofmasker/Models/sessionDetail.dart';
+import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
-
-void main() async {
-  runApp(const Dashboard());
-}
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -15,28 +12,35 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Nav(
-        child: Column(
-      children: [
-        Image.asset(
-          "assets/HomePageLogo.png",
-          height: 500,
-          width: 800,
-        ),
-        TextButton(
-            onPressed: () {
-              startSession();
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            "Assets/Images/sessionIllustration.svg",
+            height: 500,
+            width: 800,
+          ),
+          const SizedBox(height: 50,),
+          Button(
+            text: "Start calibratie",
+            onTap: () async {
+              await startSession();
             },
-            child: Text("Start calibration"))
-      ],
-    ));
+          ),
+        ],
+      ),
+    );
   }
 
-  void startSession() {
-    saveSession(SessionDetail(
+  Future<void> startSession() async {
+    saveSession(
+      Session(
         nameMother: 'Pieter',
-        // birthTime: DateTime.now(),
-        id: 1,
+        birthTime: DateTime.now(),
+        id: await getNewSessionUuid(),
         note: "hoi",
-        weight: 1300));
+        weight: 1300,
+      ),
+    );
   }
 }

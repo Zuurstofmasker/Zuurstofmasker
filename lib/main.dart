@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Classes/user.dart';
+import 'package:zuurstofmasker/Models/settings.dart';
+import 'package:zuurstofmasker/Models/user.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
@@ -12,6 +13,46 @@ void main() async {
 }
 
 Future<void> jsonAndFileHelperTests() async {
+  Settings settings = Settings(
+    passwordHash: Settings.hashPassword('test'),
+    colors: SettingColors(
+        spO2: Colors.blue,
+        pulse: Colors.red,
+        fiO2: Colors.green,
+        leak: Colors.yellow,
+        pressure: Colors.purple,
+        flow: Colors.orange,
+        tidalVolume: Colors.pink,
+        limitValues: Colors.brown),
+    limits: SettingLimits(
+      lowPulse: 60,
+      cprPulse: 100,
+      spO2: LimitType.AHA,
+      cSrO2: LimitType.TenToFiftyDawson,
+      cFTOE: LimitType.ERC,
+    ),
+  );
+
+  await writeGenericToFile(settings, settingsPath);
+  settings = await getGenericFromFile(settingsPath, Settings.fromJson);
+
+  settings.comparePassword('test') ? print('Password correct') : print('Password incorrect');
+  // print all settings of the settings object
+  print(settings.passwordHash);
+  print(settings.colors.spO2);
+  print(settings.colors.pulse);
+  print(settings.colors.fiO2);
+  print(settings.colors.leak);
+  print(settings.colors.pressure);
+  print(settings.colors.flow);
+  print(settings.colors.tidalVolume);
+  print(settings.colors.limitValues);
+  print(settings.limits.lowPulse);
+  print(settings.limits.cprPulse);
+  print(settings.limits.spO2);
+  print(settings.limits.cSrO2);
+  print(settings.limits.cFTOE);
+
   await writeListToFile([User(age: 32, id: 2, name: 'Henk')], 'lib/test.json');
   print((await getListFromFile('lib/test.json', User.fromJson))[0].name);
   await appendItemToListFile(
