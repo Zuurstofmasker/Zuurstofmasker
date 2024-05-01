@@ -1,40 +1,25 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:zuurstofmasker/Models/settings.dart';
 import 'package:zuurstofmasker/Models/user.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
 
 void main() async {
+  PopupAndLoading.baseStyle();
+
   await jsonAndFileHelperTests();
 
   runApp(App());
 }
 
 Future<void> jsonAndFileHelperTests() async {
-  Settings settings = Settings(
-    passwordHash: Settings.hashPassword('test'),
-    colors: SettingColors(
-        spO2: Colors.blue,
-        pulse: Colors.red,
-        fiO2: Colors.green,
-        leak: Colors.yellow,
-        pressure: Colors.purple,
-        flow: Colors.orange,
-        tidalVolume: Colors.pink,
-        limitValues: Colors.brown),
-    limits: SettingLimits(
-      lowPulse: 60,
-      cprPulse: 100,
-      spO2: LimitType.AHA,
-      cSrO2: LimitType.TenToFiftyDawson,
-      cFTOE: LimitType.ERC,
-    ),
-  );
-
-  await writeGenericToFile(settings, settingsPath);
-  settings = await getGenericFromFile(settingsPath, Settings.fromJson);
+  Settings settings = await getGenericFromFile(settingsPath, Settings.fromJson);
 
   settings.comparePassword('test') ? print('Password correct') : print('Password incorrect');
   // print all settings of the settings object
@@ -87,6 +72,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'Maasgroep 18 Applicatie',
+      builder: EasyLoading.init(),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,

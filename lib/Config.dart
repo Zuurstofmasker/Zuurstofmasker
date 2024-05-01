@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
 //Navigator key
@@ -11,11 +15,25 @@ const String settingsPath = 'Data/Settings/settings.json';
 //Colors
 const Color primaryColor = Color(0xff86d1ed);
 const Color secondaryColor = Color(0xff181c74);
+const Color greyTextColor = Color(0xff8a8a8a);
+const Color dangerColor = Color(0xffe74c3c);
+const Color successColor = Color(0xff2ecc71);
 
-const BorderRadius borderRadius = BorderRadius.all(Radius.circular(10));
+const double borderRadiusSize = 8;
+const BorderRadius borderRadius = BorderRadius.all(Radius.circular(borderRadiusSize));
 
 //Input styles
 const OutlineInputBorder inputBorder = OutlineInputBorder(
   borderSide: BorderSide(color: secondaryColor),
   borderRadius: borderRadius
 );
+
+const double pagePaddingSize = 30;
+const EdgeInsets pagePadding = EdgeInsets.all(pagePaddingSize);
+
+const double mainPaddingSize = 15;
+const EdgeInsets mainPadding = EdgeInsets.all(mainPaddingSize);
+
+final Uint8List encryptionKey = utf8.encode('My32CharacterEncryptionKey!');
+final Hmac hmacSha256 = Hmac(sha256, encryptionKey);
+

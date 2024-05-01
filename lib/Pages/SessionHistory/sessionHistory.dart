@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
+import 'package:zuurstofmasker/Widgets/paddings.dart';
+import 'package:zuurstofmasker/Widgets/titles.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class SessionHistory extends StatelessWidget {
@@ -10,10 +12,12 @@ class SessionHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Nav(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: FutureBuilder(
+      child: ListView(
+        padding: pagePadding,
+        children: [
+          const PageTitle(title: 'Sessie geschiedenis'),
+          const PaddingSpacing(multiplier: 2),
+          FutureBuilder(
               future: getSessions(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
@@ -35,7 +39,7 @@ class SessionHistory extends StatelessWidget {
                   );
                 }
               }),
-        ),
+        ],
       ),
     );
   }
