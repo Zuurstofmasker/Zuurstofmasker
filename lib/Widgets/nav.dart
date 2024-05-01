@@ -31,7 +31,7 @@ class Nav extends StatelessWidget {
     navItem.NavItem(
         text: 'Instellingen',
         icon: Icons.tune,
-        page: MaterialPageRoute(builder: (context) => const Settings())),
+        page: MaterialPageRoute(builder: (context) => const SettingsPage())),
     navItem.NavItem(
       text: 'oude main',
       icon: Icons.settings,

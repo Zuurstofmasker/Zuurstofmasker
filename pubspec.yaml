@@ -41,6 +41,8 @@ dependencies:
   uuid: ^4.4.0
   flutter_svg: ^2.0.10+1
   crypto: ^3.0.3
+  flutter_colorpicker: ^1.0.3
+  flutter_easyloading: ^3.0.5
 
 dev_dependencies:
   flutter_test:

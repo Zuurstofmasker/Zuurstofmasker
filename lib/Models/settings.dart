@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/config.dart';
-import 'package:crypto/crypto.dart';
 
 class Settings {
   String passwordHash;
@@ -19,14 +18,16 @@ class Settings {
   Future<File> updateSettingsToFile() async =>
       writeGenericToFile(this, settingsPath);
 
-  static String hashPassword(String password) =>
-      sha256.convert(utf8.encode(password)).toString();
+  static Future<Settings> getSettingsFromFile() async =>
+      await getGenericFromFile(settingsPath, Settings.fromJson);
 
-  String setPassword(String password) =>
-      passwordHash = hashPassword(password);
+  static String hashPassword(String password) =>
+      hmacSha256.convert(utf8.encode(password)).toString();
+
+  String setPassword(String password) => passwordHash = hashPassword(password);
 
   bool comparePassword(String password) =>
-      passwordHash == sha256.convert(utf8.encode(password)).toString()
+      passwordHash == hmacSha256.convert(utf8.encode(password)).toString()
           ? true
           : false;
 
@@ -44,14 +45,14 @@ class Settings {
 }
 
 class SettingColors {
-  final Color spO2;
-  final Color pulse;
-  final Color fiO2;
-  final Color leak;
-  final Color pressure;
-  final Color flow;
-  final Color tidalVolume;
-  final Color limitValues;
+  Color spO2;
+  Color pulse;
+  Color fiO2;
+  Color leak;
+  Color pressure;
+  Color flow;
+  Color tidalVolume;
+  Color limitValues;
 
   SettingColors({
     required this.spO2,
@@ -88,12 +89,12 @@ class SettingColors {
 }
 
 class SettingLimits {
-  final int lowPulse;
-  final int cprPulse;
+  int lowPulse;
+  int cprPulse;
 
-  final LimitType spO2;
-  final LimitType cSrO2;
-  final LimitType cFTOE;
+  LimitType spO2;
+  LimitType cSrO2;
+  LimitType cFTOE;
 
   SettingLimits({
     required this.lowPulse,

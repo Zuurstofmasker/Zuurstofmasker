@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:zuurstofmasker/config.dart';
 
-String? validation(String? value, bool isRequired,
-    String? Function(String?)? validator, String? labelText,
+String? validation<T>(T? value, bool isRequired,
+    String? Function(T?)? validator, String? labelText,
     [bool isDouble = false, bool isInt = false]) {
   // Checking if the field is required
   if (isRequired) {
@@ -13,12 +15,12 @@ String? validation(String? value, bool isRequired,
   }
 
   // Checking if the value is a proper double
-  if (isDouble && double.tryParse(value ?? '') == null) {
+  if (isDouble && double.tryParse((value ?? '').toString()) == null) {
     return "${labelText ?? "Dit veld"} heeft een incorrect komma getal format";
   }
 
   // Checking if the value is a proper integer
-  if (isInt && int.tryParse(value ?? '') == null) {
+  if (isInt && int.tryParse((value ?? '').toString()) == null) {
     return "${labelText ?? "Dit veld"} heeft een incorrect getal format";
   }
 
@@ -37,7 +39,7 @@ InputDecoration getInputDecoration(
     hintText: hintText,
     labelText: labelText,
     hintStyle: const TextStyle(
-      color: primaryColor,
+      color: greyTextColor,
       fontWeight: FontWeight.w300,
     ),
     enabledBorder: inputBorder,
@@ -107,7 +109,7 @@ class InputField extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class InputDropDown extends StatefulWidget {
+class InputDropDown<T> extends StatefulWidget {
   InputDropDown({
     super.key,
     required this.items,
@@ -119,35 +121,141 @@ class InputDropDown extends StatefulWidget {
     this.validator,
   });
 
-  final List<DropdownMenuItem<String>> items;
-  final Function(String? value)? onChange;
+  final List<DropdownMenuItem<T>> items;
+  final void Function(T? value)? onChange;
   final String? hintText;
   final String? labelText;
-  String? value;
+  T? value;
   final bool isRequired;
-  final String? Function(String?)? validator;
+  final String? Function(T?)? validator;
 
   @override
-  State<InputDropDown> createState() => _InputDropDownState();
+  State<InputDropDown> createState() => _InputDropDownState<T>(
+        onChange: onChange,
+        validator: validator,
+      );
 }
 
-class _InputDropDownState extends State<InputDropDown> {
+class _InputDropDownState<S> extends State<InputDropDown> {
+  final void Function(S? value)? onChange;
+  final String? Function(S?)? validator;
+
+  _InputDropDownState({
+    this.onChange,
+    this.validator,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField(
-      items: widget.items,
+    return DropdownButtonFormField<S>(
+      items: widget.items as List<DropdownMenuItem<S>>,
       value: widget.value,
       isExpanded: true,
-      validator: (value) => validation(
-          value, widget.isRequired, widget.validator, widget.labelText),
+      validator: (value) =>
+          validation<S>(value, widget.isRequired, validator, widget.labelText),
       decoration: getInputDecoration(widget.hintText, widget.labelText, null),
       onChanged: (newValue) {
-        if (widget.onChange != null) widget.onChange!(newValue);
+        if (onChange != null) onChange!(newValue);
 
         setState(() {
           widget.value = newValue;
         });
       },
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class InputColor extends StatefulWidget {
+  Color value;
+  final String labelText;
+  final void Function(Color value)? onChange;
+
+  InputColor({
+    super.key,
+    required this.value,
+    required this.labelText,
+    this.onChange,
+  });
+
+  @override
+  State<InputColor> createState() => _InputColorState();
+}
+
+class _InputColorState extends State<InputColor> {
+  Future<Color> pickColor(Color color) async {
+    Color newColor = color;
+    bool hasCancelled = false;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Kies een kleur'),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: widget.value,
+              onColorChanged: (color) {
+                newColor = color;
+              },
+              pickerAreaHeightPercent: 0.8,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                hasCancelled = true;
+                navigatorKey.currentState?.pop(widget.value);
+              },
+              child: const Text(
+                'Annuleer',
+                style: TextStyle(color: secondaryColor),
+              ),
+            ),
+            TextButton(
+              onPressed: () => navigatorKey.currentState?.pop(widget.value),
+              child: const Text('Kies'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return hasCancelled ? color : newColor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          widget.labelText,
+          style: const TextStyle(color: secondaryColor, fontSize: 16),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: () => pickColor(widget.value).then((value) {
+            if (widget.value != value && widget.onChange != null) {
+              widget.onChange!(value);
+            }
+
+            setState(() {
+              widget.value = value;
+            });
+          }),
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: widget.value,
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                color: greyTextColor,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
