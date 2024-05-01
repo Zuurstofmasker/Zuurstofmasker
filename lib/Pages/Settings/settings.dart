@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Config.dart';
+import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Models/settings.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';

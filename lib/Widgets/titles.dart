@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Config.dart';
+import 'package:zuurstofmasker/config.dart';
 
 class PageTitle extends StatelessWidget {
   const PageTitle({super.key, required this.title, this.fontSize = 24});
