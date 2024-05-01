@@ -275,11 +275,11 @@ class SettingsInputsContent extends StatelessWidget {
               onChange: (color) => colors.limitValues = color,
             ),
             const PaddingSpacing(multiplier: 2),
-            const PageTitle(title: 'Niew Wachtwoord'),
+            const PageTitle(title: 'Nieuw Wachtwoord'),
             const PaddingSpacing(),
             InputField(
               isRequired: false,
-              hintText: 'Niew wachtwoord',
+              hintText: 'Nieuw wachtwoord',
               onChange: (password) =>
                   settings.setPassword(password ?? settings.passwordHash),
             ),
