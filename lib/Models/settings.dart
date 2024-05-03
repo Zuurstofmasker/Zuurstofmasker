@@ -16,10 +16,10 @@ class Settings {
   });
 
   Future<File> updateSettingsToFile() async =>
-      writeGenericToFile(this, settingsPath);
+      writeGenericToFile(this, settingsJsonPath);
 
   static Future<Settings> getSettingsFromFile() async =>
-      await getGenericFromFile(settingsPath, Settings.fromJson);
+      await getGenericFromFile(settingsJsonPath, Settings.fromJson);
 
   static String hashPassword(String password) =>
       hmacSha256.convert(utf8.encode(password)).toString();

@@ -3,13 +3,17 @@ import 'package:zuurstofmasker/Helpers/csvHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 
 // Creation of files and folders
-Future<File> createFile(String path) async => await File(path).create();
+Future<File> createFile(String path, [bool recursive = false]) async => await File(path).create(recursive: recursive);
 
-Future<Directory> createFolder(String path) async =>
-    await Directory(path).create(recursive: true);
+Future<Directory> createFolder(String path, [bool recursive = false]) async =>
+    await Directory(path).create(recursive: recursive);
 
 Future<FileSystemEntity> deleteFile(String path) async =>
     await File(path).delete();
+
+Future<bool> doesFolderOrFileExist(String path,
+        [bool isFolder = false]) async =>
+    isFolder ? await Directory(path).exists() : await File(path).exists();
 
 // Reading from file
 Future<String> stringFromFile(String path) async =>
