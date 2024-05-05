@@ -14,6 +14,8 @@ class Chart extends StatelessWidget {
     this.maxY = 100,
     this.minX = 0,
     this.minY = 60,
+    this.height = 200,
+    this.width,
   });
 
   final List<FlSpot> chartData;
@@ -26,14 +28,18 @@ class Chart extends StatelessWidget {
   final double? maxX;
   final double? minY;
   final double? maxY;
+  final double? height;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: height,
+      width: width,
       child: LineChart(
         chartRendererKey: GlobalKey(),
         LineChartData(
+          gridData: const FlGridData(show: false),
           titlesData: FlTitlesData(
             topTitles: const AxisTitles(),
             rightTitles: const AxisTitles(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+import 'package:zuurstofmasker/Pages/Dashboard/liveSessie.dart';
 import 'package:zuurstofmasker/Pages/Settings/settings.dart';
 import 'package:zuurstofmasker/Pages/SessionHistory/sessionHistory.dart';
 import 'package:zuurstofmasker/config.dart';
@@ -32,6 +33,10 @@ class Nav extends StatelessWidget {
         text: 'Instellingen',
         icon: Icons.tune,
         page: MaterialPageRoute(builder: (context) => const SettingsPage())),
+    navItem.NavItem(
+        text: 'Livesessie',
+        icon: Icons.tune,
+        page: MaterialPageRoute(builder: (context) => const liveSessie())),
     navItem.NavItem(
       text: 'oude main',
       icon: Icons.settings,
