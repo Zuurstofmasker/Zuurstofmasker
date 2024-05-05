@@ -6,9 +6,33 @@ import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/charts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'dart:math';
 
 class liveSessie extends StatelessWidget {
   const liveSessie({super.key});
+
+  List<FlSpot> randomSpots(
+    int xMin,
+    int xMax,
+    int yMin,
+    int yMax,
+    int xChange,
+  ) {
+    final List<FlSpot> spots = [];
+    int currentX = xMin;
+
+    for (int i = 0; i <= ((xMax - xMin) / xChange); i++) {
+      spots.add(
+        FlSpot(
+          currentX.toDouble(),
+          Random().nextInt((yMax - yMin)).toDouble() + yMin,
+        ),
+      );
+      currentX += xChange;
+    }
+
+    return spots;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +53,13 @@ class liveSessie extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.all(0),
                         padding: const EdgeInsets.all(15.0),
-                        height: 450,
+                        height: 550,
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.black),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(10))),
                         child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text("Druk"),
                             Text("Flow"),
@@ -42,37 +67,40 @@ class liveSessie extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Container(
-                          child: Flexible(
-                        child: Column(
-                          children: [
-                            Chart(
-                              chartData: chartData,
-                              color: Colors.blue,
-                              height: 150,
-                              bottomTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
+                      Flexible(
+                        child: Container(
+                          height: 550,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Chart(
+                                chartData: randomSpots(0, 400, 60, 100, 10),
+                                color: Colors.blue,
+                                height: 166,
+                                bottomTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
                               ),
-                            ),
-                            Chart(
-                              chartData: chartData,
-                              color: Colors.blue,
-                              height: 150,
-                              bottomTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
+                              Chart(
+                                chartData: randomSpots(0, 400, 60, 100, 10),
+                                color: Colors.blue,
+                                height: 166,
+                                bottomTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
                               ),
-                            ),
-                            Chart(
-                              chartData: chartData,
-                              color: Colors.blue,
-                              height: 150,
-                              bottomTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
+                              Chart(
+                                chartData: randomSpots(0, 400, 60, 100, 10),
+                                color: Colors.blue,
+                                height: 166,
+                                bottomTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      )),
+                      ),
                     ],
                   ),
                 ),
@@ -81,8 +109,8 @@ class liveSessie extends StatelessWidget {
                   child: Row(
                     children: [
                       Container(
-                        width: 721,
-                        height: 300,
+                        width: 915,
+                        height: 361,
                         padding: const EdgeInsets.all(5.0),
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.black),
@@ -91,6 +119,7 @@ class liveSessie extends StatelessWidget {
                         child: Row(
                           children: [
                             const Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Text("Fi02"),
                                 Text(
@@ -105,31 +134,39 @@ class liveSessie extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Column(
-                              children: [
-                                Chart(
-                                  chartData: chartData,
-                                  color: Colors.blue,
-                                  height: 200,
-                                  width: 400,
-                                  bottomTitles: const AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
+                            Flexible(
+                              child: Container(
+                                padding: const EdgeInsets.only(right: 15.0),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Chart(
+                                      chartData:
+                                          randomSpots(0, 400, 60, 100, 10),
+                                      color: Colors.blue,
+                                      height: 200,
+                                      bottomTitles: const AxisTitles(
+                                        sideTitles:
+                                            SideTitles(showTitles: false),
+                                      ),
+                                    ),
+                                    Chart(
+                                      chartData:
+                                          randomSpots(0, 400, 60, 100, 10),
+                                      color: Colors.blue,
+                                      height: 75,
+                                    ),
+                                  ],
                                 ),
-                                Chart(
-                                  chartData: chartData,
-                                  color: Colors.blue,
-                                  height: 75,
-                                  width: 400,
-                                ),
-                              ],
-                            )
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       Container(
-                        height: 300,
-                        width: 721,
+                        height: 361,
+                        width: 915,
                         margin: const EdgeInsets.only(left: 30),
                         padding: const EdgeInsets.all(15.0),
                         decoration: BoxDecoration(
@@ -137,26 +174,32 @@ class liveSessie extends StatelessWidget {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(10))),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Container(
-                                    height: 268,
+                                    height: 329,
                                     padding: const EdgeInsets.all(15.0),
                                     decoration: BoxDecoration(
                                         border: Border.all(color: Colors.black),
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(10))),
                                     child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
                                       children: [
                                         Chart(
-                                          chartData: chartData,
+                                          chartData:
+                                              randomSpots(0, 400, 60, 100, 10),
                                           color: Colors.blue,
-                                          height: 118,
+                                          height: 125,
                                           width: 400,
                                         ),
                                         Chart(
-                                          chartData: chartData,
+                                          chartData:
+                                              randomSpots(0, 400, 60, 100, 10),
                                           color: Colors.blue,
                                           height: 118,
                                           width: 400,
