@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
 import 'package:zuurstofmasker/Pages/Settings/settings.dart';
 import 'package:zuurstofmasker/Pages/SessionHistory/sessionHistory.dart';
@@ -163,7 +164,7 @@ class MenuItemDesktop extends StatelessWidget {
 class MenuItemBase extends StatelessWidget {
   final int? index;
   final Widget? child;
-  final Route? page;
+  final MaterialPageRoute? page;
 
   MenuItemBase({required this.index, required this.child, required this.page});
 
@@ -179,8 +180,8 @@ class MenuItemBase extends StatelessWidget {
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
       onPressed: () {
-        MenuIndex.index = index;
-        navigatorKey.currentState!.pushAndRemoveUntil(page!, (r) => false);
+        pushPage(page);
+        // navigatorKey.currentState!.pushAndRemoveUntil(page!, (r) => false);
       },
       child: child,
     );
