@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -100,6 +101,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final List<TimeChartData> timeChartItems = [];
+  late StreamSubscription<Uint8List> mockStream;
 
   void _incrementCounter() {
     setState(() {
@@ -149,11 +151,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    mockStream.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     // startUpdateChart();
 
     // Starting the mocking of the serial port to create a graph
-    SerialPort('').listen((data) {
+    mockStream = SerialPort('').listen().listen((data) {
       // Updating the ui with a new item added the the graph
       setState(() {
         timeChartItems

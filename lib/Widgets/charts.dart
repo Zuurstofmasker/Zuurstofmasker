@@ -128,6 +128,9 @@ class TimeChart extends StatelessWidget {
         DateTime time = startTime!.add(Duration(seconds: p0.toInt()));
         return Text("${time.minute}:${time.second.toString().padLeft(2, '0')}");
       },
+      bottomTitles: const AxisTitles(
+        sideTitles: SideTitles(showTitles: false),
+      ),
       maxY: maxY,
       minY: minY,
     );

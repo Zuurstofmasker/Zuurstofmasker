@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
@@ -9,7 +13,11 @@ import 'package:zuurstofmasker/config.dart';
 import 'dart:math';
 
 class liveSessie extends StatelessWidget {
-  const liveSessie({super.key});
+  liveSessie({super.key});
+  final List<TimeChartData> graphData = [];
+  final List<TimeChartData> graphData1 = [];
+  final List<TimeChartData> graphData2 = [];
+  final List<TimeChartData> graphData3 = [];
 
   List<FlSpot> randomSpots(
     int xMin,
@@ -53,7 +61,7 @@ class liveSessie extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.all(0),
                         padding: const EdgeInsets.all(15.0),
-                        height: 550,
+                        height: 600,
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.black),
                             borderRadius:
@@ -69,34 +77,61 @@ class liveSessie extends StatelessWidget {
                       ),
                       Flexible(
                         child: Container(
-                          height: 550,
+                          height: 600,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Chart(
-                                chartData: randomSpots(0, 400, 60, 100, 10),
-                                color: Colors.blue,
-                                height: 166,
-                                bottomTitles: const AxisTitles(
-                                  sideTitles: SideTitles(showTitles: false),
-                                ),
-                              ),
-                              Chart(
-                                chartData: randomSpots(0, 400, 60, 100, 10),
-                                color: Colors.blue,
-                                height: 166,
-                                bottomTitles: const AxisTitles(
-                                  sideTitles: SideTitles(showTitles: false),
-                                ),
-                              ),
-                              Chart(
-                                chartData: randomSpots(0, 400, 60, 100, 10),
-                                color: Colors.blue,
-                                height: 166,
-                                bottomTitles: const AxisTitles(
-                                  sideTitles: SideTitles(showTitles: false),
-                                ),
-                              ),
+                              StreamBuilder(
+                                  stream: SerialPort('').listen(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      graphData.add(TimeChartData(
+                                          y: snapshot.data![0].toDouble(),
+                                          time: DateTime.now()));
+                                      return TimeChart(
+                                        chartData: graphData,
+                                        color: Colors.red,
+                                        minY: 70,
+                                        maxY: 190,
+                                      );
+                                    } else {
+                                      return const CircularProgressIndicator();
+                                    }
+                                  }),
+                              StreamBuilder(
+                                  stream: SerialPort('').listen(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      graphData1.add(TimeChartData(
+                                          y: snapshot.data![0].toDouble(),
+                                          time: DateTime.now()));
+                                      return TimeChart(
+                                        chartData: graphData1,
+                                        color: primaryColor,
+                                        minY: 70,
+                                        maxY: 190,
+                                      );
+                                    } else {
+                                      return const CircularProgressIndicator();
+                                    }
+                                  }),
+                              StreamBuilder(
+                                  stream: SerialPort('').listen(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      graphData2.add(TimeChartData(
+                                          y: snapshot.data![0].toDouble(),
+                                          time: DateTime.now()));
+                                      return TimeChart(
+                                        chartData: graphData2,
+                                        color: primaryColor,
+                                        minY: 70,
+                                        maxY: 190,
+                                      );
+                                    } else {
+                                      return const CircularProgressIndicator();
+                                    }
+                                  }),
                             ],
                           ),
                         ),
@@ -118,17 +153,22 @@ class liveSessie extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(10))),
                         child: Row(
                           children: [
-                            const Column(
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text("Fi02"),
-                                Text(
-                                  "21%",
-                                  style: TextStyle(
-                                      fontSize: 30, color: Colors.purple),
-                                ),
-                                Text("Sp02"),
-                                Text(
+                                const Text("Fi02"),
+                                StreamBuilder(
+                                    stream: SerialPort('').listen(),
+                                    builder: (context, snapshot) {
+                                      if (graphData3.length != 0) {
+                                        return Text(
+                                            graphData3.last.y.toString());
+                                      } else {
+                                        return const Text("");
+                                      }
+                                    }),
+                                const Text("Sp02"),
+                                const Text(
                                   "84%",
                                   style: TextStyle(fontSize: 30),
                                 ),
@@ -141,16 +181,23 @@ class liveSessie extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    Chart(
-                                      chartData:
-                                          randomSpots(0, 400, 60, 100, 10),
-                                      color: Colors.blue,
-                                      height: 200,
-                                      bottomTitles: const AxisTitles(
-                                        sideTitles:
-                                            SideTitles(showTitles: false),
-                                      ),
-                                    ),
+                                    StreamBuilder(
+                                        stream: SerialPort('').listen(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            graphData3.add(TimeChartData(
+                                                y: snapshot.data![0].toDouble(),
+                                                time: DateTime.now()));
+                                            return TimeChart(
+                                              chartData: graphData3,
+                                              color: Colors.blue,
+                                              minY: 70,
+                                              maxY: 190,
+                                            );
+                                          } else {
+                                            return const CircularProgressIndicator();
+                                          }
+                                        }),
                                     Chart(
                                       chartData:
                                           randomSpots(0, 400, 60, 100, 10),
