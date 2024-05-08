@@ -27,7 +27,7 @@ class Nav extends StatelessWidget {
     navItem.NavItem(
         text: 'Terugkijken',
         icon: Icons.loop_rounded,
-        page: MaterialPageRoute(builder: (context) => const SessionHistory())),
+        page: MaterialPageRoute(builder: (context) => SessionHistory())),
     navItem.NavItem(
         text: 'Instellingen',
         icon: Icons.tune,
