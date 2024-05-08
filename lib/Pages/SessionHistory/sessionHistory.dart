@@ -114,6 +114,7 @@ class SessionHistory extends StatelessWidget {
                       builder: (context, value, child) {
                         return SingleChildScrollView(
                           child: DataTable(
+                            showCheckboxColumn: false,
                             border: TableBorder.all(borderRadius: borderRadius),
                             headingRowHeight: 40,
                             columns: ([
@@ -155,6 +156,17 @@ List<DataRow> getSessionHistoryItems(List<Session> sessions) {
   List<DataRow> items = [];
   for (var session in sessions) {
     var row = DataRow(
+      color: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+        if (states.contains(MaterialState.hovered)) {
+          return primaryColor.withOpacity(0.2);
+        }
+
+        return null;
+      }),
+      onSelectChanged: (value) {
+        // TODO: Add navigation to the session details
+      },
       cells: <DataCell>[
         DataCell(Text(session.id.toString())),
         DataCell(Text(session.birthTime.toString())),
