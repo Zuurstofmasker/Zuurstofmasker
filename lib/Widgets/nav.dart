@@ -32,7 +32,7 @@ class Nav extends StatelessWidget {
     navItem.NavItem(
         text: 'Terugkijken',
         icon: Icons.loop_rounded,
-        page: (context) => const SessionHistory()),
+        page: (context) => SessionHistory()),
     navItem.NavItem(
         text: 'Instellingen',
         icon: Icons.tune,
