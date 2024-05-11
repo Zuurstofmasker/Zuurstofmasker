@@ -7,6 +7,7 @@ import 'package:zuurstofmasker/Models/user.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+import 'package:zuurstofmasker/Widgets/nav.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
 
@@ -15,13 +16,15 @@ void main() async {
 
   await jsonAndFileHelperTests();
 
-  runApp(App());
+  runApp(App(home: (context) => const Dashboard()));
 }
 
 Future<void> jsonAndFileHelperTests() async {
   Settings settings = await getGenericFromFile(settingsPath, Settings.fromJson);
 
-  settings.comparePassword('test') ? print('Password correct') : print('Password incorrect');
+  settings.comparePassword('test')
+      ? print('Password correct')
+      : print('Password incorrect');
   // print all settings of the settings object
   print(settings.passwordHash);
   print(settings.colors.spO2);
@@ -64,7 +67,10 @@ Future<void> jsonAndFileHelperTests() async {
 }
 
 class App extends StatelessWidget {
-  App({super.key});
+  final Widget Function(BuildContext context) home;
+  App({super.key, required this.home}) {
+    routesStack.add(MaterialPageRoute(builder: home));
+  }
 
   // This widget is the root of your application.
   @override
@@ -77,7 +83,7 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const Dashboard(),
+      home: home(context),
     );
   }
 }

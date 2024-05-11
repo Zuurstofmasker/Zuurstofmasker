@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
@@ -7,6 +9,8 @@ import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/mainold.dart';
 
 import 'navItem.dart' as navItem;
+
+ListQueue<MaterialPageRoute> routesStack = ListQueue<MaterialPageRoute>();
 
 class MenuIndex {
   static int? index = 0;
@@ -20,26 +24,24 @@ class Nav extends StatelessWidget {
   final bool centerTitle;
 
   //fil the list of custom InputField classes
-  final List<navItem.NavItem> menuItems = [
+  static final List<navItem.NavItem> menuItems = [
     navItem.NavItem(
         text: 'Opvang',
         icon: Icons.play_arrow,
-        page: MaterialPageRoute(builder: (context) => const Dashboard())),
+        page: (context) => const Dashboard()),
     navItem.NavItem(
         text: 'Terugkijken',
         icon: Icons.loop_rounded,
-        page: MaterialPageRoute(builder: (context) => const SessionHistory())),
+        page: (context) => const SessionHistory()),
     navItem.NavItem(
         text: 'Instellingen',
         icon: Icons.tune,
-        page: MaterialPageRoute(builder: (context) => const SettingsPage())),
+        page: (context) => const SettingsPage()),
     navItem.NavItem(
       text: 'oude main',
       icon: Icons.settings,
-      page: MaterialPageRoute(
-        builder: (context) => const MyHomePage(
-          title: "hoii",
-        ),
+      page: (context) => const MyHomePage(
+        title: "hoii",
       ),
     ),
   ];
@@ -164,7 +166,7 @@ class MenuItemDesktop extends StatelessWidget {
 class MenuItemBase extends StatelessWidget {
   final int? index;
   final Widget? child;
-  final MaterialPageRoute? page;
+  final Widget Function(BuildContext context) page;
 
   MenuItemBase({required this.index, required this.child, required this.page});
 
@@ -180,8 +182,7 @@ class MenuItemBase extends StatelessWidget {
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
       onPressed: () {
-        pushPage(page);
-        // navigatorKey.currentState!.pushAndRemoveUntil(page!, (r) => false);
+        replaceAllPages(MaterialPageRoute(builder: page));
       },
       child: child,
     );
