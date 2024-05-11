@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Models/settings.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
@@ -147,7 +148,7 @@ class SettingsInputsContent extends StatelessWidget {
       await editSettings.updateSettingsToFile().then((value) {
         settings = editSettings;
         // Go back to the login screen
-        Navigator.pushReplacement(context,
+        pushPage(
             MaterialPageRoute(builder: ((context) => const SettingsPage())));
         PopupAndLoading.showSuccess('Opslaan gelukt');
       }).catchError((error) {
