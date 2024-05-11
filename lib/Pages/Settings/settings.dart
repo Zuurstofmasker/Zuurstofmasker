@@ -23,13 +23,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool hasLoggedIn = false;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  Settings? settings;
-
-  @override
-  void initState() {
-    loadSettings();
-    super.initState();
-  }
+  final Settings editSettings = Settings.fromJson(settings.toJson());
 
   void onLogin() {
     if (formKey.currentState!.validate()) {
@@ -39,10 +33,6 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future<void> loadSettings() async {
-    settings = await Settings.getSettingsFromFile();
-  }
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -50,15 +40,15 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          if (hasLoggedIn && settings != null)
+          if (hasLoggedIn)
             SettingsInputsContent(
-              settings: settings!,
+              editSettings: settings,
             )
           else
             SettingsPasswordContent(
               onLogin: onLogin,
               formKey: formKey,
-              getSettings: () => settings,
+              editSettings: settings,
             ),
         ],
       ),
@@ -69,14 +59,13 @@ class _SettingsPageState extends State<SettingsPage> {
 class SettingsPasswordContent extends StatelessWidget {
   final dynamic Function() onLogin;
   final GlobalKey<FormState> formKey;
-  final Settings? Function() getSettings;
-  Settings? get settings => getSettings();
+  final Settings editSettings;
 
   const SettingsPasswordContent({
     super.key,
     required this.onLogin,
     required this.formKey,
-    required this.getSettings,
+    required this.editSettings,
   });
 
   @override
@@ -93,9 +82,7 @@ class SettingsPasswordContent extends StatelessWidget {
             isPassword: true,
             hintText: 'Vul wachtwoord in',
             validator: (password) {
-              if (settings == null) return 'Settings not loaded';
-
-              if (password != null && !settings!.comparePassword(password)) {
+              if (password != null && !editSettings.comparePassword(password)) {
                 return 'Wachtwoord is incorrect';
               }
 
@@ -112,9 +99,9 @@ class SettingsPasswordContent extends StatelessWidget {
 
 // ignore: must_be_immutable
 class SettingsInputsContent extends StatelessWidget {
-  final Settings settings;
-  SettingColors get colors => settings.colors;
-  SettingLimits get limits => settings.limits;
+  final Settings editSettings;
+  SettingColors get colors => editSettings.colors;
+  SettingLimits get limits => editSettings.limits;
 
   final List<DropdownMenuItem<LimitType>> dropDownItems = const [
     DropdownMenuItem(
@@ -152,13 +139,14 @@ class SettingsInputsContent extends StatelessWidget {
 
   SettingsInputsContent({
     super.key,
-    required this.settings,
+    required this.editSettings,
   });
 
   Future<void> saveSettings(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       PopupAndLoading.showLoading();
-      await settings.updateSettingsToFile().then((value) {
+      await editSettings.updateSettingsToFile().then((value) {
+        settings = editSettings;
         // Go back to the login screen
         pushPage(
             MaterialPageRoute(builder: ((context) => const SettingsPage())));
@@ -281,8 +269,8 @@ class SettingsInputsContent extends StatelessWidget {
             InputField(
               isRequired: false,
               hintText: 'Nieuw wachtwoord',
-              onChange: (password) =>
-                  settings.setPassword(password ?? settings.passwordHash),
+              onChange: (password) => editSettings
+                  .setPassword(password ?? editSettings.passwordHash),
             ),
             const PaddingSpacing(multiplier: 2),
             Button(

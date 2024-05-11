@@ -11,6 +11,10 @@ void main() async {
   PopupAndLoading.baseStyle();
 
   await setupFileStructure();
+  await Settings.getSettingsFromFile().then((value) {
+    settings = value;
+    settingsFromFile = true;
+  });
 
   runApp(App(home: (context) => const Dashboard()));
 }
@@ -45,29 +49,7 @@ Future<void> setupFileStructure() async {
     await createFile(settingsJsonPath, true);
 
     // Creating a defualt settings file
-    await writeGenericToFile(
-      Settings(
-        passwordHash: Settings.hashPassword('test'),
-        colors: SettingColors(
-          spO2: Colors.red,
-          pulse: Colors.blue,
-          fiO2: Colors.green,
-          leak: Colors.yellow,
-          pressure: Colors.purple,
-          flow: Colors.orange,
-          tidalVolume: Colors.pink,
-          limitValues: Colors.grey,
-        ),
-        limits: SettingLimits(
-          lowPulse: 50,
-          cprPulse: 100,
-          spO2: LimitType.AHA,
-          cSrO2: LimitType.ERC,
-          cFTOE: LimitType.TenToFiftyDawson,
-        ),
-      ),
-      settingsJsonPath,
-    );
+    await writeGenericToFile(defaultSettings, settingsJsonPath);
   }
 
   // Checking for sessions file
