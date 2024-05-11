@@ -13,6 +13,7 @@ const String sessionsJsonPath = '${sessionPath}sessions.json';
 const String settingsPath = 'Data/Settings/';
 const String settingsJsonPath = '${settingsPath}settings.json';
 
+
 //Colors
 const Color primaryColor = Color(0xff86d1ed);
 const Color secondaryColor = Color(0xff181c74);

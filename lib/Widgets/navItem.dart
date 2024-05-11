@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class NavItem {
   NavItem({required this.text, required this.icon, required this.page});
   final String text;
   final IconData icon;
-  Route page;
+  Widget Function(BuildContext context) page;
 }
