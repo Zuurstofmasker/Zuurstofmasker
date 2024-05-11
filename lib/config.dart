@@ -10,7 +10,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 // Path to the json files
 const String sessionPath = 'Data/Sessions/';
 const String sessionsJsonPath = '${sessionPath}sessions.json';
-const String settingsPath = 'Data/Settings/settings.json';
+const String settingsPath = 'Data/Settings/';
+const String settingsJsonPath = '${settingsPath}settings.json';
+
 
 //Colors
 const Color primaryColor = Color(0xff86d1ed);
