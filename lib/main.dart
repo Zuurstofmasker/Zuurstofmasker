@@ -36,13 +36,13 @@ Future<void> jsonAndFileHelperTests() async {
   print(settings.limits.spO2);
   print(settings.limits.cSrO2);
   print(settings.limits.cFTOE);
+}
 
 Future<void> setupFileStructure() async {
   // Checking for settings file
   if (!await doesFolderOrFileExist(settingsJsonPath)) {
     // Creating the missing file and folders
     await createFile(settingsJsonPath, true);
-
 
     // Creating a defualt settings file
     await writeGenericToFile(
