@@ -1,11 +1,16 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
-import 'package:zuurstofmasker/Pages/Instellingen/Settings.dart';
-import 'package:zuurstofmasker/Pages/TerugKijken/terugkijken.dart';
+import 'package:zuurstofmasker/Pages/Settings/settings.dart';
+import 'package:zuurstofmasker/Pages/SessionHistory/sessionHistory.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/mainold.dart';
 
 import 'navItem.dart' as navItem;
+
+ListQueue<MaterialPageRoute> routesStack = ListQueue<MaterialPageRoute>();
 
 class MenuIndex {
   static int? index = 0;
@@ -19,26 +24,26 @@ class Nav extends StatelessWidget {
   final bool centerTitle;
 
   //fil the list of custom InputField classes
-  final List<navItem.NavItem> menuItems = [
+  static final List<navItem.NavItem> menuItems = [
     navItem.NavItem(
         text: 'Opvang',
         icon: Icons.play_arrow,
-        page: MaterialPageRoute(builder: (context) => const Dashboard())),
+        page: (context) => const Dashboard()),
     navItem.NavItem(
         text: 'Terugkijken',
         icon: Icons.loop_rounded,
-        page: MaterialPageRoute(builder: (context) => const TerugKijken())),
+        page: (context) => SessionHistory()),
     navItem.NavItem(
         text: 'Instellingen',
-        icon: Icons.settings,
-        page: MaterialPageRoute(builder: (context) => const Settings())),
+        icon: Icons.tune,
+        page: (context) => const SettingsPage()),
     navItem.NavItem(
-        text: 'oude main',
-        icon: Icons.settings,
-        page: MaterialPageRoute(
-            builder: (context) => const MyHomePage(
-                  title: "hoii",
-                ))),
+      text: 'oude main',
+      icon: Icons.settings,
+      page: (context) => const MyHomePage(
+        title: "hoii",
+      ),
+    ),
   ];
 
   Nav({
@@ -56,11 +61,14 @@ class Nav extends StatelessWidget {
 
     items.add(
       Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Image.asset(
-          "assets/logo.png",
-          height: 130,
-          width: 100,
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: SizedBox(
+          width: 80,
+          height: 80,
+          child: Image.asset(
+            "Assets/Images/logo.png",
+            width: 10,
+          ),
         ),
       ),
     );
@@ -105,7 +113,7 @@ class Nav extends StatelessWidget {
         children: [
           Container(
             width: 250,
-            color: Colors.white,
+            color: primaryColor,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -158,7 +166,7 @@ class MenuItemDesktop extends StatelessWidget {
 class MenuItemBase extends StatelessWidget {
   final int? index;
   final Widget? child;
-  final Route? page;
+  final Widget Function(BuildContext context) page;
 
   MenuItemBase({required this.index, required this.child, required this.page});
 
@@ -170,12 +178,11 @@ class MenuItemBase extends StatelessWidget {
         elevation: 0,
         alignment: Alignment.center,
         backgroundColor:
-            index == MenuIndex.index ? Colors.lightBlue : Colors.blue,
+            index == MenuIndex.index ? secondaryColor : primaryColor,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
       onPressed: () {
-        MenuIndex.index = index;
-        navigatorKey.currentState!.pushAndRemoveUntil(page!, (r) => false);
+        replaceAllPages(MaterialPageRoute(builder: page));
       },
       child: child,
     );

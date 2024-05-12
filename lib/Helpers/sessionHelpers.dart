@@ -1,17 +1,32 @@
-import 'package:zuurstofmasker/Models/sessionDetail.dart';
+import 'package:uuid/uuid.dart';
+import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 
 import 'package:zuurstofmasker/config.dart';
 
-Future<List<SessionDetail>> getSessions() async {
-  return await getListFromFile<SessionDetail>(
-      SessionPath, SessionDetail.fromJson);
+Future<List<Session>> getSessions() async =>
+    await getListFromFile<Session>(sessionsJsonPath, Session.fromJson);
+
+Future<String> getNewSessionUuid() async {
+  List<Session> sessions = await getSessions();
+
+  // Generate a new unique id
+  late Uuid newId;
+  do {
+    newId = const Uuid();
+  } while (sessions.any((element) => element.id == newId.v4()));
+
+  return newId.v4();
 }
 
-saveSession(SessionDetail session) async {
-  var sessions = await getSessions();
-  var lastSession = sessions.last;
-  session.id = lastSession.id! + 1;
-  sessions.add(session);
-  await writeListToFile(sessions, SessionPath);
+Future<List<Session>> saveSession(Session session) async {
+  // Creating the folder for the session with the correct files included
+  String newSessionPath = sessionPath + session.id;
+  await createFolder(newSessionPath);
+  await writeListToFile([], '$newSessionPath/videoNotes.json');
+  await createFile('$newSessionPath/recordedData.csv');
+  await createFile('$newSessionPath/video.mp4');
+
+  // Append the session to the list of sessions
+  return await appendItemToListFile(session, sessionsJsonPath, Session.fromJson);
 }

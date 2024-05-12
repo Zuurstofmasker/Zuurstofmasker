@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Config.dart';
-import 'package:zuurstofmasker/Helpers/responsiveHelper.dart';
+import 'package:zuurstofmasker/config.dart';
 
 class Button extends StatelessWidget {
   final IconData? icon;
@@ -9,33 +8,31 @@ class Button extends StatelessWidget {
   final Color color;
   final EdgeInsets padding;
   final bool isFullWidth;
-  const Button(
-      {super.key,
-      this.icon,
-      this.text,
-      required this.onTap,
-      this.padding = const EdgeInsets.all(0),
-      this.color = mainColor,
-      this.isFullWidth = true});
+  const Button({
+    super.key,
+    this.icon,
+    this.text,
+    required this.onTap,
+    this.padding = const EdgeInsets.symmetric(horizontal: 15),
+    this.color = secondaryColor,
+    this.isFullWidth = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: getResponsiveWidth(context, isFullWidth: isFullWidth),
+      
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           padding: padding,
           minimumSize: const Size(10, 48),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              borderRadius,
-            ),
-          ),
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null)
               Icon(
