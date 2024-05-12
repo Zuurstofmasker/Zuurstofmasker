@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
+import 'package:zuurstofmasker/Pages/StartSessie/startsession.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 
@@ -23,9 +24,11 @@ class Dashboard extends StatelessWidget {
           const SizedBox(height: 50,),
           Button(
             text: "Start calibratie",
-            onTap: () async {
-              await startSession();
-            },
+            onTap: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => const StartSession()));
+                },
           ),
         ],
       ),

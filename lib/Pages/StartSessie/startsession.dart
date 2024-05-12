@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
-import 'package:zuurstofmasker/Models/sessionDetail.dart';
+import 'package:zuurstofmasker/Models/session.dart';
+import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+// import 'package:zuurstofmasker/Models/sessionDetail.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
@@ -13,13 +15,16 @@ TextEditingController weigthController = TextEditingController();
 class StartSession extends StatelessWidget {
   const StartSession({super.key});
 
-  void saveSessionData() {
-    saveSession(SessionDetail(
+  void startSession() async {
+    saveSession(
+      Session(
         nameMother: nameController.text,
-        // birthTime: DateTime.now(),
-        id: 1,
+        id: await getNewSessionUuid(),
         note: noteController.text,
-        weight: int.tryParse(weigthController.text)));
+        birthTime: DateTime.now(),
+        weight: int.parse(weigthController.text),
+      )
+        );
   }
 
   @override
@@ -43,7 +48,7 @@ class StartSession extends StatelessWidget {
           hintText: "Gewicht",
           isInt: true,
         ),
-        Button(onTap: saveSessionData, isFullWidth: true, text: "Starten")
+        Button(onTap: () => { startSession, Navigator.push(context, MaterialPageRoute(builder: (context) => const Dashboard()))}, isFullWidth: true, text: "Starten")
       ],
     ));
   }
