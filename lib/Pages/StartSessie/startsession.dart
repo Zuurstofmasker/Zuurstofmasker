@@ -23,6 +23,12 @@ class StartSession extends StatelessWidget {
         note: noteController.text,
         birthTime: DateTime.now(),
         weight: int.parse(weigthController.text),
+        stateOutFlow: double.parse(stateOutController.text),
+        biasFlow: double.parse(biasFlowController.text),
+        patientFlow: double.parse(patientFlowController.text),
+        fiO2: double.parse(fiO2Controller.text),
+        vti: double.parse(vtiController.text),
+        vte: double.parse(vteController.text)
       )
         );
   }
@@ -48,7 +54,7 @@ class StartSession extends StatelessWidget {
           hintText: "Gewicht",
           isInt: true,
         ),
-        Button(onTap: () => { startSession, Navigator.push(context, MaterialPageRoute(builder: (context) => const Dashboard()))}, isFullWidth: true, text: "Starten")
+        Button(onTap: startSession, isFullWidth: true, text: "Starten")
       ],
     ));
   }

@@ -9,22 +9,14 @@ TextEditingController fiO2Controller = TextEditingController();
 TextEditingController vtiController = TextEditingController();
 TextEditingController vteController = TextEditingController();
 
-class PatientForm extends StatefulWidget {
+class PatientForm extends StatelessWidget {
   const PatientForm ({
     super.key
   });
 
   @override
-  State<PatientForm> createState() => _PatientFormState(); 
-}
-
-class _PatientFormState extends State<PatientForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  @override
   Widget build(BuildContext context){
     return Form(
-      key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

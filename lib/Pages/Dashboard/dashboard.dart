@@ -34,16 +34,4 @@ class Dashboard extends StatelessWidget {
       ),
     );
   }
-
-  Future<void> startSession() async {
-    saveSession(
-      Session(
-        nameMother: 'Pieter',
-        birthTime: DateTime.now(),
-        id: await getNewSessionUuid(),
-        note: "hoi",
-        weight: 1300,
-      ),
-    );
-  }
 }
