@@ -39,9 +39,7 @@ class Nav extends StatelessWidget {
         icon: Icons.tune,
         page: (context) => const SettingsPage()),
     navItem.NavItem(
-        text: 'Livesessie',
-        icon: Icons.tune,
-        page: MaterialPageRoute(builder: (context) => liveSessie())),
+        text: 'Livesessie', icon: Icons.tune, page: (context) => liveSessie()),
     navItem.NavItem(
       text: 'oude main',
       icon: Icons.settings,

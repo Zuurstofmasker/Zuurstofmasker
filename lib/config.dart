@@ -70,8 +70,6 @@ final Settings defaultSettings = Settings(
   ),
 );
 
-
-
 // Camera settings
 const int cameraIndex = 0;
 const Duration maxVideoDuration = Duration(minutes: 45);
