@@ -84,15 +84,15 @@ class Chart extends StatelessWidget {
 
 // ignore: must_be_immutable
 class TimeChart extends StatelessWidget {
-  TimeChart({
-    super.key,
-    required this.chartData,
-    required this.color,
-    this.startTime,
-    this.endTime,
-    this.maxY,
-    this.minY,
-  }) {
+  TimeChart(
+      {super.key,
+      required this.chartData,
+      required this.color,
+      this.startTime,
+      this.endTime,
+      this.maxY,
+      this.minY,
+      this.height}) {
     startTime ??= DateTime.now().subtract(const Duration(seconds: 30));
     endTime ??= DateTime.now();
   }
@@ -103,6 +103,7 @@ class TimeChart extends StatelessWidget {
   final Color color;
   final double? minY;
   final double? maxY;
+  final double? height;
 
   List<FlSpot> getChartData() {
     List<FlSpot> items = [];
@@ -133,6 +134,7 @@ class TimeChart extends StatelessWidget {
       ),
       maxY: maxY,
       minY: minY,
+      height: height,
     );
   }
 }
