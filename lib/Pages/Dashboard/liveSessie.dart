@@ -14,10 +14,13 @@ import 'dart:math';
 
 class liveSessie extends StatelessWidget {
   liveSessie({super.key});
-  final List<TimeChartData> graphData = [];
-  final List<TimeChartData> graphData1 = [];
-  final List<TimeChartData> graphData2 = [];
-  final List<TimeChartData> graphData3 = [];
+  final List<TimeChartData> drukGraphData = [];
+  final List<TimeChartData> flowGraphData = [];
+  final List<TimeChartData> terugvolumeGraphData = [];
+  final List<TimeChartData> fi02GraphData = [];
+  final List<TimeChartData> sp02GraphData = [];
+  final List<TimeChartData> pulseGraphData = [];
+  final List<TimeChartData> leakGraphData = [];
 
   List<FlSpot> randomSpots(
     int xMin,
@@ -85,11 +88,11 @@ class liveSessie extends StatelessWidget {
                                   stream: SerialPort('').listen(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      graphData.add(TimeChartData(
+                                      drukGraphData.add(TimeChartData(
                                           y: snapshot.data![0].toDouble(),
                                           time: DateTime.now()));
                                       return TimeChart(
-                                        chartData: graphData,
+                                        chartData: drukGraphData,
                                         color: Colors.red,
                                         minY: 70,
                                         maxY: 190,
@@ -102,11 +105,11 @@ class liveSessie extends StatelessWidget {
                                   stream: SerialPort('').listen(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      graphData1.add(TimeChartData(
+                                      flowGraphData.add(TimeChartData(
                                           y: snapshot.data![0].toDouble(),
                                           time: DateTime.now()));
                                       return TimeChart(
-                                        chartData: graphData1,
+                                        chartData: flowGraphData,
                                         color: primaryColor,
                                         minY: 70,
                                         maxY: 190,
@@ -119,11 +122,11 @@ class liveSessie extends StatelessWidget {
                                   stream: SerialPort('').listen(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      graphData2.add(TimeChartData(
+                                      terugvolumeGraphData.add(TimeChartData(
                                           y: snapshot.data![0].toDouble(),
                                           time: DateTime.now()));
                                       return TimeChart(
-                                        chartData: graphData2,
+                                        chartData: terugvolumeGraphData,
                                         color: primaryColor,
                                         minY: 70,
                                         maxY: 190,
@@ -160,18 +163,26 @@ class liveSessie extends StatelessWidget {
                                 StreamBuilder(
                                     stream: SerialPort('').listen(),
                                     builder: (context, snapshot) {
-                                      if (graphData3.length != 0) {
+                                      if (fi02GraphData.length != 0) {
                                         return Text(
-                                            graphData3.last.y.toString());
+                                            fi02GraphData.last.y.toString());
                                       } else {
                                         return const Text("");
                                       }
                                     }),
                                 const Text("Sp02"),
-                                const Text(
-                                  "84%",
-                                  style: TextStyle(fontSize: 30),
-                                ),
+                                StreamBuilder(
+                                    stream: SerialPort('').listen(),
+                                    builder: (context, snapshot) {
+                                      if (sp02GraphData.length != 0) {
+                                        return Text(
+                                          sp02GraphData.last.y.toString(),
+                                          style: TextStyle(fontSize: 30),
+                                        );
+                                      } else {
+                                        return const Text("");
+                                      }
+                                    }),
                               ],
                             ),
                             Flexible(
@@ -185,11 +196,11 @@ class liveSessie extends StatelessWidget {
                                         stream: SerialPort('').listen(),
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
-                                            graphData3.add(TimeChartData(
+                                            pulseGraphData.add(TimeChartData(
                                                 y: snapshot.data![0].toDouble(),
                                                 time: DateTime.now()));
                                             return TimeChart(
-                                              chartData: graphData3,
+                                              chartData: pulseGraphData,
                                               color: Colors.blue,
                                               minY: 70,
                                               maxY: 190,
@@ -198,12 +209,24 @@ class liveSessie extends StatelessWidget {
                                             return const CircularProgressIndicator();
                                           }
                                         }),
-                                    Chart(
-                                      chartData:
-                                          randomSpots(0, 400, 60, 100, 10),
-                                      color: Colors.blue,
-                                      height: 75,
-                                    ),
+                                    StreamBuilder(
+                                        stream: SerialPort('').listen(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            leakGraphData.add(TimeChartData(
+                                                y: snapshot.data![0].toDouble(),
+                                                time: DateTime.now()));
+                                            return TimeChart(
+                                              chartData: leakGraphData,
+                                              color: Colors.blue,
+                                              minY: 70,
+                                              height: 70,
+                                              maxY: 190,
+                                            );
+                                          } else {
+                                            return const CircularProgressIndicator();
+                                          }
+                                        }),
                                   ],
                                 ),
                               ),
