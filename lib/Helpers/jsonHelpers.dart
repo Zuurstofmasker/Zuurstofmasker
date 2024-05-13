@@ -11,7 +11,7 @@ T jsonToGeneric<T>(
     // Decoding the json to dynamic to convert to the correct type later
     dynamic decodedJson = jsonDecode(json);
 
-    if (jsonToObject == null) return jsonDecode(json) as T;
+    if (jsonToObject == null) return decodedJson as T;
 
     // Using the given conversion method convert the json to the correct object
     if (decodedJson is! Map<String, dynamic>) return fallbackValue!;
