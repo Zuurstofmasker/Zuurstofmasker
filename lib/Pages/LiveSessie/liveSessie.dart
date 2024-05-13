@@ -5,20 +5,12 @@ import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Pages/LiveSessie/lowerLeftPart.dart';
 import 'package:zuurstofmasker/Pages/LiveSessie/lowerRightPart.dart';
 import 'package:zuurstofmasker/Pages/LiveSessie/upperPart.dart';
-import 'package:zuurstofmasker/Widgets/charts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class liveSessie extends StatelessWidget {
   liveSessie({super.key});
-  final List<TimeChartData> drukGraphData = [];
-  final List<TimeChartData> flowGraphData = [];
-  final List<TimeChartData> terugvolumeGraphData = [];
-  final List<TimeChartData> fi02GraphData = [];
-  final List<TimeChartData> sp02GraphData = [];
-  final List<TimeChartData> pulseGraphData = [];
-  final List<TimeChartData> leakGraphData = [];
 
   @override
   Widget build(BuildContext context) {

@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
-import 'package:zuurstofmasker/Widgets/charts.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class lowerRightPart extends StatelessWidget {

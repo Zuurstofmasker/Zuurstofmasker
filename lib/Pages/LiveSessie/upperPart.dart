@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
-import 'package:zuurstofmasker/Widgets/charts.dart';
+import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class upperPart extends StatelessWidget {
@@ -91,7 +91,7 @@ class upperPart extends StatelessWidget {
                           minY: 0,
                           maxY: 40,
                           height: 150,
-                          horizontalLines: const [25],
+                          horizontalLinesValues: const [25],
                         );
                       } else {
                         return const CircularProgressIndicator();
@@ -110,7 +110,7 @@ class upperPart extends StatelessWidget {
                           minY: -75,
                           maxY: 75,
                           height: 150,
-                          horizontalLines: const [0],
+                          horizontalLinesValues: const [0],
                         );
                       } else {
                         return const CircularProgressIndicator();
@@ -129,7 +129,7 @@ class upperPart extends StatelessWidget {
                           minY: 0,
                           maxY: 10,
                           height: 150,
-                          horizontalLines: const [4, 8],
+                          horizontalLinesValues: const [4, 8],
                         );
                       } else {
                         return const CircularProgressIndicator();

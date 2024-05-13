@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
-import 'package:zuurstofmasker/Widgets/charts.dart';
+import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
+import 'package:zuurstofmasker/Widgets/Charts/charts.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class lowerLeftPart extends StatelessWidget {
