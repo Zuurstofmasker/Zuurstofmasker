@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
-import 'package:zuurstofmasker/Pages/Dashboard/liveSessie.dart';
+import 'package:zuurstofmasker/Pages/LiveSessie/liveSessie.dart';
 import 'package:zuurstofmasker/Pages/Settings/settings.dart';
 import 'package:zuurstofmasker/Pages/SessionHistory/sessionHistory.dart';
 import 'package:zuurstofmasker/config.dart';
