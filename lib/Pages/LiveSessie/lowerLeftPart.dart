@@ -77,6 +77,7 @@ class lowerLeftPart extends StatelessWidget {
                             minY: 0,
                             maxY: 100,
                             height: 200,
+                            showFi02Lines: true,
                           );
                         } else {
                           return const CircularProgressIndicator();

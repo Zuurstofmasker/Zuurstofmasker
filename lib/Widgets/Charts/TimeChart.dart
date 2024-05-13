@@ -12,7 +12,8 @@ class TimeChart extends StatelessWidget {
       this.maxY,
       this.minY,
       this.height,
-      this.horizontalLinesValues}) {
+      this.horizontalLinesValues,
+      this.showFi02Lines}) {
     startTime ??= DateTime.now().subtract(const Duration(seconds: 30));
     endTime ??= DateTime.now();
 
@@ -43,6 +44,8 @@ class TimeChart extends StatelessWidget {
   final double? maxY;
   final double? height;
   final List<double>? horizontalLinesValues;
+  final bool? showFi02Lines;
+
   List<HorizontalLine>? horizontalLine;
   List<FlSpot> getChartData() {
     List<FlSpot> items = [];
@@ -50,6 +53,22 @@ class TimeChart extends StatelessWidget {
       items.add(
         FlSpot(differenceToSecdonds(data.time, startTime!).toDouble(), data.y),
       );
+    }
+    return items;
+  }
+
+  List<FlSpot> getOptionalChartData() {
+    List<FlSpot> items = [];
+    if (showFi02Lines != null && showFi02Lines!) {
+      startTime ??= DateTime.now().subtract(const Duration(seconds: 600));
+      var test = startTime!.add(Duration(seconds: 0));
+      items.add(FlSpot(differenceToSecdonds(test, startTime!).toDouble(), 0));
+      test = startTime!.add(Duration(seconds: 120));
+      items.add(FlSpot(differenceToSecdonds(test, startTime!).toDouble(), 60));
+      test = startTime!.add(Duration(seconds: 300));
+      items.add(FlSpot(differenceToSecdonds(test, startTime!).toDouble(), 85));
+      test = startTime!.add(Duration(seconds: 600));
+      items.add(FlSpot(differenceToSecdonds(test, startTime!).toDouble(), 90));
     }
     return items;
   }
@@ -62,6 +81,7 @@ class TimeChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Chart(
       chartData: getChartData(),
+      optionalChartData: getOptionalChartData(),
       color: color,
       maxX: differenceToSecdonds(endTime!, startTime!).toDouble(),
       bottomTitleRenderer: (p0, p1) {

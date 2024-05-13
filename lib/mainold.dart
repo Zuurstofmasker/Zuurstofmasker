@@ -226,6 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Chart(
                     chartData: chartData,
                     color: Colors.blue,
+                    optionalChartData: [],
                   ),
                   const SizedBox(height: 25),
                   TimeChart(
@@ -238,6 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Chart(
                     chartData: randomSpots(0, 400, 60, 100, 10),
                     color: Colors.purple,
+                    optionalChartData: [],
                   ),
                 ],
               ),

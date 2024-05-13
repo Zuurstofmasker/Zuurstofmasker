@@ -6,6 +6,7 @@ class Chart extends StatelessWidget {
       {super.key,
       required this.chartData,
       required this.color,
+      required this.optionalChartData,
       this.leftTitleRenderer,
       this.bottomTitleRenderer,
       this.leftTitles,
@@ -19,6 +20,7 @@ class Chart extends StatelessWidget {
       this.horizontalLines});
 
   final List<FlSpot> chartData;
+  final List<FlSpot> optionalChartData;
   final AxisTitles? leftTitles;
   final AxisTitles? bottomTitles;
   final Widget Function(double, TitleMeta)? leftTitleRenderer;
@@ -99,6 +101,8 @@ class Chart extends StatelessWidget {
                   show: false,
                 ),
                 isCurved: true,
+                spots: optionalChartData,
+                color: Colors.black,
               ),
             ],
             minY: minY,
@@ -110,5 +114,3 @@ class Chart extends StatelessWidget {
     );
   }
 }
-
-// ignore: must_be_immutable
