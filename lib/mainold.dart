@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -9,8 +10,13 @@ import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/charts.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 
+Timer _timer = Timer(Duration(seconds: 0), () { });
+
 void mainOld() async {
   readFromSerialPort('COM2', (data) {
+    _timer.cancel();
+
+    _timer = Timer(Duration(seconds: 8), timeoutSerialPort);
     print('Data Length: ${data.length}');
 
     if (data.length == 0) return;
@@ -45,6 +51,10 @@ void writeToSerialPort(String name, Uint8List data) {
   SerialPort port = SerialPort(name);
   port.openWrite();
   port.write(data);
+}
+
+void timeoutSerialPort(){
+  print("Er is een timeout gedetecteerd. Is er een patiënt aangesloten op het apparaat?");
 }
 
 class MyApp extends StatelessWidget {
