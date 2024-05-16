@@ -5,6 +5,7 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
 import 'package:zuurstofmasker/Widgets/Charts/charts.dart';
+import 'package:zuurstofmasker/Widgets/Charts/fi02Chart.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class lowerLeftPart extends StatelessWidget {
@@ -24,45 +25,44 @@ class lowerLeftPart extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const Text("Fi02"),
-                  StreamBuilder(
-                      stream: SerialPort('').listen(),
-                      builder: (context, snapshot) {
-                        if (fi02GraphData.length != 0) {
-                          return Text(
-                            "${fi02GraphData.last.y.toInt().toString()}%",
-                            style: TextStyle(
-                                fontSize: 30, color: settings.colors.fiO2),
-                          );
-                        } else {
-                          return const Text("");
-                        }
-                      }),
-                  const Text("Sp02"),
-                  StreamBuilder(
-                      stream: SerialPort('').listen(),
-                      builder: (context, snapshot) {
-                        if (sp02GraphData.length != 0) {
-                          return Text(
-                            "${sp02GraphData.last.y.toInt()}%",
-                            style: TextStyle(
-                                fontSize: 30, color: settings.colors.spO2),
-                          );
-                        } else {
-                          return const Text("");
-                        }
-                      }),
-                ],
-              ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const Text("Fi02"),
+                StreamBuilder(
+                    stream: SerialPort('').listen(),
+                    builder: (context, snapshot) {
+                      if (fi02GraphData.length != 0) {
+                        return Text(
+                          "${fi02GraphData.last.y.toInt().toString()}%",
+                          style: TextStyle(
+                              fontSize: 30, color: settings.colors.fiO2),
+                        );
+                      } else {
+                        return const Text("");
+                      }
+                    }),
+                const Text("Sp02"),
+                StreamBuilder(
+                    stream: SerialPort('').listen(),
+                    builder: (context, snapshot) {
+                      if (sp02GraphData.length != 0) {
+                        return Text(
+                          "${sp02GraphData.last.y.toInt()}%",
+                          style: TextStyle(
+                              fontSize: 30, color: settings.colors.spO2),
+                        );
+                      } else {
+                        return const Text("");
+                      }
+                    }),
+              ],
             ),
             Flexible(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   StreamBuilder(
                       stream: SerialPort('').listen(min: 0, max: 100),
@@ -71,7 +71,7 @@ class lowerLeftPart extends StatelessWidget {
                           fi02GraphData.add(TimeChartData(
                               y: snapshot.data![0].toDouble(),
                               time: DateTime.now()));
-                          return TimeChart(
+                          return fi02Chart(
                             chartData: fi02GraphData,
                             color: settings.colors.fiO2,
                             minY: 0,

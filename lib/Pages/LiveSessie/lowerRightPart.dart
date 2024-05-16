@@ -24,41 +24,39 @@ class lowerRightPart extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const Text("Pulse"),
-                  StreamBuilder(
-                      stream: SerialPort('').listen(),
-                      builder: (context, snapshot) {
-                        if (pulseGraphData.length != 0) {
-                          return Text(
-                            "${pulseGraphData.last.y.toInt().toString()}%",
-                            style: TextStyle(
-                                fontSize: 30, color: settings.colors.pulse),
-                          );
-                        } else {
-                          return const Text("");
-                        }
-                      }),
-                  const Text("Leak"),
-                  StreamBuilder(
-                      stream: SerialPort('').listen(),
-                      builder: (context, snapshot) {
-                        if (leakGraphData.length != 0) {
-                          return Text(
-                            "${leakGraphData.last.y.toInt()}%",
-                            style: TextStyle(
-                                fontSize: 30, color: settings.colors.leak),
-                          );
-                        } else {
-                          return const Text("");
-                        }
-                      }),
-                ],
-              ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const Text("Pulse"),
+                StreamBuilder(
+                    stream: SerialPort('').listen(),
+                    builder: (context, snapshot) {
+                      if (pulseGraphData.length != 0) {
+                        return Text(
+                          "${pulseGraphData.last.y.toInt().toString()}%",
+                          style: TextStyle(
+                              fontSize: 30, color: settings.colors.pulse),
+                        );
+                      } else {
+                        return const Text("");
+                      }
+                    }),
+                const Text("Leak"),
+                StreamBuilder(
+                    stream: SerialPort('').listen(),
+                    builder: (context, snapshot) {
+                      if (leakGraphData.length != 0) {
+                        return Text(
+                          "${leakGraphData.last.y.toInt()}%",
+                          style: TextStyle(
+                              fontSize: 30, color: settings.colors.leak),
+                        );
+                      } else {
+                        return const Text("");
+                      }
+                    }),
+              ],
             ),
             Flexible(
               child: Column(
