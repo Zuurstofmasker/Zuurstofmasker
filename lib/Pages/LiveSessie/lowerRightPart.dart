@@ -7,6 +7,7 @@ import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
 import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'package:zuurstofmasker/Helpers/navHelper.dart';
 
 class lowerRightPart extends StatelessWidget {
   lowerRightPart({super.key});
@@ -78,16 +79,14 @@ class lowerRightPart extends StatelessWidget {
                                     pulseGraphData.add(TimeChartData(
                                         y: snapshot.data![0].toDouble(),
                                         time: DateTime.now()));
-                                    return TimeChart(
-                                      chartData: pulseGraphData,
-                                      color: settings.colors.pulse,
-                                      minY: 30,
-                                      height: 140,
-                                      maxY: 225,
-                                    );
-                                  } else {
-                                    return const CircularProgressIndicator();
                                   }
+                                  return TimeChart(
+                                    chartData: pulseGraphData,
+                                    color: settings.colors.pulse,
+                                    minY: 30,
+                                    height: 140,
+                                    maxY: 225,
+                                  );
                                 }),
                             StreamBuilder(
                                 stream: SerialPort('').listen(min: 0, max: 100),
@@ -96,16 +95,14 @@ class lowerRightPart extends StatelessWidget {
                                     leakGraphData.add(TimeChartData(
                                         y: snapshot.data![0].toDouble(),
                                         time: DateTime.now()));
-                                    return TimeChart(
-                                      chartData: leakGraphData,
-                                      color: settings.colors.leak,
-                                      minY: 0,
-                                      height: 140,
-                                      maxY: 100,
-                                    );
-                                  } else {
-                                    return const CircularProgressIndicator();
                                   }
+                                  return TimeChart(
+                                    chartData: leakGraphData,
+                                    color: settings.colors.leak,
+                                    minY: 0,
+                                    height: 140,
+                                    maxY: 100,
+                                  );
                                 }),
                           ],
                         )),
@@ -113,17 +110,12 @@ class lowerRightPart extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              height: double.infinity,
-              child: Button(
-                onTap: () => {
-                  navigatorKey.currentState!.pushAndRemoveUntil(
-                      MaterialPageRoute(
-                          builder: (context) => const Dashboard()),
-                      (route) => false)
-                },
-                text: "homePage",
-              ),
+            Button(
+              onTap: () => {
+                replaceAllPages(
+                    MaterialPageRoute(builder: (context) => const Dashboard()))
+              },
+              text: "homePage",
             ),
           ],
         ),

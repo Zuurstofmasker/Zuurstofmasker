@@ -85,17 +85,15 @@ class upperPart extends StatelessWidget {
                         drukGraphData.add(TimeChartData(
                             y: snapshot.data![0].toDouble(),
                             time: DateTime.now()));
-                        return TimeChart(
-                          chartData: drukGraphData,
-                          color: settings.colors.pressure,
-                          minY: 0,
-                          maxY: 40,
-                          height: 150,
-                          horizontalLinesValues: const [25],
-                        );
-                      } else {
-                        return const CircularProgressIndicator();
                       }
+                      return TimeChart(
+                        chartData: drukGraphData,
+                        color: settings.colors.pressure,
+                        minY: 0,
+                        maxY: 40,
+                        height: 150,
+                        horizontalLinesValues: const [25],
+                      );
                     }),
                 StreamBuilder(
                     stream: SerialPort('').listen(min: -75, max: 75),
@@ -104,17 +102,15 @@ class upperPart extends StatelessWidget {
                         flowGraphData.add(TimeChartData(
                             y: snapshot.data![0].toDouble(),
                             time: DateTime.now()));
-                        return TimeChart(
-                          chartData: flowGraphData,
-                          color: settings.colors.flow,
-                          minY: -75,
-                          maxY: 75,
-                          height: 150,
-                          horizontalLinesValues: const [0],
-                        );
-                      } else {
-                        return const CircularProgressIndicator();
                       }
+                      return TimeChart(
+                        chartData: flowGraphData,
+                        color: settings.colors.flow,
+                        minY: -75,
+                        maxY: 75,
+                        height: 150,
+                        horizontalLinesValues: const [0],
+                      );
                     }),
                 StreamBuilder(
                     stream: SerialPort('').listen(min: 0, max: 10),
@@ -123,17 +119,15 @@ class upperPart extends StatelessWidget {
                         terugvolumeGraphData.add(TimeChartData(
                             y: snapshot.data![0].toDouble(),
                             time: DateTime.now()));
-                        return TimeChart(
-                          chartData: terugvolumeGraphData,
-                          color: settings.colors.tidalVolume,
-                          minY: 0,
-                          maxY: 10,
-                          height: 150,
-                          horizontalLinesValues: const [4, 8],
-                        );
-                      } else {
-                        return const CircularProgressIndicator();
                       }
+                      return TimeChart(
+                        chartData: terugvolumeGraphData,
+                        color: settings.colors.tidalVolume,
+                        minY: 0,
+                        maxY: 10,
+                        height: 150,
+                        horizontalLinesValues: const [4, 8],
+                      );
                     }),
               ],
             ),

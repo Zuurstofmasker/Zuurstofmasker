@@ -71,17 +71,15 @@ class lowerLeftPart extends StatelessWidget {
                           fi02GraphData.add(TimeChartData(
                               y: snapshot.data![0].toDouble(),
                               time: DateTime.now()));
-                          return fi02Chart(
-                            chartData: fi02GraphData,
-                            color: settings.colors.fiO2,
-                            minY: 0,
-                            maxY: 100,
-                            height: 200,
-                            showFi02Lines: true,
-                          );
-                        } else {
-                          return const CircularProgressIndicator();
                         }
+                        return fi02Chart(
+                          chartData: fi02GraphData,
+                          color: settings.colors.fiO2,
+                          minY: 0,
+                          maxY: 100,
+                          height: 200,
+                          showFi02Lines: true,
+                        );
                       }),
                   StreamBuilder(
                       stream: SerialPort('').listen(min: 0, max: 100),
@@ -90,16 +88,14 @@ class lowerLeftPart extends StatelessWidget {
                           sp02GraphData.add(TimeChartData(
                               y: snapshot.data![0].toDouble(),
                               time: DateTime.now()));
-                          return TimeChart(
-                            chartData: sp02GraphData,
-                            color: settings.colors.spO2,
-                            minY: 0,
-                            height: 100,
-                            maxY: 100,
-                          );
-                        } else {
-                          return const CircularProgressIndicator();
                         }
+                        return TimeChart(
+                          chartData: sp02GraphData,
+                          color: settings.colors.spO2,
+                          minY: 0,
+                          height: 100,
+                          maxY: 100,
+                        );
                       }),
                 ],
               ),
