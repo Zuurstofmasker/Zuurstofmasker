@@ -34,7 +34,7 @@ class lowerRightPart extends StatelessWidget {
                     builder: (context, snapshot) {
                       if (pulseGraphData.length != 0) {
                         return Text(
-                          "${pulseGraphData.last.y.toInt().toString()}%",
+                          pulseGraphData.last.y.toInt().toString(),
                           style: TextStyle(
                               fontSize: 30, color: settings.colors.pulse),
                         );
