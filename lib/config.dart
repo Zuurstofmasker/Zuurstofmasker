@@ -20,7 +20,6 @@ const String settingsPath = 'Data/Settings/';
 const String settingsJsonPath = '${settingsPath}settings.json';
 
 // Colors
-
 const Color primaryColor = Color(0xff86d1ed);
 const Color secondaryColor = Color(0xff181c74);
 const Color greyTextColor = Color(0xff8a8a8a);
@@ -70,8 +69,6 @@ final Settings defaultSettings = Settings(
   ),
 );
 
-
-
 // Camera settings
 const int cameraIndex = 0;
 const Duration maxVideoDuration = Duration(minutes: 45);
@@ -79,3 +76,5 @@ const MediaSettings cameraSettings = MediaSettings(
   resolutionPreset: ResolutionPreset.medium,
   enableAudio: true,
 );
+
+const Locale locale = Locale('nl', 'NL');
