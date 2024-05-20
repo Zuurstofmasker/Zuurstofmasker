@@ -14,6 +14,7 @@ class TimeChart extends StatelessWidget {
     this.maxY,
     this.minY,
     this.height,
+    this.width,
     this.horizontalLinesValues = const [],
   }) {
     setChartData();
