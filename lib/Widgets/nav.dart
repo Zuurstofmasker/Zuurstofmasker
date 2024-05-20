@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
@@ -39,7 +38,7 @@ class Nav extends StatelessWidget {
         icon: Icons.tune,
         page: (context) => const SettingsPage()),
     navItem.NavItem(
-        text: 'Livesessie', icon: Icons.tune, page: (context) => liveSessie()),
+        text: 'Livesessie', icon: Icons.tune, page: (context) => LiveSessie()),
     // navItem.NavItem(
     //   text: 'oude main',
     //   icon: Icons.settings,

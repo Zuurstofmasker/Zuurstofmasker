@@ -1,37 +1,22 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Widgets/Charts/charts.dart';
+import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
 
+// ignore: must_be_immutable
 class TimeChart extends StatelessWidget {
-  TimeChart(
-      {super.key,
-      required this.chartData,
-      this.chartLines = const [],
-      this.autoScale = false,
-      this.initalTime,
-      this.chartSize = 30,
-      this.maxY,
-      this.minY,
-      this.height,
-      this.horizontalLinesValues}) {
+  TimeChart({
+    super.key,
+    required this.chartData,
+    this.chartLines = const [],
+    this.autoScale = false,
+    this.initalTime,
+    this.chartSize = 30,
+    this.maxY,
+    this.minY,
+    this.height,
+    this.horizontalLinesValues = const [],
+  }) {
     setChartData();
-    List<HorizontalLine> getHorizontalLines() {
-      var allitems = List<HorizontalLine>.empty(growable: true);
-
-      var items = horizontalLinesValues
-          ?.map((e) => HorizontalLine(
-                y: e,
-                color: Color.fromARGB(97, 0, 0, 0),
-                strokeWidth: 1,
-              ))
-          .toList();
-      if (items != null) {
-        allitems.addAll(items);
-      }
-      return allitems;
-    }
-
-    horizontalLine = getHorizontalLines();
   }
 
   late DateTime? initalTime;
@@ -43,9 +28,10 @@ class TimeChart extends StatelessWidget {
   final double? maxY;
   final double? height;
   late List<FlSpot> chartDataLine = [];
-  final List<double>? horizontalLinesValues;
+  final List<double> horizontalLinesValues;
 
-  List<HorizontalLine>? horizontalLine;
+  List<HorizontalLine> get horizontalLine =>
+      getHorizontalLines(horizontalLinesValues);
 
   DateTime get startTime => (initalTime ??
       (chartData.chartData.isEmpty
@@ -71,22 +57,6 @@ class TimeChart extends StatelessWidget {
     return chartDataLine;
   }
 
-  // List<FlSpot> getOptionalChartData() {
-  //   List<FlSpot> items = [];
-  //   if (showFi02Lines != null && showFi02Lines!) {
-  //     startTime ??= DateTime.now().subtract(const Duration(seconds: 600));
-  //     var test = startTime!.add(Duration(seconds: 0));
-  //     items.add(FlSpot(differenceToSecdonds(test, startTime!).toDouble(), 0));
-  //     test = startTime!.add(Duration(seconds: 120));
-  //     items.add(FlSpot(differenceToSecdonds(test, startTime!).toDouble(), 60));
-  //     test = startTime!.add(Duration(seconds: 300));
-  //     items.add(FlSpot(differenceToSecdonds(test, startTime!).toDouble(), 85));
-  //     test = startTime!.add(Duration(seconds: 600));
-  //     items.add(FlSpot(differenceToSecdonds(test, startTime!).toDouble(), 90));
-  //   }
-  //   return items;
-  // }
-
   double differenceInSeconds(DateTime startTime, DateTime endTime) {
     return startTime.difference(endTime).inMilliseconds / 1000;
   }
@@ -101,12 +71,10 @@ class TimeChart extends StatelessWidget {
       maxX: maxX.floorToDouble(),
       minX: minX.floorToDouble(),
       bottomTitleRenderer: (p0, p1) {
-        DateTime time = startTime!.add(Duration(seconds: p0.toInt()));
+        DateTime time = startTime.add(Duration(seconds: p0.toInt()));
         return Text("${time.minute}:${time.second.toString().padLeft(2, '0')}");
       },
-      bottomTitles: const AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
-      ),
+      bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       maxY: maxY,
       minY: minY,
       height: height,
