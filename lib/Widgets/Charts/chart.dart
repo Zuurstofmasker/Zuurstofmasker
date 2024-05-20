@@ -13,6 +13,9 @@ class Chart extends StatelessWidget {
     this.maxY = 100,
     this.minX = 0,
     this.minY = 60,
+    this.height = 200,
+    this.width,
+    this.horizontalLines = const [],
   });
 
   final List<ChartLine> chartLines;
@@ -24,8 +27,10 @@ class Chart extends StatelessWidget {
   final double? maxX;
   final double? minY;
   final double? maxY;
+  final double? height;
+  final double? width;
+  final List<HorizontalLine> horizontalLines;
 
-  // Converting the custom line object in to the LineChartBarData object
   List<LineChartBarData> getLineBarsData() {
     List<LineChartBarData> items = [];
     for (ChartLine line in chartLines) {
@@ -49,6 +54,9 @@ class Chart extends StatelessWidget {
           isCurved: true,
           spots: line.chartData,
           color: line.color,
+          dotData: const FlDotData(
+            show: false,
+          ),
         ),
       );
     }
@@ -58,10 +66,15 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: height,
+      width: width,
       child: LineChart(
         chartRendererKey: GlobalKey(),
         LineChartData(
+          gridData: const FlGridData(show: false),
+          extraLinesData: ExtraLinesData(
+            horizontalLines: horizontalLines,
+          ),
           titlesData: FlTitlesData(
             topTitles: const AxisTitles(),
             rightTitles: const AxisTitles(),
@@ -88,11 +101,14 @@ class Chart extends StatelessWidget {
           minX: minX,
           maxX: maxX,
           maxY: maxY,
+          baselineY: 100,
         ),
       ),
     );
   }
 }
+
+typedef ChartLine = ChartLineBase<FlSpot>;
 
 class ChartLineBase<T> {
   final List<T> chartData;
@@ -106,83 +122,13 @@ class ChartLineBase<T> {
   });
 }
 
-typedef ChartLine = ChartLineBase<FlSpot>;
-typedef TimeChartLine = ChartLineBase<TimeChartData>;
-
-// ignore: must_be_immutable
-class TimeChart extends StatelessWidget {
-  TimeChart({
-    super.key,
-    required this.chartData,
-    this.chartLines = const [],
-    this.autoScale = false,
-    this.initalTime,
-    this.chartSize = 30,
-    this.maxY,
-    this.minY,
-  }) {
-    setChartData();
-  }
-
-  final DateTime? initalTime;
-  final double chartSize;
-  final bool autoScale;
-  final TimeChartLine chartData;
-  final List<ChartLine> chartLines;
-  final double? minY;
-  final double? maxY;
-  late List<FlSpot> chartDataLine = [];
-
-  DateTime get startTime => (initalTime ??
-      (chartData.chartData.isEmpty
-          ? DateTime.now()
-          : chartData.chartData.first.time));
-
-  double get maxX {
-    if (chartDataLine.isNotEmpty && chartDataLine.last.x > chartSize) {
-      return chartDataLine.last.x;
-    }
-    return chartSize;
-  }
-
-  double get minX => autoScale ? 0 : (maxX - chartSize);
-
-  List<FlSpot> setChartData() {
-    chartDataLine.clear();
-    for (TimeChartData data in chartData.chartData) {
-      chartDataLine
-          .add(FlSpot(differenceInSeconds(data.time, startTime), data.y));
-    }
-
-    return chartDataLine;
-  }
-
-  double differenceInSeconds(DateTime startTime, DateTime endTime) {
-    return startTime.difference(endTime).inMilliseconds / 1000;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Chart(
-      chartLines: [
-        ChartLine(chartData: chartDataLine, color: chartData.color),
-        ...chartLines
-      ],
-      maxX: maxX.floorToDouble(),
-      minX: minX.floorToDouble(),
-      bottomTitleRenderer: (p0, p1) {
-        DateTime time = startTime.add(Duration(seconds: p0.toInt()));
-        return Text("${time.minute}:${time.second.toString().padLeft(2, '0')}");
-      },
-      maxY: maxY,
-      minY: minY,
-    );
-  }
-}
-
-class TimeChartData {
-  final double y;
-  final DateTime time;
-
-  TimeChartData({required this.y, required this.time});
+List<HorizontalLine> getHorizontalLines(List<double> horizontalLinesValues,
+    [Color color = const Color.fromARGB(97, 0, 0, 0)]) {
+  return horizontalLinesValues
+      .map((e) => HorizontalLine(
+            y: e,
+            color: color,
+            strokeWidth: 1,
+          ))
+      .toList();
 }
