@@ -6,6 +6,7 @@ import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   PopupAndLoading.baseStyle();
@@ -74,7 +75,15 @@ class App extends StatelessWidget {
       navigatorKey: navigatorKey,
       title: 'Maasgroep 18 Applicatie',
       builder: EasyLoading.init(),
+      locale: locale,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [locale],
       theme: ThemeData(
+        primaryColor: primaryColor,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
