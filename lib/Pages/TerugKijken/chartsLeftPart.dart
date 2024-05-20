@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/config.dart';
-import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
+import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 
 class ChartsLeftPart extends StatelessWidget {
