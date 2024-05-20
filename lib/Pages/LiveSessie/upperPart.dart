@@ -87,8 +87,10 @@ class upperPart extends StatelessWidget {
                             time: DateTime.now()));
                       }
                       return TimeChart(
-                        chartData: drukGraphData,
-                        color: settings.colors.pressure,
+                        chartData: TimeChartLine(
+                          chartData: drukGraphData,
+                          color: settings.colors.pressure,
+                        ),
                         minY: 0,
                         maxY: 40,
                         height: 150,
@@ -104,8 +106,9 @@ class upperPart extends StatelessWidget {
                             time: DateTime.now()));
                       }
                       return TimeChart(
-                        chartData: flowGraphData,
-                        color: settings.colors.flow,
+                        chartData: TimeChartLine(
+                            chartData: flowGraphData,
+                            color: settings.colors.flow),
                         minY: -75,
                         maxY: 75,
                         height: 150,
@@ -121,8 +124,9 @@ class upperPart extends StatelessWidget {
                             time: DateTime.now()));
                       }
                       return TimeChart(
-                        chartData: terugvolumeGraphData,
-                        color: settings.colors.tidalVolume,
+                        chartData: TimeChartLine(
+                            chartData: terugvolumeGraphData,
+                            color: settings.colors.tidalVolume),
                         minY: 0,
                         maxY: 10,
                         height: 150,

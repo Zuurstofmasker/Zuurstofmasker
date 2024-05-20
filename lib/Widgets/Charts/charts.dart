@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 class Chart extends StatelessWidget {
   const Chart(
       {super.key,
-      required this.chartData,
-      required this.color,
-      required this.optionalChartData,
+      required this.chartLines,
       this.leftTitleRenderer,
       this.bottomTitleRenderer,
       this.leftTitles,
@@ -19,13 +17,11 @@ class Chart extends StatelessWidget {
       this.width,
       this.horizontalLines});
 
-  final List<FlSpot> chartData;
-  final List<FlSpot> optionalChartData;
+  final List<ChartLine> chartLines;
   final AxisTitles? leftTitles;
   final AxisTitles? bottomTitles;
   final Widget Function(double, TitleMeta)? leftTitleRenderer;
   final Widget Function(double, TitleMeta)? bottomTitleRenderer;
-  final Color color;
   final double? minX;
   final double? maxX;
   final double? minY;
@@ -34,20 +30,36 @@ class Chart extends StatelessWidget {
   final double? width;
   final List<HorizontalLine>? horizontalLines;
 
-  List<HorizontalLine> getHorizontalLines() {
-    var allitems = List<HorizontalLine>.empty(growable: true);
-
-    var items = horizontalLines
-        ?.map((e) => HorizontalLine(
-              y: 100,
-              color: Color.fromARGB(97, 0, 0, 0),
-              strokeWidth: 1,
-            ))
-        .toList();
-    if (items != null) {
-      allitems.addAll(items);
+  List<LineChartBarData> getLineBarsData() {
+    List<LineChartBarData> items = [];
+    for (ChartLine line in chartLines) {
+      items.add(
+        LineChartBarData(
+          belowBarData: BarAreaData(
+            show: line.hasGradient,
+            gradient: line.hasGradient
+                ? LinearGradient(
+                    colors: [
+                      line.color.withOpacity(0.5),
+                      line.color.withOpacity(0)
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.5, 1.0],
+                  )
+                : null,
+            color: line.color.withAlpha(100),
+          ),
+          isCurved: true,
+          spots: line.chartData,
+          color: line.color,
+          dotData: const FlDotData(
+            show: false,
+          ),
+        ),
+      );
     }
-    return allitems;
+    return items;
   }
 
   @override
@@ -83,28 +95,7 @@ class Chart extends StatelessWidget {
                   ),
             ),
             clipData: const FlClipData.all(),
-            lineBarsData: [
-              LineChartBarData(
-                belowBarData: BarAreaData(
-                  show: true,
-                  color: color.withAlpha(100),
-                ),
-                dotData: const FlDotData(
-                  show: false,
-                ),
-                isCurved: true,
-                spots: chartData,
-                color: color,
-              ),
-              LineChartBarData(
-                dotData: const FlDotData(
-                  show: false,
-                ),
-                isCurved: true,
-                spots: optionalChartData,
-                color: Colors.black,
-              ),
-            ],
+            lineBarsData: getLineBarsData(),
             minY: minY,
             minX: minX,
             maxX: maxX,
@@ -113,4 +104,18 @@ class Chart extends StatelessWidget {
       ),
     );
   }
+}
+
+typedef ChartLine = ChartLineBase<FlSpot>;
+
+class ChartLineBase<T> {
+  final List<T> chartData;
+  final Color color;
+  final bool hasGradient;
+
+  ChartLineBase({
+    required this.chartData,
+    this.color = Colors.black,
+    this.hasGradient = true,
+  });
 }

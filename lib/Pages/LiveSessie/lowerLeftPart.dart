@@ -4,8 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
-import 'package:zuurstofmasker/Widgets/Charts/charts.dart';
-import 'package:zuurstofmasker/Widgets/Charts/fi02Chart.dart';
+// import 'package:zuurstofmasker/Widgets/Charts/fi02Chart.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class lowerLeftPart extends StatelessWidget {
@@ -72,13 +71,14 @@ class lowerLeftPart extends StatelessWidget {
                               y: snapshot.data![0].toDouble(),
                               time: DateTime.now()));
                         }
-                        return fi02Chart(
-                          chartData: fi02GraphData,
-                          color: settings.colors.fiO2,
+                        return TimeChart(
+                          chartData: TimeChartLine(
+                              chartData: fi02GraphData,
+                              color: settings.colors.fiO2),
                           minY: 0,
                           maxY: 100,
                           height: 200,
-                          showFi02Lines: true,
+                          // showFi02Lines: true,
                         );
                       }),
                   StreamBuilder(
@@ -90,11 +90,13 @@ class lowerLeftPart extends StatelessWidget {
                               time: DateTime.now()));
                         }
                         return TimeChart(
-                          chartData: sp02GraphData,
-                          color: settings.colors.spO2,
+                          chartData: TimeChartLine(
+                              chartData: sp02GraphData,
+                              color: settings.colors.spO2),
                           minY: 0,
                           height: 100,
                           maxY: 100,
+                          chartSize: 600,
                         );
                       }),
                 ],

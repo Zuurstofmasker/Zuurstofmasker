@@ -81,11 +81,14 @@ class lowerRightPart extends StatelessWidget {
                                         time: DateTime.now()));
                                   }
                                   return TimeChart(
-                                    chartData: pulseGraphData,
-                                    color: settings.colors.pulse,
+                                    chartData: TimeChartLine(
+                                        chartData: pulseGraphData,
+                                        color: settings.colors.pulse),
                                     minY: 30,
                                     height: 140,
                                     maxY: 225,
+                                    autoScale: true,
+                                    chartSize: 600,
                                   );
                                 }),
                             StreamBuilder(
@@ -97,11 +100,14 @@ class lowerRightPart extends StatelessWidget {
                                         time: DateTime.now()));
                                   }
                                   return TimeChart(
-                                    chartData: leakGraphData,
-                                    color: settings.colors.leak,
+                                    chartData: TimeChartLine(
+                                        chartData: leakGraphData,
+                                        color: settings.colors.leak),
                                     minY: 0,
                                     height: 140,
                                     maxY: 100,
+                                    autoScale: true,
+                                    chartSize: 600,
                                   );
                                 }),
                           ],
