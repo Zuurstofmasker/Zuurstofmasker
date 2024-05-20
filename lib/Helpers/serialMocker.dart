@@ -3,18 +3,18 @@ import 'dart:typed_data';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
 extension SerialMocker on SerialPort {
-  void listen(Function(Uint8List data) event) async {
-    const int maxHeartRate = 190;
-    const int minHeartRate = 70;
+  Stream<Uint8List> listen({int min = 70, int max = 190}) async* {
     const int minSegmentLength = 6;
     const int maxSegmentLength = 12;
     const int minDelay = 500;
     const int maxDelay = 1000;
     const int strength = 2;
-    const int randomStrengthMultiplyer = 5;
+    double value = max * 0.05;
+    int randomStrengthMultiplyer = value.toInt();
+    if (randomStrengthMultiplyer == 0) randomStrengthMultiplyer = 2;
     final Random random = Random();
 
-    int heartBeat = 120;
+    int heartBeat = (min + max) ~/ 2;
     int state = 1;
 
     while (true) {
@@ -26,7 +26,7 @@ extension SerialMocker on SerialPort {
         heartBeat = (heartBeat + (state * newStrenth));
 
         // Claming the hearbeat to some proper values
-        heartBeat = heartBeat.clamp(minHeartRate, maxHeartRate);
+        heartBeat = heartBeat.clamp(min, max);
 
         // Chaning the state after 20 iterations
         state = random.nextInt(3) - 1;
@@ -36,7 +36,7 @@ extension SerialMocker on SerialPort {
             milliseconds: random.nextInt(maxDelay - minDelay) + minDelay));
 
         // Sending the date to mock the serial port
-        event(Uint8List.fromList([heartBeat]));
+        yield Uint8List.fromList([heartBeat]);
       }
     }
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -6,7 +7,8 @@ import 'dart:typed_data';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
-import 'package:zuurstofmasker/Widgets/charts.dart';
+import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
+import 'package:zuurstofmasker/Widgets/Charts/charts.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 
 void mainOld() async {
@@ -100,6 +102,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final List<TimeChartData> timeChartItems = [];
+  late StreamSubscription<Uint8List> mockStream;
 
   void _incrementCounter() {
     setState(() {
@@ -149,11 +152,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    mockStream.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     // startUpdateChart();
 
     // Starting the mocking of the serial port to create a graph
-    SerialPort('').listen((data) {
+    mockStream = SerialPort('').listen().listen((data) {
       // Updating the ui with a new item added the the graph
       setState(() {
         timeChartItems
@@ -214,30 +223,30 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   const SizedBox(height: 50),
-                  Chart(chartLines: [
-                    ChartLine(
-                      chartData: chartData,
-                      color: Colors.blue,
-                    )
-                  ]),
-                  const SizedBox(height: 25),
-                  TimeChart(
-                    chartData: TimeChartLine(
-                      chartData: timeChartItems,
-                      color: Colors.red,
-                    ),
-                    minY: 70,
-                    maxY: 190,
-                  ),
-                  const SizedBox(height: 25),
-                  Chart(
-                    chartLines: [
-                      ChartLine(
-                        chartData: randomSpots(0, 400, 60, 100, 10),
-                        color: Colors.purple,
-                      )
-                    ],
-                  ),
+                  // Chart(chartLines: [
+                  //   ChartLine(
+                  //     chartData: chartData,
+                  //     color: Colors.blue,
+                  //   )
+                  // ]),
+                  // const SizedBox(height: 25),
+                  // TimeChart(
+                  //   chartData: TimeChartLine(
+                  //     chartData: timeChartItems,
+                  //     color: Colors.red,
+                  //   ),
+                  //   minY: 70,
+                  //   maxY: 190,
+                  // ),
+                  // const SizedBox(height: 25),
+                  // Chart(
+                  //   chartLines: [
+                  //     ChartLine(
+                  //       chartData: randomSpots(0, 400, 60, 100, 10),
+                  //       color: Colors.purple,
+                  //     )
+                  //   ],
+                  // ),
                 ],
               ),
             ),
