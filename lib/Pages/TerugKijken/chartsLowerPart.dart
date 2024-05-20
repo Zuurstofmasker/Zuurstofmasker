@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/config.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 
 class ChartsLowerPart extends StatelessWidget {
   ChartsLowerPart({super.key});
 
-  final List<TimeChartData> LeakGraphData = [];
-  final List<TimeChartData> PressureGraphData = [];
-  final List<TimeChartData> FlowGraphData = [];
-  final List<TimeChartData> TidalVolumeGraphData = [];
+  final List<TimeChartData> leakGraphData = [];
+  final List<TimeChartData> pressureGraphData = [];
+  final List<TimeChartData> flowGraphData = [];
+  final List<TimeChartData> tidalVolumeGraphData = [];
   final double sessionLength = 600;
   final double widthGraph = 442;
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: Container(
+      child: SizedBox(
         height: double.infinity,
         width: 800,
         child: Flexible(
@@ -41,7 +39,7 @@ class ChartsLowerPart extends StatelessWidget {
                     ),
                     TimeChart(
                       chartData: TimeChartLine(
-                          chartData: LeakGraphData,
+                          chartData: leakGraphData,
                           color: settings.colors.leak),
                       minY: 0,
                       height: 195,
@@ -75,7 +73,7 @@ class ChartsLowerPart extends StatelessWidget {
                     ),
                     TimeChart(
                       chartData: TimeChartLine(
-                          chartData: PressureGraphData,
+                          chartData: pressureGraphData,
                           color: settings.colors.pressure),
                       minY: 0,
                       height: 195,
@@ -109,7 +107,7 @@ class ChartsLowerPart extends StatelessWidget {
                     ),
                     TimeChart(
                       chartData: TimeChartLine(
-                          chartData: FlowGraphData,
+                          chartData: flowGraphData,
                           color: settings.colors.flow),
                       minY: 0,
                       height: 195,
@@ -143,7 +141,7 @@ class ChartsLowerPart extends StatelessWidget {
                     ),
                     TimeChart(
                       chartData: TimeChartLine(
-                          chartData: TidalVolumeGraphData,
+                          chartData: tidalVolumeGraphData,
                           color: settings.colors.tidalVolume),
                       minY: 0,
                       height: 195,

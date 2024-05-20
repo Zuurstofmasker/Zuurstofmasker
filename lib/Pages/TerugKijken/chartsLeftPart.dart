@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/config.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 
@@ -15,7 +13,6 @@ class ChartsLeftPart extends StatelessWidget {
     return Flexible(
       child: Flexible(
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
@@ -37,7 +34,6 @@ class ChartsLeftPart extends StatelessWidget {
                     minY: 0,
                     maxY: 100,
                     height: 195,
-                    // showFi02Lines: true,
                   ),
                   const Text(
                     "135",

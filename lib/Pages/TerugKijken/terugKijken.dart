@@ -23,12 +23,12 @@ class TerugKijken extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
         children: [
           TerugKijkenNavBar(session: session),
-             PaddingSpacing(
+           const PaddingSpacing(
                 multiplier: 1,
               ),
           Row(
             children: [
-                Container(
+                SizedBox(
                   height: 600,
                   width: 442,
                   child: ChartsLeftPart(),
@@ -42,7 +42,7 @@ class TerugKijken extends StatelessWidget {
           const PaddingSpacing(
                   multiplier: 2,
                 ),
-          Container(
+          SizedBox(
                   height: 300,
                   width: 1900,
                   child:   ChartsLowerPart(),
