@@ -223,24 +223,30 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   const SizedBox(height: 50),
-                  Chart(
-                    chartData: chartData,
-                    color: Colors.blue,
-                    optionalChartData: [],
-                  ),
-                  const SizedBox(height: 25),
-                  TimeChart(
-                    chartData: timeChartItems,
-                    color: Colors.red,
-                    minY: 70,
-                    maxY: 190,
-                  ),
-                  const SizedBox(height: 25),
-                  Chart(
-                    chartData: randomSpots(0, 400, 60, 100, 10),
-                    color: Colors.purple,
-                    optionalChartData: [],
-                  ),
+                  // Chart(chartLines: [
+                  //   ChartLine(
+                  //     chartData: chartData,
+                  //     color: Colors.blue,
+                  //   )
+                  // ]),
+                  // const SizedBox(height: 25),
+                  // TimeChart(
+                  //   chartData: TimeChartLine(
+                  //     chartData: timeChartItems,
+                  //     color: Colors.red,
+                  //   ),
+                  //   minY: 70,
+                  //   maxY: 190,
+                  // ),
+                  // const SizedBox(height: 25),
+                  // Chart(
+                  //   chartLines: [
+                  //     ChartLine(
+                  //       chartData: randomSpots(0, 400, 60, 100, 10),
+                  //       color: Colors.purple,
+                  //     )
+                  //   ],
+                  // ),
                 ],
               ),
             ),
