@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/sorting.dart';
+import 'package:zuurstofmasker/Pages/TerugKijken/terugKijken.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/titles.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'package:zuurstofmasker/Helpers/navHelper.dart';
 
 class SessionHistory extends StatelessWidget {
   SessionHistory({super.key});
@@ -163,7 +165,8 @@ List<DataRow> getSessionHistoryItems(List<Session> sessions) {
         return null;
       }),
       onSelectChanged: (value) {
-        // TODO: Add navigation to the session details
+        pushPage(MaterialPageRoute(
+            builder: (context) => TerugKijken(session: session)));
       },
       cells: <DataCell>[
         DataCell(Text(session.id.toString())),

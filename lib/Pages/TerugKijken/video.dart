@@ -7,7 +7,13 @@ class Video extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: Container(),
+      child: Container(
+        width: double.infinity,
+        height: 600,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: borderRadius),
+      ),
     );
   }
 }

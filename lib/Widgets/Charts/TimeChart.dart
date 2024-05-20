@@ -13,6 +13,7 @@ class TimeChart extends StatelessWidget {
       this.maxY,
       this.minY,
       this.height,
+      this.width,
       this.horizontalLinesValues}) {
     setChartData();
     List<HorizontalLine> getHorizontalLines() {
@@ -42,6 +43,8 @@ class TimeChart extends StatelessWidget {
   final double? minY;
   final double? maxY;
   final double? height;
+  final double? width;
+
   late List<FlSpot> chartDataLine = [];
   final List<double>? horizontalLinesValues;
 
@@ -109,6 +112,7 @@ class TimeChart extends StatelessWidget {
       ),
       maxY: maxY,
       minY: minY,
+      width: width,
       height: height,
       horizontalLines: horizontalLine,
     );
