@@ -2,20 +2,21 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class Chart extends StatelessWidget {
-  const Chart(
-      {super.key,
-      required this.chartLines,
-      this.leftTitleRenderer,
-      this.bottomTitleRenderer,
-      this.leftTitles,
-      this.bottomTitles,
-      this.maxX = 400,
-      this.maxY = 100,
-      this.minX = 0,
-      this.minY = 60,
-      this.height = 200,
-      this.width,
-      this.horizontalLines});
+  const Chart({
+    super.key,
+    required this.chartLines,
+    this.leftTitleRenderer,
+    this.bottomTitleRenderer,
+    this.leftTitles,
+    this.bottomTitles,
+    this.maxX = 400,
+    this.maxY = 100,
+    this.minX = 0,
+    this.minY = 60,
+    this.height = 200,
+    this.width,
+    this.horizontalLines = const [],
+  });
 
   final List<ChartLine> chartLines;
   final AxisTitles? leftTitles;
@@ -28,7 +29,7 @@ class Chart extends StatelessWidget {
   final double? maxY;
   final double? height;
   final double? width;
-  final List<HorizontalLine>? horizontalLines;
+  final List<HorizontalLine> horizontalLines;
 
   List<LineChartBarData> getLineBarsData() {
     List<LineChartBarData> items = [];
@@ -70,37 +71,38 @@ class Chart extends StatelessWidget {
       child: LineChart(
         chartRendererKey: GlobalKey(),
         LineChartData(
-            gridData: const FlGridData(show: false),
-            extraLinesData: ExtraLinesData(
-              horizontalLines: horizontalLines ?? [],
-            ),
-            titlesData: FlTitlesData(
-              topTitles: const AxisTitles(),
-              rightTitles: const AxisTitles(),
-              leftTitles: leftTitles ??
-                  AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 44,
-                      getTitlesWidget: leftTitleRenderer ?? defaultGetTitle,
-                    ),
+          gridData: const FlGridData(show: false),
+          extraLinesData: ExtraLinesData(
+            horizontalLines: horizontalLines,
+          ),
+          titlesData: FlTitlesData(
+            topTitles: const AxisTitles(),
+            rightTitles: const AxisTitles(),
+            leftTitles: leftTitles ??
+                AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 44,
+                    getTitlesWidget: leftTitleRenderer ?? defaultGetTitle,
                   ),
-              bottomTitles: bottomTitles ??
-                  AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      getTitlesWidget: bottomTitleRenderer ?? defaultGetTitle,
-                    ),
+                ),
+            bottomTitles: bottomTitles ??
+                AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 30,
+                    getTitlesWidget: bottomTitleRenderer ?? defaultGetTitle,
                   ),
-            ),
-            clipData: const FlClipData.all(),
-            lineBarsData: getLineBarsData(),
-            minY: minY,
-            minX: minX,
-            maxX: maxX,
-            maxY: maxY,
-            baselineY: 100),
+                ),
+          ),
+          clipData: const FlClipData.all(),
+          lineBarsData: getLineBarsData(),
+          minY: minY,
+          minX: minX,
+          maxX: maxX,
+          maxY: maxY,
+          baselineY: 100,
+        ),
       ),
     );
   }
@@ -118,4 +120,15 @@ class ChartLineBase<T> {
     this.color = Colors.black,
     this.hasGradient = true,
   });
+}
+
+List<HorizontalLine> getHorizontalLines(List<double> horizontalLinesValues,
+    [Color color = const Color.fromARGB(97, 0, 0, 0)]) {
+  return horizontalLinesValues
+      .map((e) => HorizontalLine(
+            y: e,
+            color: color,
+            strokeWidth: 1,
+          ))
+      .toList();
 }

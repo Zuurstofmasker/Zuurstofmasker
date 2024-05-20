@@ -7,8 +7,8 @@ import 'dart:typed_data';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/jsonHelpers.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
-import 'package:zuurstofmasker/Widgets/Charts/TimeChart.dart';
-import 'package:zuurstofmasker/Widgets/Charts/charts.dart';
+import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
+import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 
 void mainOld() async {
@@ -223,30 +223,30 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   const SizedBox(height: 50),
-                  // Chart(chartLines: [
-                  //   ChartLine(
-                  //     chartData: chartData,
-                  //     color: Colors.blue,
-                  //   )
-                  // ]),
-                  // const SizedBox(height: 25),
-                  // TimeChart(
-                  //   chartData: TimeChartLine(
-                  //     chartData: timeChartItems,
-                  //     color: Colors.red,
-                  //   ),
-                  //   minY: 70,
-                  //   maxY: 190,
-                  // ),
-                  // const SizedBox(height: 25),
-                  // Chart(
-                  //   chartLines: [
-                  //     ChartLine(
-                  //       chartData: randomSpots(0, 400, 60, 100, 10),
-                  //       color: Colors.purple,
-                  //     )
-                  //   ],
-                  // ),
+                  Chart(chartLines: [
+                    ChartLine(
+                      chartData: chartData,
+                      color: Colors.blue,
+                    )
+                  ]),
+                  const SizedBox(height: 25),
+                  TimeChart(
+                    chartData: TimeChartLine(
+                      chartData: timeChartItems,
+                      color: Colors.red,
+                    ),
+                    minY: 70,
+                    maxY: 190,
+                  ),
+                  const SizedBox(height: 25),
+                  Chart(
+                    chartLines: [
+                      ChartLine(
+                        chartData: randomSpots(0, 400, 60, 100, 10),
+                        color: Colors.purple,
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
