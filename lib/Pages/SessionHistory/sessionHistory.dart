@@ -94,8 +94,9 @@ class SessionHistory extends StatelessWidget {
     if (!isDateFilterActive) return sessions;
 
     return sessions.where((session) {
-      return session.birthTime.isAfter(startDate!) &&
-          session.birthTime.isBefore(endDate!);
+      // Getting only the date part and removing the time part
+      final DateTime birthTime = DateUtils.dateOnly(session.birthTime);
+      return !birthTime.isBefore(startDate!) && !birthTime.isAfter(endDate!);
     }).toList();
   }
 
