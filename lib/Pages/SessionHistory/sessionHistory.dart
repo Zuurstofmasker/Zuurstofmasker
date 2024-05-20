@@ -101,9 +101,9 @@ class SessionHistory extends StatelessWidget {
   }
 
   Future<void> setRange(BuildContext context) async {
-    startDate = await pickDate(context, 'Start datum');
+    startDate = await pickDate(context, 'Startdatum');
     if (startDate == null) return;
-    endDate = await pickDate(context, 'Eind datum', startDate);
+    endDate = await pickDate(context, 'Einddatum', startDate);
     if (endDate == null) return;
     searchValueNotifier.notifyListeners();
   }
