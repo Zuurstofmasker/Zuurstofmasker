@@ -30,6 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+    
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,9 +44,13 @@ dependencies:
   uuid: ^4.4.0
   flutter_svg: ^2.0.10+1
   crypto: ^3.0.3
-  flutter_colorpicker: ^1.0.3
+  flutter_colorpicker:
+    git:
+      url: https://github.com/mchome/flutter_colorpicker
+      ref: 92bdb69a313a56c391ef148c12ef6539bd31253d
   flutter_easyloading: ^3.0.5
   camera_windows: ^0.2.2
+  
 
 dev_dependencies:
   flutter_test:
