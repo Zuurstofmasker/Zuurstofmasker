@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
-import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
-// import 'package:zuurstofmasker/Models/sessionDetail.dart';
+import 'package:zuurstofmasker/Models/sessionSerialData.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
@@ -16,21 +15,28 @@ class StartSession extends StatelessWidget {
   const StartSession({super.key});
 
   void startSession() async {
+    String newSessionId = await getNewSessionUuid();
     saveSession(
       Session(
         nameMother: nameController.text,
-        id: await getNewSessionUuid(),
+        id: newSessionId,
         note: noteController.text,
         birthTime: DateTime.now(),
-        weight: int.parse(weigthController.text),
-        stateOutFlow: double.parse(stateOutController.text),
-        biasFlow: double.parse(biasFlowController.text),
-        patientFlow: double.parse(patientFlowController.text),
-        fiO2: double.parse(fiO2Controller.text),
-        vti: double.parse(vtiController.text),
-        vte: double.parse(vteController.text)
+        weight: int.parse(weigthController.text)
       )
-        );
+    );
+    
+    updateRecordedData(SessionSerialData(
+      sessionId: newSessionId,
+      seconds: List<double>.generate(1, (index) => 0, growable: true),
+      stateOutFlow: List<double>.generate(1, (index) => double.parse(stateOutController.text), growable: true),
+      biasFlow: List<double>.generate(1, (index) => double.parse(biasFlowController.text)),
+      patientFlow: List<double>.generate(1, (index) => double.parse(patientFlowController.text), growable: true),
+      fiO2: List<double>.generate(1, (index) => double.parse(fiO2Controller.text), growable: true),
+      vti: List<double>.generate(1, (index) => double.parse(vtiController.text), growable: true),
+      vte: List<double>.generate(1, (index) => double.parse(vteController.text), growable: true)
+      )
+    );
   }
 
   @override
@@ -53,6 +59,7 @@ class StartSession extends StatelessWidget {
           controller: weigthController,
           hintText: "Gewicht",
           isInt: true,
+          isRequired: true,
         ),
         Button(onTap: startSession, isFullWidth: true, text: "Starten")
       ],

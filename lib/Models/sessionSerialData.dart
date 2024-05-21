@@ -1,5 +1,3 @@
-import 'package:zuurstofmasker/Widgets/form.dart';
-
 class SessionSerialData {
   const SessionSerialData({
     required this.sessionId,
@@ -31,5 +29,18 @@ class SessionSerialData {
     fiO2: csv[4], 
     vti: csv[5], 
     vte: csv[6]
-    );
+  );
+
+  void AddValueToType(double value, String type) => {
+    if(type == "stateOutFlow") stateOutFlow.add(value)
+    else if(type == "biasFlow") biasFlow.add(value)
+    else if(type == "patientFlow") patientFlow.add(value)
+    else if(type == "fiO2") fiO2.add(value)
+    else if(type == "vti") vti.add(value)
+    else if(type == "vte") vte.add(value)
+  };
+
+  void AddSecond(double increment){
+    seconds.add(seconds.last + increment);
+  }
 }
