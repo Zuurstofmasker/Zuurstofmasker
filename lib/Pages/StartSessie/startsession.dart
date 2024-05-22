@@ -10,6 +10,7 @@ import 'package:zuurstofmasker/Widgets/form.dart';
 TextEditingController nameController = TextEditingController();
 TextEditingController noteController = TextEditingController();
 TextEditingController weigthController = TextEditingController();
+SessionSerialData? sessionData;
 
 class StartSession extends StatelessWidget {
   const StartSession({super.key});
@@ -26,7 +27,7 @@ class StartSession extends StatelessWidget {
       )
     );
     
-    updateRecordedData(SessionSerialData(
+    sessionData = SessionSerialData(
       sessionId: newSessionId,
       seconds: List<double>.generate(1, (index) => 0, growable: true),
       stateOutFlow: List<double>.generate(1, (index) => double.parse(stateOutController.text), growable: true),
@@ -35,8 +36,9 @@ class StartSession extends StatelessWidget {
       fiO2: List<double>.generate(1, (index) => double.parse(fiO2Controller.text), growable: true),
       vti: List<double>.generate(1, (index) => double.parse(vtiController.text), growable: true),
       vte: List<double>.generate(1, (index) => double.parse(vteController.text), growable: true)
-      )
-    );
+      );
+
+    updateRecordedData(sessionData!);
   }
 
   @override
