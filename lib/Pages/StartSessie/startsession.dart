@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/sessionSerialData.dart';
+import 'package:zuurstofmasker/Pages/LiveSessie/liveSessie.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
@@ -63,7 +64,12 @@ class StartSession extends StatelessWidget {
           isInt: true,
           isRequired: true,
         ),
-        Button(onTap: startSession, isFullWidth: true, text: "Starten")
+        Button(onTap:() {
+              startSession;
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => const LiveSessie()));
+                }, text: "Starten",)
       ],
     ));
   }
