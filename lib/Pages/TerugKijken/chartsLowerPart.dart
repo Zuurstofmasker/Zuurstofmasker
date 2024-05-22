@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 
 class ChartsLowerPart extends StatelessWidget {
-  ChartsLowerPart({super.key});
+  ChartsLowerPart({super.key, required this.session});
+
+  final Session session;
 
   final List<TimeChartData> leakGraphData = [];
   final List<TimeChartData> pressureGraphData = [];

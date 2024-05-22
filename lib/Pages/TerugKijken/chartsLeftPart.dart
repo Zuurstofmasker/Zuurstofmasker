@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 
 class ChartsLeftPart extends StatelessWidget {
-  ChartsLeftPart({super.key});
+  ChartsLeftPart({super.key, required this.session});
+
+  final Session session;
   final List<TimeChartData> pulseGraphData = [];
   final List<TimeChartData> spO2GraphData = [];
 

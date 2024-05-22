@@ -31,12 +31,12 @@ class TerugKijken extends StatelessWidget {
                 SizedBox(
                   height: 600,
                   width: 442,
-                  child: ChartsLeftPart(),
+                  child: ChartsLeftPart(session: session),
                 ),
                    const PaddingSpacing(
                   multiplier: 2,
                 ),
-              Video()
+              Video(session: session)
             ]
           ),
           const PaddingSpacing(
@@ -45,7 +45,7 @@ class TerugKijken extends StatelessWidget {
           SizedBox(
                   height: 300,
                   width: 1900,
-                  child:   ChartsLowerPart(),
+                  child:   ChartsLowerPart(session: session),
           ),
         ]
       )
