@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
-import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Pages/StartSessie/startsession.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';

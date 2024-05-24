@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/config.dart';
 
 class Chart extends StatelessWidget {
   const Chart({
@@ -16,6 +17,7 @@ class Chart extends StatelessWidget {
     this.height = 200,
     this.width,
     this.horizontalLines = const [],
+    this.onLineTouch,
   });
 
   final List<ChartLine> chartLines;
@@ -30,6 +32,7 @@ class Chart extends StatelessWidget {
   final double? height;
   final double? width;
   final List<HorizontalLine> horizontalLines;
+  final Function(LineTouchResponse?, double? firstX)? onLineTouch;
 
   List<LineChartBarData> getLineBarsData() {
     List<LineChartBarData> items = [];
@@ -71,6 +74,37 @@ class Chart extends StatelessWidget {
       child: LineChart(
         chartRendererKey: GlobalKey(),
         LineChartData(
+          lineTouchData: LineTouchData(
+            enabled: true,
+            touchCallback: (p0, p1) {
+              // Checking if the touch event is a tap up event
+              if (p0.runtimeType == FlTapUpEvent) {
+                // Calling the onLineTouch function if it is not null
+                if (onLineTouch != null) {
+                  onLineTouch!(p1, p1?.lineBarSpots?.first.x);
+                }
+              }
+            },
+          ),
+          borderData: FlBorderData(
+            show: true,
+            border: const Border(
+              bottom: BorderSide(
+                color: greyTextColor,
+                width: 1,
+              ),
+              left: BorderSide(
+                color: Colors.transparent,
+                width: 1,
+              ),
+              right: BorderSide(
+                color: Colors.transparent,
+              ),
+              top: BorderSide(
+                color: greyTextColor,
+              ),
+            ),
+          ),
           gridData: const FlGridData(show: false),
           extraLinesData: ExtraLinesData(
             horizontalLines: horizontalLines,

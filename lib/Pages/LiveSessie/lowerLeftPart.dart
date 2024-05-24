@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
+import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class LowerLeftPart extends StatelessWidget {
@@ -15,95 +16,117 @@ class LowerLeftPart extends StatelessWidget {
       child: Container(
         height: double.infinity,
         width: double.infinity,
+        padding: pagePadding,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: greyTextColor),
           borderRadius: borderRadius,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const Text("Fi02"),
-                StreamBuilder(
-                  stream: SerialPort('').listen(),
-                  builder: (context, snapshot) {
-                    if (fi02GraphData.isNotEmpty) {
-                      return Text(
-                        "${fi02GraphData.last.y.toInt()}%",
-                        style: TextStyle(
-                            fontSize: 30, color: settings.colors.fiO2),
-                      );
-                    } else {
-                      return const Text("");
-                    }
-                  },
-                ),
-                const Text("Sp02"),
-                StreamBuilder(
-                  stream: SerialPort('').listen(),
-                  builder: (context, snapshot) {
-                    if (sp02GraphData.isNotEmpty) {
-                      return Text(
-                        "${sp02GraphData.last.y.toInt()}%",
-                        style: TextStyle(
-                            fontSize: 30, color: settings.colors.spO2),
-                      );
-                    } else {
-                      return const Text("");
-                    }
-                  },
-                ),
-              ],
+            SizedBox(
+              width: 125,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Fi02", style: liveTitleTextStyle),
+                        StreamBuilder(
+                          stream: SerialPort('').listen(),
+                          builder: (context, snapshot) {
+                            return Text(
+                              "${fi02GraphData.isEmpty ? "-" : fi02GraphData.last.y.toInt()}%",
+                              style: TextStyle(
+                                  fontSize: 40, color: settings.colors.fiO2),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const PaddingSpacing(
+                    multiplier: 2,
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Sp02", style: liveTitleTextStyle),
+                        StreamBuilder(
+                          stream: SerialPort('').listen(),
+                          builder: (context, snapshot) {
+                            return Text(
+                              "${sp02GraphData.isEmpty ? "-" : sp02GraphData.last.y.toInt()}%",
+                              style: TextStyle(
+                                  fontSize: 40, color: settings.colors.spO2),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             Flexible(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  StreamBuilder(
-                    stream: SerialPort('').listen(min: 0, max: 100),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        fi02GraphData.add(TimeChartData(
-                            y: snapshot.data![0].toDouble(),
-                            time: DateTime.now()));
-                      }
-                      return TimeChart(
-                        chartData: TimeChartLine(
-                          chartData: fi02GraphData,
-                          color: settings.colors.fiO2,
-                        ),
-                        minY: 0,
-                        maxY: 100,
-                        height: 200,
-                      );
-                    },
-                  ),
-                  StreamBuilder(
-                    stream: SerialPort('').listen(min: 0, max: 100),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        sp02GraphData.add(
-                          TimeChartData(
-                            y: snapshot.data![0].toDouble(),
-                            time: DateTime.now(),
+                  Expanded(
+                    flex: 3,
+                    child: StreamBuilder(
+                      stream: SerialPort('').listen(min: 0, max: 100),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          fi02GraphData.add(TimeChartData(
+                              y: snapshot.data![0].toDouble(),
+                              time: DateTime.now()));
+                        }
+                        return TimeChart(
+                          chartData: TimeChartLine(
+                            chartData: fi02GraphData,
+                            color: settings.colors.fiO2,
                           ),
+                          minY: 0,
+                          maxY: 100,
                         );
-                      }
-                      return TimeChart(
-                        chartData: TimeChartLine(
-                          chartData: sp02GraphData,
-                          color: settings.colors.spO2,
-                        ),
-                        minY: 0,
-                        height: 100,
-                        maxY: 100,
-                        chartSize: 600,
-                      );
-                    },
+                      },
+                    ),
+                  ),
+                  const PaddingSpacing(
+                    multiplier: 2,
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: StreamBuilder(
+                      stream: SerialPort('').listen(min: 0, max: 100),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          sp02GraphData.add(
+                            TimeChartData(
+                              y: snapshot.data![0].toDouble(),
+                              time: DateTime.now(),
+                            ),
+                          );
+                        }
+                        return TimeChart(
+                          chartData: TimeChartLine(
+                            chartData: sp02GraphData,
+                            color: settings.colors.spO2,
+                          ),
+                          minY: 0,
+                          maxY: 100,
+                          chartSize: 600,
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

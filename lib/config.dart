@@ -36,12 +36,17 @@ const OutlineInputBorder inputBorder = OutlineInputBorder(
     borderSide: BorderSide(color: secondaryColor), borderRadius: borderRadius);
 
 // Some padding constants
-
 const double pagePaddingSize = 30;
 const EdgeInsets pagePadding = EdgeInsets.all(pagePaddingSize);
 
 const double mainPaddingSize = 15;
 const EdgeInsets mainPadding = EdgeInsets.all(mainPaddingSize);
+
+// Font/text styles
+const TextStyle liveTitleTextStyle = TextStyle(
+  fontSize: 25,
+  fontWeight: FontWeight.w400,
+);
 
 // Used for the password encryption
 final Uint8List encryptionKey = utf8.encode('My32CharacterEncryptionKey!');
