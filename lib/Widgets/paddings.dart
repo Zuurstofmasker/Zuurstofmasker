@@ -3,7 +3,7 @@ import 'package:zuurstofmasker/config.dart';
 
 class PaddingSpacing extends StatelessWidget {
   const PaddingSpacing({super.key, this.multiplier = 1});
-  final int multiplier;
+  final double multiplier;
 
   @override
   Widget build(BuildContext context) {
