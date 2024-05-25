@@ -2,9 +2,13 @@ import 'dart:developer';
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
+import 'package:zuurstofmasker/Models/note.dart';
+import 'package:zuurstofmasker/Pages/TerugKijken/notesFunctions.dart';
+import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Models/session.dart';
@@ -23,6 +27,8 @@ class VideoPlr extends StatefulWidget {
 class _VideoPlayerScreenState extends State<VideoPlr> {
   VideoPlayerController? controller;
 
+  ValueNotifier<List<Note>> noteList = ValueNotifier<List<Note>>([]);
+
   bool videoExists = false;
   void reload() {
     var path = "$sessionPath${widget.session.id}\\video.mp4";
@@ -35,7 +41,6 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
       controller!.initialize().then((value) {
         if (controller!.value.isInitialized) {
           controller!.play();
-          setState(() {});
           controller!.addListener(() {
             if (controller!.value.isCompleted) {
               log("ui: player completed, pos=${controller!.value.position}");
@@ -47,7 +52,6 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
       }).catchError((e) {
         log("controller.initialize() error occurs: $e");
       });
-      setState(() {});
     }
   }
 
@@ -55,6 +59,11 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
   void initState() {
     super.initState();
     reload();
+    setVideoNotes();
+  }
+
+  Future<void> setVideoNotes() async {
+    noteList.value = await getVideoNotes(widget.session.id);
   }
 
   @override
@@ -81,34 +90,16 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                       alignment: FractionalOffset.center,
                       child: ValueListenableBuilder<VideoPlayerValue>(
                         valueListenable: controller!,
-                        builder: ((context, value, child) {
+                        builder: (context, videoplayerValue, child) {
                           return LayoutBuilder(
                             builder: (context, constraints) {
-                              return FutureBuilder<List<Widget>>(
-                                future: calcThumbs(value),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const CircularProgressIndicator();
-                                  } else if (snapshot.hasError) {
-                                    return ProgressBar(
-                                      progress: controller!.value.position,
-                                      total: controller!.value.duration,
-                                      progressBarColor: Colors.blue,
-                                      baseBarColor: Colors.white,
-                                      bufferedBarColor: Colors.white,
-                                      thumbColor: Colors.blue[800],
-                                      timeLabelTextStyle:
-                                          const TextStyle(color: Colors.white),
-                                      barHeight: 3.0,
-                                      thumbRadius: 5.0,
-                                      onSeek: (duration) {
-                                        controller?.seekTo(duration);
-                                        // print(duration);
-                                      },
-                                    );
-                                  } else {
+                              double progressBarWidth = constraints.maxWidth;
+
+                              return ValueListenableBuilder(
+                                  valueListenable: noteList,
+                                  builder: (context, value, child) {
                                     return Stack(
+                                      clipBehavior: Clip.none,
                                       children: [
                                         ProgressBar(
                                           progress: controller!.value.position,
@@ -123,113 +114,72 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                                           thumbRadius: 5.0,
                                           onSeek: (duration) {
                                             controller?.seekTo(duration);
-                                            // print(duration);
                                           },
                                         ),
-                                        ...snapshot.data!,
+                                        ...calcThumbs(
+                                            videoplayerValue,
+                                            widget.session.id,
+                                            progressBarWidth,
+                                            noteList,
+                                            context),
                                       ],
                                     );
-                                  }
-                                },
-                              );
+                                  });
                             },
                           );
-                        }),
+                        },
                       ),
                     ),
                     Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                              onPressed: () => controller?.seekTo(Duration(
-                                  milliseconds: controller!
-                                          .value.position.inMilliseconds -
-                                      10 * 1000)),
-                              child: const Icon(Icons.arrow_back)),
-                          ValueListenableBuilder<VideoPlayerValue>(
-                            valueListenable: controller!,
-                            builder: ((context, value, child) {
-                              return ElevatedButton(
-                                  onPressed: () => value.isPlaying
-                                      ? controller?.pause()
-                                      : controller?.play(),
-                                  child: value.isPlaying
-                                      ? Icon(Icons.pause)
-                                      : Icon(Icons.play_arrow));
-                            }),
-                          ),
-                          ElevatedButton(
-                              onPressed: () => controller?.seekTo(Duration(
-                                  milliseconds: controller!
-                                          .value.position.inMilliseconds +
-                                      10 * 1000)),
-                              child: const Icon(Icons.arrow_forward)),
-                        ]),
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => controller?.seekTo(Duration(
+                            milliseconds:
+                                controller!.value.position.inMilliseconds -
+                                    10 * 1000,
+                          )),
+                          child: const Icon(Icons.arrow_back),
+                        ),
+                        ValueListenableBuilder<VideoPlayerValue>(
+                          valueListenable: controller!,
+                          builder: (context, value, child) {
+                            return ElevatedButton(
+                              onPressed: () => value.isPlaying
+                                  ? controller?.pause()
+                                  : controller?.play(),
+                              child: value.isPlaying
+                                  ? const Icon(Icons.pause)
+                                  : const Icon(Icons.play_arrow),
+                            );
+                          },
+                        ),
+                        ElevatedButton(
+                            onPressed: () => controller?.seekTo(Duration(
+                                milliseconds:
+                                    controller!.value.position.inMilliseconds +
+                                        10 * 1000)),
+                            child: const Icon(Icons.arrow_forward)),
+                      ],
+                    ),
                   ],
                 ),
+                Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Button(
+                      onTap: () => {
+                        controller?.pause(),
+                        addNote(widget.session.id, controller!.value.position,
+                            noteList, context)
+                      },
+                      padding: const EdgeInsets.all(10),
+                      text: "Notitie toevoegen",
+                    ))
               ])
             : const Text("Geen video opgenomen"),
       ),
     );
-  }
-
-  Future<List<Widget>> calcThumbs(VideoPlayerValue value) async {
-    List<Widget> thumbList = [];
-    Map<Duration, String> thumbPositions = {};
-
-    List<dynamic> rawThumbList = await getListFromFile(
-        "$sessionPath${widget.session.id}/videoNotes.json");
-
-    rawThumbList.forEach((i) {
-      Map<String, dynamic> item = i;
-      String note = "";
-      Duration time = Duration.zero;
-      item.forEach((k, v) {
-        if (k == "time") {
-          List<String> parts = v.split(":");
-          int hours = parts.length == 3 ? int.parse(parts[0]) : 0;
-          int minutes = int.parse(parts[parts.length - 2]);
-          int seconds = int.parse(parts[parts.length - 1]);
-
-          time = Duration(hours: hours, minutes: minutes, seconds: seconds);
-        }
-        if (k == "note") {
-          note = v;
-        }
-      });
-
-      thumbPositions[time] = note;
-    });
-    
-
-    double progressBarWidth = 0.9 * MediaQuery.of(context).size.width;
-    thumbPositions.forEach((k, v) {
-      double left =
-          (k.inMilliseconds / value.duration.inMilliseconds) * progressBarWidth;
-
-      thumbList.add(Positioned(
-        left: left - 10, // Adjust for thumb width
-        top: -15,
-        bottom: 0,
-        child: GestureDetector(
-          onTap: () {
-            // Handle thumb tap
-            print("Thumb at $k tapped!");
-            PopupAndLoading.showSuccess(v);
-          },
-          child: Container(
-            width: 20.0,
-            height: 20.0,
-            decoration: const BoxDecoration(
-              color: dangerColor,
-              shape: BoxShape.rectangle,
-            ),
-          ),
-        ),
-      ));
-    });
-
-    return thumbList;
   }
 }
