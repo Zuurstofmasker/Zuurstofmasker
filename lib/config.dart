@@ -20,7 +20,6 @@ const String settingsPath = 'Data/Settings/';
 const String settingsJsonPath = '${settingsPath}settings.json';
 
 // Colors
-
 const Color primaryColor = Color(0xff86d1ed);
 const Color secondaryColor = Color(0xff181c74);
 const Color greyTextColor = Color(0xff8a8a8a);
@@ -37,12 +36,17 @@ const OutlineInputBorder inputBorder = OutlineInputBorder(
     borderSide: BorderSide(color: secondaryColor), borderRadius: borderRadius);
 
 // Some padding constants
-
 const double pagePaddingSize = 30;
 const EdgeInsets pagePadding = EdgeInsets.all(pagePaddingSize);
 
 const double mainPaddingSize = 15;
 const EdgeInsets mainPadding = EdgeInsets.all(mainPaddingSize);
+
+// Font/text styles
+const TextStyle liveTitleTextStyle = TextStyle(
+  fontSize: 25,
+  fontWeight: FontWeight.w400,
+);
 
 // Used for the password encryption
 final Uint8List encryptionKey = utf8.encode('My32CharacterEncryptionKey!');
@@ -77,3 +81,5 @@ const MediaSettings cameraSettings = MediaSettings(
   resolutionPreset: ResolutionPreset.medium,
   enableAudio: true,
 );
+
+const Locale locale = Locale('nl', 'NL');

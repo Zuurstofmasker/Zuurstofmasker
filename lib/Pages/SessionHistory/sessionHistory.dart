@@ -3,6 +3,7 @@ import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/sorting.dart';
 import 'package:zuurstofmasker/Pages/TerugKijken/terugKijken.dart';
+import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
@@ -18,15 +19,20 @@ class SessionHistory extends StatelessWidget {
   final SortingState tableSorting =
       SortingState(sortColumn: 1, isAscending: false);
 
+  // Some date filter fields
+  DateTime? startDate;
+  DateTime? endDate;
+  bool get isDateFilterActive => startDate != null && endDate != null;
+
   void searchTable(String? value) {
     searchValueNotifier.value = value ?? '';
   }
 
+  // A simle function that filters the sessions based on the search value on each column
   List<Session> filterSessions(List<Session> sessions, String searchValue) {
     if (searchValue.isEmpty) return sessions;
 
     List<String> searchKeys = searchValue.toLowerCase().split(' ');
-
     return sessions.where((session) {
       // Testing all the values in the tale on the search keys
       for (String key in searchKeys) {
@@ -44,6 +50,7 @@ class SessionHistory extends StatelessWidget {
     }).toList();
   }
 
+  // A simple function that sorts the sessions based on the selected column
   List<Session> sortSessions(List<Session> sessions) {
     if (tableSorting.sortColumn == 0) {
       sessions.sort((a, b) => a.id.compareTo(b.id));
@@ -73,6 +80,42 @@ class SessionHistory extends StatelessWidget {
     searchValueNotifier.notifyListeners();
   }
 
+  Future<DateTime?> pickDate(BuildContext context,
+      [String? title, DateTime? startDate]) async {
+    return await showDatePicker(
+      locale: locale,
+      helpText: title ?? 'Kies een datum',
+      context: context,
+      initialDate: startDate ?? DateTime.now(),
+      firstDate: startDate ?? DateTime(2024),
+      lastDate: DateTime(2100),
+    );
+  }
+
+  List<Session> filterRange(List<Session> sessions) {
+    if (!isDateFilterActive) return sessions;
+
+    return sessions.where((session) {
+      // Getting only the date part and removing the time part
+      final DateTime birthTime = DateUtils.dateOnly(session.birthTime);
+      return !birthTime.isBefore(startDate!) && !birthTime.isAfter(endDate!);
+    }).toList();
+  }
+
+  Future<void> setRange(BuildContext context) async {
+    startDate = await pickDate(context, 'Startdatum');
+    if (startDate == null) return;
+    endDate = await pickDate(context, 'Einddatum', startDate);
+    if (endDate == null) return;
+    searchValueNotifier.notifyListeners();
+  }
+
+  void removeRange() {
+    startDate = null;
+    endDate = null;
+    searchValueNotifier.notifyListeners();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Nav(
@@ -82,17 +125,39 @@ class SessionHistory extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const PageTitle(title: 'Sessie geschiedenis'),
+                const Spacer(),
+                ValueListenableBuilder(
+                    valueListenable: searchValueNotifier,
+                    builder: (context, value, child) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Button(
+                            text: 'Zoeken in periode',
+                            onTap: () async => await setRange(context),
+                            icon: Icons.date_range,
+                          ),
+                          if (isDateFilterActive) ...[
+                            const PaddingSpacing(),
+                            Button(
+                              color: dangerColor,
+                              text: 'Verwijder filter',
+                              onTap: removeRange,
+                              icon: Icons.clear,
+                            )
+                          ]
+                        ],
+                      );
+                    }),
+                const PaddingSpacing(),
                 SizedBox(
                   width: 300,
-                  child: Flexible(
-                    child: InputField(
-                      hintText: 'Zoeken',
-                      icon: Icons.search,
-                      onChange: searchTable,
-                    ),
+                  child: InputField(
+                    hintText: 'Zoeken',
+                    icon: Icons.search,
+                    onChange: searchTable,
                   ),
                 )
               ],
@@ -134,7 +199,9 @@ class SessionHistory extends StatelessWidget {
                                 .toList()),
                             rows: getSessionHistoryItems(
                               sortSessions(
-                                filterSessions(sessions, value),
+                                filterRange(
+                                  filterSessions(sessions, value),
+                                ),
                               ),
                             ),
                           ),

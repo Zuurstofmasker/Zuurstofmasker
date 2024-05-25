@@ -5,7 +5,7 @@ class Session {
     this.babyId,
     required this.nameMother,
     required this.birthTime,
-    required this.note,
+    required this.note
   });
   final String id;
   final String? babyId;
@@ -20,7 +20,7 @@ class Session {
         babyId: json['babyId'],
         nameMother: json['nameMother'],
         birthTime: DateTime.fromMillisecondsSinceEpoch(json['birthTime']),
-        note: json['note'],
+        note: json['note']
       );
 
   Map<String, dynamic> toJson() => {
