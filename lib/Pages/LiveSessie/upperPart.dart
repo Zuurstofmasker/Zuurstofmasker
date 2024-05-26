@@ -4,12 +4,22 @@ import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'package:zuurstofmasker/Models/sessionSerialData.dart';
+import 'dart:async';
 
 class UpperPart extends StatelessWidget {
-  UpperPart({super.key});
+  UpperPart({
+    super.key,
+    required this.sessionSerialData,
+    required this.serialTimeOut,
+    required this.timeoutCallback,
+  });
   final List<TimeChartData> drukGraphData = [];
   final List<TimeChartData> flowGraphData = [];
   final List<TimeChartData> terugvolumeGraphData = [];
+  final SessionSerialData sessionSerialData;
+  Timer serialTimeOut;
+  final Function timeoutCallback;
 
   TextStyle getsubTitleTextStyle(Color color) {
     return TextStyle(
@@ -196,9 +206,12 @@ class UpperPart extends StatelessWidget {
                       stream: SerialPort('').listen(min: 0, max: 40),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
+                          // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
                           drukGraphData.add(TimeChartData(
                               y: snapshot.data![0].toDouble(),
                               time: DateTime.now()));
+                          sessionSerialData.stateOutFlow.add(snapshot.data![0].toDouble());
+                          sessionSerialData.stateOutSeconds.add(DateTime.now());
                         }
                         return TimeChart(
                           chartData: TimeChartLine(
@@ -220,9 +233,12 @@ class UpperPart extends StatelessWidget {
                       stream: SerialPort('').listen(min: -75, max: 75),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
+                          // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
                           flowGraphData.add(TimeChartData(
                               y: snapshot.data![0].toDouble(),
                               time: DateTime.now()));
+                          sessionSerialData.patientFlow.add(snapshot.data![0].toDouble());
+                          sessionSerialData.patientSeconds.add(DateTime.now());
                         }
                         return TimeChart(
                           chartData: TimeChartLine(
@@ -243,9 +259,12 @@ class UpperPart extends StatelessWidget {
                       stream: SerialPort('').listen(min: 0, max: 10),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
+                          // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
                           terugvolumeGraphData.add(TimeChartData(
                               y: snapshot.data![0].toDouble(),
                               time: DateTime.now()));
+                          sessionSerialData.vti.add(snapshot.data![0].toDouble());
+                          sessionSerialData.vtiSeconds.add(DateTime.now());
                         }
                         return TimeChart(
                           chartData: TimeChartLine(

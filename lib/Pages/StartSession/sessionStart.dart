@@ -49,12 +49,17 @@ class StartSession extends StatelessWidget {
 
     final SessionSerialData sessionSerialData = SessionSerialData(
       sessionId: newSessionId,
-      seconds: [],
+      stateOutSeconds: [],
       stateOutFlow: [],
+      biasSeconds: [],
       biasFlow: [],
+      patientSeconds: [],
       patientFlow: [],
+      fiO2Seconds: [],
       fiO2: [],
+      vtiSeconds: [],
       vti: [],
+      vteSeconds: [],
       vte: [],
     );
 

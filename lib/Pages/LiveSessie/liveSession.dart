@@ -11,6 +11,7 @@ import 'package:zuurstofmasker/Pages/LiveSessie/upperPart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'dart:async';
 
 class LiveSessie extends StatefulWidget {
   const LiveSessie({super.key, required this.sessionData});
@@ -23,6 +24,8 @@ class LiveSessie extends StatefulWidget {
 
 class _LiveSessieState extends State<LiveSessie> {
   final ValueNotifier<bool> startedSession = ValueNotifier<bool>(false);
+  Timer periodicSessionDataSave = Timer(const Duration(seconds: 0), () => "");
+  Timer serialTimeout = Timer(const Duration(seconds: 0), () => "");
 
   Future onStartSession() async {
     PopupAndLoading.showLoading();
@@ -30,6 +33,8 @@ class _LiveSessieState extends State<LiveSessie> {
     try {
       startedSession.value = true;
       widget.sessionData.$2.birthTime = DateTime.now();
+      // serialTimeout = Timer(const Duration(seconds: 5), onSerialTimeout);
+      periodicSessionDataSave = Timer(const Duration(seconds: 1), () => widget.sessionData.$1.saveToFile(widget.sessionData.$2.id));
       await startRecording();
     } catch (e) {
       PopupAndLoading.showError("Opvang starten mislukt");
@@ -49,9 +54,14 @@ class _LiveSessieState extends State<LiveSessie> {
       widget.sessionData.$1.patientFlow.clear();
       widget.sessionData.$1.biasFlow.clear();
       widget.sessionData.$1.stateOutFlow.clear();
-      widget.sessionData.$1.seconds.clear();
       widget.sessionData.$1.vte.clear();
       widget.sessionData.$1.vti.clear();
+      widget.sessionData.$1.stateOutSeconds.clear();
+      widget.sessionData.$1.biasSeconds.clear();
+      widget.sessionData.$1.patientSeconds.clear();
+      widget.sessionData.$1.fiO2Seconds.clear();
+      widget.sessionData.$1.vtiSeconds.clear();
+      widget.sessionData.$1.vteSeconds.clear();
 
       await stopRecording();
       await startRecording();
@@ -84,6 +94,10 @@ class _LiveSessieState extends State<LiveSessie> {
     PopupAndLoading.endLoading();
   }
 
+  Future onSerialTimeout() async {
+    PopupAndLoading.showError("Een of meerdere meetapparaturen geeft geen meeting(en). Is er een patient aan het appararaat gevestigd?");
+  }
+
   @override
   void dispose() {
     stopRecording(
@@ -99,7 +113,7 @@ class _LiveSessieState extends State<LiveSessie> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            UpperPart(),
+            UpperPart(sessionSerialData: widget.sessionData.$1, serialTimeOut: serialTimeout, timeoutCallback: onSerialTimeout),
             const PaddingSpacing(
               multiplier: 2,
             ),
@@ -107,7 +121,7 @@ class _LiveSessieState extends State<LiveSessie> {
               height: 360,
               child: Row(
                 children: [
-                  LowerLeftPart(),
+                  LowerLeftPart(sessionSerialData: widget.sessionData.$1, serialTimeOut: serialTimeout, timeoutCallback: onSerialTimeout,),
                   const PaddingSpacing(
                     multiplier: 2,
                   ),

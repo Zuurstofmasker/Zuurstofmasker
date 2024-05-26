@@ -4,11 +4,21 @@ import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'package:zuurstofmasker/Models/sessionSerialData.dart';
+import 'dart:async';
 
 class LowerLeftPart extends StatelessWidget {
-  LowerLeftPart({super.key});
+  LowerLeftPart({
+    super.key,
+    required this.sessionSerialData,
+    required this.serialTimeOut,
+    required this.timeoutCallback,
+    });
   final List<TimeChartData> fi02GraphData = [];
   final List<TimeChartData> sp02GraphData = [];
+  final SessionSerialData sessionSerialData;
+  Timer serialTimeOut;
+  final Function timeoutCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -85,9 +95,12 @@ class LowerLeftPart extends StatelessWidget {
                       stream: SerialPort('').listen(min: 0, max: 100),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
+                          // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
                           fi02GraphData.add(TimeChartData(
                               y: snapshot.data![0].toDouble(),
                               time: DateTime.now()));
+                          sessionSerialData.fiO2.add(snapshot.data![0].toDouble());
+                          sessionSerialData.fiO2Seconds.add(DateTime.now());
                         }
                         return TimeChart(
                           chartData: TimeChartLine(
