@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/sorting.dart';
-import 'package:zuurstofmasker/Pages/TerugKijken/terugKijken.dart';
+import 'package:zuurstofmasker/Pages/TerugKijken/terugKijkenPage.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';

@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/config.dart';
@@ -5,7 +6,8 @@ import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 
 class ChartsLowerPart extends StatelessWidget {
-  ChartsLowerPart({super.key, required this.session});
+  ChartsLowerPart({super.key, required this.session, required this.callback});
+  final void Function(LineTouchResponse?, double?) callback;
 
   final Session session;
 
@@ -41,14 +43,14 @@ class ChartsLowerPart extends StatelessWidget {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     TimeChart(
-                      chartData: TimeChartLine(
-                          chartData: leakGraphData,
-                          color: settings.colors.leak),
-                      minY: 0,
-                      height: 195,
-                      maxY: 100,
-                      chartSize: 600,
-                    ),
+                        chartData: TimeChartLine(
+                            chartData: leakGraphData,
+                            color: settings.colors.leak),
+                        minY: 0,
+                        height: 195,
+                        maxY: 100,
+                        chartSize: 600,
+                        onLineTouch: callback),
                     const Text(
                       "15%",
                       style:
@@ -75,14 +77,14 @@ class ChartsLowerPart extends StatelessWidget {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     TimeChart(
-                      chartData: TimeChartLine(
-                          chartData: pressureGraphData,
-                          color: settings.colors.pressure),
-                      minY: 0,
-                      height: 195,
-                      maxY: 100,
-                      chartSize: 600,
-                    ),
+                        chartData: TimeChartLine(
+                            chartData: pressureGraphData,
+                            color: settings.colors.pressure),
+                        minY: 0,
+                        height: 195,
+                        maxY: 100,
+                        chartSize: 600,
+                        onLineTouch: callback),
                     const Text(
                       "7",
                       style:
@@ -109,14 +111,14 @@ class ChartsLowerPart extends StatelessWidget {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     TimeChart(
-                      chartData: TimeChartLine(
-                          chartData: flowGraphData,
-                          color: settings.colors.flow),
-                      minY: 0,
-                      height: 195,
-                      maxY: 100,
-                      chartSize: 600,
-                    ),
+                        chartData: TimeChartLine(
+                            chartData: flowGraphData,
+                            color: settings.colors.flow),
+                        minY: 0,
+                        height: 195,
+                        maxY: 100,
+                        chartSize: 600,
+                        onLineTouch: callback),
                     const Text(
                       "56",
                       style:
@@ -143,14 +145,14 @@ class ChartsLowerPart extends StatelessWidget {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     TimeChart(
-                      chartData: TimeChartLine(
-                          chartData: tidalVolumeGraphData,
-                          color: settings.colors.tidalVolume),
-                      minY: 0,
-                      height: 195,
-                      maxY: 100,
-                      chartSize: 600,
-                    ),
+                        chartData: TimeChartLine(
+                            chartData: tidalVolumeGraphData,
+                            color: settings.colors.tidalVolume),
+                        minY: 0,
+                        height: 195,
+                        maxY: 100,
+                        chartSize: 600,
+                        onLineTouch: callback),
                     const Text(
                       "15",
                       style:

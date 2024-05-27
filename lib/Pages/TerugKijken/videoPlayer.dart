@@ -10,33 +10,30 @@ import 'package:video_player/video_player.dart';
 import 'dart:io';
 
 class VideoPlr extends StatefulWidget {
-  const VideoPlr({super.key, required this.session});
+  VideoPlr({super.key, required this.session, required this.controller});
 
   final Session session;
+  VideoPlayerController? controller;
 
   @override
   State<VideoPlr> createState() => _VideoPlayerScreenState();
 }
 
 class _VideoPlayerScreenState extends State<VideoPlr> {
-  VideoPlayerController? controller;
+  //  controller;
 
   bool videoExists = false;
   void reload() {
     var path = "$sessionPath${widget.session.id}\\video.mp4";
     videoExists = File(path).existsSync();
-    if (videoExists) {
-      controller?.dispose();
-
-      controller = VideoPlayerController.file(File(path));
-
-      controller!.initialize().then((value) {
-        if (controller!.value.isInitialized) {
-          controller!.play();
+    if (widget.controller != null) {
+      widget.controller!.initialize().then((value) {
+        if (widget.controller!.value.isInitialized) {
+          widget.controller!.play();
           setState(() {});
-          controller!.addListener(() {
-            if (controller!.value.isCompleted) {
-              log("ui: player completed, pos=${controller!.value.position}");
+          widget.controller!.addListener(() {
+            if (widget.controller!.value.isCompleted) {
+              log("ui: player completed, pos=${widget.controller!.value.position}");
             }
           });
         } else {
@@ -58,7 +55,7 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
   @override
   void dispose() {
     super.dispose();
-    controller?.dispose();
+    widget.controller?.dispose();
   }
 
   @override
@@ -69,7 +66,7 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
         width: double.infinity,
         child: videoExists
             ? Stack(children: [
-                VideoPlayer(controller!),
+                VideoPlayer(widget.controller!),
                 Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -78,11 +75,11 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                       widthFactor: 0.9,
                       alignment: FractionalOffset.center,
                       child: ValueListenableBuilder<VideoPlayerValue>(
-                        valueListenable: controller!,
+                        valueListenable: widget.controller!,
                         builder: ((context, value, child) {
                           return ProgressBar(
-                            progress: controller!.value.position,
-                            total: controller!.value.duration,
+                            progress: widget.controller!.value.position,
+                            total: widget.controller!.value.duration,
                             progressBarColor: Colors.blue,
                             baseBarColor: Colors.white,
                             bufferedBarColor: Colors.white,
@@ -91,7 +88,7 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                             barHeight: 3.0,
                             thumbRadius: 5.0,
                             onSeek: (duration) {
-                              controller?.seekTo(duration);
+                              widget.controller?.seekTo(duration);
                               // print(duration);
                             },
                           );
@@ -103,28 +100,30 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
-                              onPressed: () => controller?.seekTo(Duration(
-                                  milliseconds: controller!
-                                          .value.position.inMilliseconds -
-                                      10 * 1000)),
+                              onPressed: () => widget.controller?.seekTo(
+                                  Duration(
+                                      milliseconds: widget.controller!.value
+                                              .position.inMilliseconds -
+                                          10 * 1000)),
                               child: const Icon(Icons.arrow_back)),
                           ValueListenableBuilder<VideoPlayerValue>(
-                            valueListenable: controller!,
+                            valueListenable: widget.controller!,
                             builder: ((context, value, child) {
                               return ElevatedButton(
                                   onPressed: () => value.isPlaying
-                                      ? controller?.pause()
-                                      : controller?.play(),
+                                      ? widget.controller?.pause()
+                                      : widget.controller?.play(),
                                   child: value.isPlaying
                                       ? Icon(Icons.pause)
                                       : Icon(Icons.play_arrow));
                             }),
                           ),
                           ElevatedButton(
-                              onPressed: () => controller?.seekTo(Duration(
-                                  milliseconds: controller!
-                                          .value.position.inMilliseconds +
-                                      10 * 1000)),
+                              onPressed: () => widget.controller?.seekTo(
+                                  Duration(
+                                      milliseconds: widget.controller!.value
+                                              .position.inMilliseconds +
+                                          10 * 1000)),
                               child: const Icon(Icons.arrow_forward)),
                         ]),
                   ],
