@@ -119,6 +119,7 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                                             widget.session.id,
                                             progressBarWidth,
                                             noteList,
+                                            widget.controller!,
                                             context),
                                       ],
                                     );
