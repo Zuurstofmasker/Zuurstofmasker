@@ -9,32 +9,23 @@ class CameraStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (status) {
-      return const Row(
+      return Row(
         children: [
-          Icon(
+          if(status)
+          const Icon(
             Icons.check,
             color: successColor,
-          ),
-          PaddingSpacing(
-            multiplier: 0.5,
-          ),
-          Text("Camera beschikbaar")
-        ],
-      );
-    } else {
-      return const Row(
-        children: [
-          Icon(
+          )
+          else 
+          const Icon(
             Icons.dangerous,
             color: dangerColor,
           ),
-          PaddingSpacing(
+          const PaddingSpacing(
             multiplier: 0.5,
           ),
-          Text("Geen cameras beschikbaar")
+          Text(status ? "Camera beschikbaar" : "Geen cameras beschikbaar")
         ],
       );
-    }
   }
 }
