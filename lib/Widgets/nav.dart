@@ -35,15 +35,6 @@ class Nav extends StatelessWidget {
         text: 'Instellingen',
         icon: Icons.tune,
         page: (context) => const SettingsPage()),
-    navItem.NavItem(
-        text: 'Livesessie', icon: Icons.tune, page: (context) => LiveSessie()),
-    // navItem.NavItem(
-    //   text: 'oude main',
-    //   icon: Icons.settings,
-    //   page: (context) => const MyHomePage(
-    //     title: "hoii",
-    //   ),
-    // ),
   ];
 
   Nav({
