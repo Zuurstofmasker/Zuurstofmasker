@@ -26,8 +26,6 @@ class VideoPlr extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlr> {
-  VideoPlayerController? controller;
-
   ValueNotifier<List<Note>> noteList = ValueNotifier<List<Note>>([]);
 
   bool videoExists = false;
@@ -135,20 +133,20 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                          onPressed: () => controller?.seekTo(Duration(
-                            milliseconds:
-                                controller!.value.position.inMilliseconds -
-                                    10 * 1000,
+                          onPressed: () => widget.controller?.seekTo(Duration(
+                            milliseconds: widget
+                                    .controller!.value.position.inMilliseconds -
+                                10 * 1000,
                           )),
                           child: const Icon(Icons.arrow_back),
                         ),
                         ValueListenableBuilder<VideoPlayerValue>(
-                          valueListenable: controller!,
+                          valueListenable: widget.controller!,
                           builder: (context, value, child) {
                             return ElevatedButton(
                               onPressed: () => value.isPlaying
-                                  ? controller?.pause()
-                                  : controller?.play(),
+                                  ? widget.controller?.pause()
+                                  : widget.controller?.play(),
                               child: value.isPlaying
                                   ? const Icon(Icons.pause)
                                   : const Icon(Icons.play_arrow),
@@ -156,10 +154,10 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                           },
                         ),
                         ElevatedButton(
-                            onPressed: () => controller?.seekTo(Duration(
-                                milliseconds:
-                                    controller!.value.position.inMilliseconds +
-                                        10 * 1000)),
+                            onPressed: () => widget.controller?.seekTo(Duration(
+                                milliseconds: widget.controller!.value.position
+                                        .inMilliseconds +
+                                    10 * 1000)),
                             child: const Icon(Icons.arrow_forward)),
                       ],
                     ),
@@ -170,9 +168,12 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                     right: 10,
                     child: Button(
                       onTap: () => {
-                        controller?.pause(),
-                        addNote(widget.session.id, controller!.value.position,
-                            noteList, context)
+                        widget.controller?.pause(),
+                        addNote(
+                            widget.session.id,
+                            widget.controller!.value.position,
+                            noteList,
+                            context)
                       },
                       padding: const EdgeInsets.all(10),
                       text: "Notitie toevoegen",
