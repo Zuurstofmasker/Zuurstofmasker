@@ -161,14 +161,14 @@ class SettingsInputsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingsPageBase(
-      rightChild: const Padding(
-        padding: pagePadding,
-        child: Column(
-          children: [
-            PageTitle(title: 'Voorbeeld grafiek'),
-          ],
-        ),
-      ),
+      // rightChild: const Padding(
+      //   padding: pagePadding,
+      //   child: Column(
+      //     children: [
+      //       PageTitle(title: 'Voorbeeld grafiek'),
+      //     ],
+      //   ),
+      // ),
       leftChild: Form(
         key: formKey,
         child: ListView(
