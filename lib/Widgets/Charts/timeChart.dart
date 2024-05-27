@@ -14,6 +14,7 @@ class TimeChart extends StatelessWidget {
     this.maxY,
     this.minY,
     this.height,
+    this.width,
     this.horizontalLinesValues = const [],
     this.onLineTouch,
   }) {
@@ -28,6 +29,8 @@ class TimeChart extends StatelessWidget {
   final double? minY;
   final double? maxY;
   final double? height;
+  final double? width;
+
   late List<FlSpot> chartDataLine = [];
   final List<double> horizontalLinesValues;
   final Function(LineTouchResponse?, double? firstX)? onLineTouch;
@@ -80,6 +83,7 @@ class TimeChart extends StatelessWidget {
       bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       maxY: maxY,
       minY: minY,
+      width: width,
       height: height,
       horizontalLines: horizontalLine,
     );

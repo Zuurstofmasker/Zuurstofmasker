@@ -27,7 +27,7 @@ Future<List<Session>> createSession(Session session) async {
   await createFolder(newSessionPath);
   await writeListToFile([], '$newSessionPath/videoNotes.json');
   await createFile('$newSessionPath/recordedData.csv');
-  await createFile('$newSessionPath/video.mp4');
+  // await createFile('$newSessionPath/video.mp4');
 
   // Append the session to the list of sessions
   return await appendItemToListFile(
