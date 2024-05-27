@@ -19,6 +19,7 @@ class StartSession extends StatelessWidget {
   final TextEditingController weigthController =
       TextEditingController(text: "3500");
   final TextEditingController babyIdController = TextEditingController();
+  final TextEditingController roomNumberController = TextEditingController(text: "1");
 
   final TextEditingController stateOutController =
       TextEditingController(text: "0");
@@ -44,6 +45,7 @@ class StartSession extends StatelessWidget {
       endTime: DateTime.now(),
       babyId: babyIdController.text,
       weight: int.parse(weigthController.text),
+      roomNumber: int.parse(roomNumberController.text),
     );
     await createSession(session);
 
@@ -95,6 +97,7 @@ class StartSession extends StatelessWidget {
                     noteController: noteController,
                     weigthController: weigthController,
                     babyIdController: babyIdController,
+                    roomNumberController: roomNumberController
                   ),
                 ),
               ],

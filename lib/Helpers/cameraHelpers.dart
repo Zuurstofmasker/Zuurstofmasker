@@ -35,8 +35,8 @@ Future<int> startRecording({
   return cameraId;
 }
 
-Future<int> stopRecording({String? storeLocation}) async {
-  if (cameraId == -1) return cameraId;
+Future<(int, XFile?)> stopRecording({String? storeLocation}) async {
+  if (cameraId == -1) return (cameraId, null);
 
   XFile videoFile = await CameraPlatform.instance.stopVideoRecording(cameraId);
   await disposeCamera(cameraId);
@@ -49,5 +49,5 @@ Future<int> stopRecording({String? storeLocation}) async {
     deleteFile(orginFilePath);
   }
 
-  return cameraId;
+  return (cameraId, videoFile);
 }
