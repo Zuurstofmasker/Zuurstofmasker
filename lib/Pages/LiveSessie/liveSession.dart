@@ -24,8 +24,8 @@ class LiveSessie extends StatefulWidget {
 
 class _LiveSessieState extends State<LiveSessie> {
   final ValueNotifier<bool> startedSession = ValueNotifier<bool>(false);
-  Timer periodicSessionDataSave = Timer(const Duration(seconds: 0), () => "");
-  Timer serialTimeout = Timer(const Duration(seconds: 0), () => "");
+  Timer? periodicSessionDataSave;
+  Timer? serialTimeout;
 
   Future onStartSession() async {
     PopupAndLoading.showLoading();
@@ -113,7 +113,12 @@ class _LiveSessieState extends State<LiveSessie> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            UpperPart(sessionSerialData: widget.sessionData.$1, serialTimeOut: serialTimeout, timeoutCallback: onSerialTimeout),
+            UpperPart(
+              sessionSerialData: widget.sessionData.$1,
+              sessionActive: startedSession,
+              serialTimeOut: serialTimeout, 
+              timeoutCallback: onSerialTimeout
+              ),
             const PaddingSpacing(
               multiplier: 2,
             ),
@@ -121,7 +126,12 @@ class _LiveSessieState extends State<LiveSessie> {
               height: 360,
               child: Row(
                 children: [
-                  LowerLeftPart(sessionSerialData: widget.sessionData.$1, serialTimeOut: serialTimeout, timeoutCallback: onSerialTimeout,),
+                  LowerLeftPart(
+                    sessionSerialData: widget.sessionData.$1,
+                    sessionActive: startedSession, 
+                    serialTimeOut: serialTimeout, 
+                    timeoutCallback: onSerialTimeout,
+                    ),
                   const PaddingSpacing(
                     multiplier: 2,
                   ),

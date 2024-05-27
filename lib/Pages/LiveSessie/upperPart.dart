@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
@@ -11,14 +13,16 @@ class UpperPart extends StatelessWidget {
   UpperPart({
     super.key,
     required this.sessionSerialData,
-    required this.serialTimeOut,
+    required this.sessionActive,
+    this.serialTimeOut,
     required this.timeoutCallback,
   });
   final List<TimeChartData> drukGraphData = [];
   final List<TimeChartData> flowGraphData = [];
   final List<TimeChartData> terugvolumeGraphData = [];
   final SessionSerialData sessionSerialData;
-  Timer serialTimeOut;
+  final ValueNotifier<bool> sessionActive;
+  Timer? serialTimeOut;
   final Function timeoutCallback;
 
   TextStyle getsubTitleTextStyle(Color color) {

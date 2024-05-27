@@ -11,13 +11,15 @@ class LowerLeftPart extends StatelessWidget {
   LowerLeftPart({
     super.key,
     required this.sessionSerialData,
-    required this.serialTimeOut,
+    required this.sessionActive,
+    this.serialTimeOut,
     required this.timeoutCallback,
     });
   final List<TimeChartData> fi02GraphData = [];
   final List<TimeChartData> sp02GraphData = [];
   final SessionSerialData sessionSerialData;
-  Timer serialTimeOut;
+  final ValueNotifier<bool> sessionActive;
+  Timer? serialTimeOut;
   final Function timeoutCallback;
 
   @override
