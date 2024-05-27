@@ -23,6 +23,8 @@ class ConfirmSession extends StatelessWidget {
       TextEditingController(text: session.weight.toString());
   late TextEditingController babyIdController =
       TextEditingController(text: session.babyId);
+  late TextEditingController roomNumberController =
+      TextEditingController(text: session.roomNumber.toString());
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -63,6 +65,7 @@ class ConfirmSession extends StatelessWidget {
               noteController: noteController,
               weigthController: weigthController,
               babyIdController: babyIdController,
+              roomNumberController: roomNumberController,
               isConfirm: true,
             ),
             const PaddingSpacing(

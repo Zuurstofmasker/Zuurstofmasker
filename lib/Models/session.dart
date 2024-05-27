@@ -7,6 +7,7 @@ class Session {
     required this.birthTime,
     required this.endTime,
     required this.note,
+    required this.roomNumber,
   });
   final String id;
   
@@ -16,6 +17,7 @@ class Session {
   String note;
   DateTime birthTime;
   DateTime endTime;
+  int roomNumber;
 
   factory Session.fromJson(Map<String, dynamic> json) => Session(
         id: json['id'],
@@ -25,6 +27,7 @@ class Session {
         note: json['note'],
         birthTime: DateTime.fromMillisecondsSinceEpoch(json['birthTime']),
         endTime: DateTime.fromMillisecondsSinceEpoch(json['endTime']),
+        roomNumber: json['roomNumber'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -34,6 +37,7 @@ class Session {
         'birthTime': birthTime.millisecondsSinceEpoch,
         'endTime': endTime.millisecondsSinceEpoch,
         'babyId': babyId,
-        'note': note
+        'note': note,
+        'roomNumber': roomNumber
       };
 }
