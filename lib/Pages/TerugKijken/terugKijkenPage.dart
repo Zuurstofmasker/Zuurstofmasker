@@ -5,7 +5,7 @@ import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Pages/TerugKijken/chartsLeftPart.dart';
 import 'package:zuurstofmasker/Pages/TerugKijken/videoPlayer.dart';
 import 'package:zuurstofmasker/Pages/TerugKijken/chartsLowerPart.dart';
-import 'package:zuurstofmasker/Pages/TerugKijken/TerugKijkenNavBar.dart';
+import 'package:zuurstofmasker/Pages/TerugKijken/terugKijkenNavBar.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:fl_chart/fl_chart.dart';

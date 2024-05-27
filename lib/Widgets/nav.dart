@@ -6,7 +6,6 @@ import 'package:zuurstofmasker/Pages/LiveSessie/liveSessie.dart';
 import 'package:zuurstofmasker/Pages/Settings/settings.dart';
 import 'package:zuurstofmasker/Pages/SessionHistory/sessionHistory.dart';
 import 'package:zuurstofmasker/config.dart';
-
 import 'navItem.dart' as navItem;
 
 ListQueue<MaterialPageRoute> routesStack = ListQueue<MaterialPageRoute>();
