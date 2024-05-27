@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:zuurstofmasker/config.dart';
 
@@ -34,7 +33,7 @@ String? validation<T>(T? value, bool isRequired,
 InputDecoration getInputDecoration(
     String? hintText, String? labelText, IconData? icon) {
   return InputDecoration(
-    contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
     isDense: true,
     hintText: hintText,
     labelText: labelText,
@@ -67,6 +66,7 @@ class InputField extends StatelessWidget {
   final bool isPassword;
   final bool isInt;
   final bool isDouble;
+  final bool isMultiLine;
   final bool isRequired;
   final String? Function(String?)? validator;
   final Function(String?)? onChange;
@@ -85,12 +85,14 @@ class InputField extends StatelessWidget {
     this.validator,
     this.isDouble = false,
     this.onChange,
+    this.isMultiLine = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      maxLines: isMultiLine ? 5 : 1,
       validator: (value) =>
           validation(value, isRequired, validator, labelText, isDouble, isInt),
       obscureText: isPassword,

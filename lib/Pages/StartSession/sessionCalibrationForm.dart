@@ -1,57 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
-
-TextEditingController stateOutController = TextEditingController(text:"0");
-TextEditingController biasFlowController = TextEditingController(text:"0");
-TextEditingController patientFlowController = TextEditingController(text:"0");
-TextEditingController fiO2Controller = TextEditingController(text:"0");
-TextEditingController vtiController = TextEditingController(text:"0");
-TextEditingController vteController = TextEditingController(text:"0");
+import 'package:zuurstofmasker/Widgets/paddings.dart';
+import 'package:zuurstofmasker/Widgets/titles.dart';
 
 class PatientForm extends StatelessWidget {
-  const PatientForm ({
-    super.key
+  const PatientForm({
+    super.key,
+    required this.stateOutController,
+    required this.biasFlowController,
+    required this.patientFlowController,
+    required this.fiO2Controller,
+    required this.vtiController,
+    required this.vteController,
   });
 
+  final TextEditingController stateOutController;
+  final TextEditingController biasFlowController;
+  final TextEditingController patientFlowController;
+  final TextEditingController fiO2Controller;
+  final TextEditingController vtiController;
+  final TextEditingController vteController;
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Form(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          const PageTitle(
+            title: "Kalibratie gegevens",
+          ),
+          const PaddingSpacing(
+            multiplier: 2,
+          ),
           InputField(
             controller: stateOutController,
-            hintText: "State OUT",
             isDouble: true,
             labelText: "State OUT",
           ),
+          const PaddingSpacing(),
           InputField(
             controller: biasFlowController,
-            hintText: "Bias flow",
             isDouble: true,
             labelText: "Bias flow",
           ),
+          const PaddingSpacing(),
           InputField(
             controller: patientFlowController,
-            hintText: "Patient flow",
             isDouble: true,
             labelText: "Patient flow",
           ),
+          const PaddingSpacing(),
           InputField(
             controller: fiO2Controller,
-            hintText: "FiO2",
             isDouble: true,
             labelText: "Fi02",
           ),
+          const PaddingSpacing(),
           InputField(
             controller: vtiController,
-            hintText: "Vti",
             isDouble: true,
             labelText: "Vti",
           ),
+          const PaddingSpacing(),
           InputField(
             controller: vteController,
-            hintText: "Vte",
             isDouble: true,
             labelText: "Vte",
           ),
