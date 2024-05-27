@@ -56,7 +56,9 @@ class _LiveSessieState extends State<LiveSessie> {
       widget.sessionData.$1.vti.clear();
 
       var (_, video) = await stopRecording();
-      deleteFile(video!.path);
+      if (video?.path != null) {
+        await deleteFile(video!.path);
+      }
       await startRecording();
     } catch (e) {
       PopupAndLoading.showError("Opvang resetten mislukt");
