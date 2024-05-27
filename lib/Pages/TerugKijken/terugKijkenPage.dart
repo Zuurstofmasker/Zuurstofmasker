@@ -18,7 +18,7 @@ class TerugKijken extends StatelessWidget {
   final Session session;
 
   VideoPlayerController? controller;
-
+  var currentTime = 0;
   void loadVideoPlayer() {
     controller?.dispose();
     var path = "$sessionPath${session.id}\\video.mp4";
@@ -52,8 +52,11 @@ class TerugKijken extends StatelessWidget {
                 SizedBox(
                   height: 600,
                   width: 442,
-                  child:
-                      ChartsLeftPart(session: session, callback: chartTouche),
+                  child: ChartsLeftPart(
+                    session: session,
+                    callback: chartTouche,
+                    runTime: controller?.value.position.inSeconds ?? 0,
+                  ),
                 ),
                 const PaddingSpacing(
                   multiplier: 2,
@@ -72,6 +75,7 @@ class TerugKijken extends StatelessWidget {
                 child: ChartsLowerPart(
                   session: session,
                   callback: chartTouche,
+                  runTime: controller?.value.position.inSeconds ?? 0,
                 ),
               ),
             ])));

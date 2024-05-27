@@ -6,9 +6,15 @@ import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 
 class ChartsLeftPart extends StatelessWidget {
-  ChartsLeftPart({super.key, required this.session, required this.callback});
+  ChartsLeftPart(
+      {super.key,
+      required this.session,
+      required this.callback,
+      required this.runTime});
   final void Function(LineTouchResponse?, double?) callback;
   final Session session;
+  final int runTime;
+
   final List<TimeChartData> pulseGraphData = [
     TimeChartData(time: DateTime.now(), y: 10),
     TimeChartData(time: DateTime.now().add(Duration(seconds: 1)), y: 10),

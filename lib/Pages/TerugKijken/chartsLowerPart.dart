@@ -6,11 +6,15 @@ import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 
 class ChartsLowerPart extends StatelessWidget {
-  ChartsLowerPart({super.key, required this.session, required this.callback});
+  ChartsLowerPart(
+      {super.key,
+      required this.session,
+      required this.callback,
+      required this.runTime});
   final void Function(LineTouchResponse?, double?) callback;
 
   final Session session;
-
+  final int runTime;
   final List<TimeChartData> leakGraphData = [];
   final List<TimeChartData> pressureGraphData = [];
   final List<TimeChartData> flowGraphData = [];
