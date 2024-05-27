@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:zuurstofmasker/Helpers/cameraHelpers.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
@@ -12,6 +16,7 @@ import 'package:zuurstofmasker/Pages/StartSession/sessionCalibrationForm.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/Widgets/titles.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'package:zuurstofmasker/Widgets/cameraStatus.dart';
 
 class StartSession extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
@@ -19,7 +24,8 @@ class StartSession extends StatelessWidget {
   final TextEditingController weigthController =
       TextEditingController(text: "3500");
   final TextEditingController babyIdController = TextEditingController();
-  final TextEditingController roomNumberController = TextEditingController(text: "1");
+  final TextEditingController roomNumberController =
+      TextEditingController(text: "1");
 
   final TextEditingController stateOutController =
       TextEditingController(text: "0");
@@ -33,6 +39,10 @@ class StartSession extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   StartSession({super.key});
+
+  bool cameraStatus = false;
+  final ValueNotifier<int> cameraNotifier = ValueNotifier<int>(0);
+
 
   Future<(SessionSerialData, Session)> startSession() async {
     String newSessionId = await getNewSessionUuid();
@@ -93,12 +103,11 @@ class StartSession extends StatelessWidget {
                 ),
                 Flexible(
                   child: SessionInfoForm(
-                    nameController: nameController,
-                    noteController: noteController,
-                    weigthController: weigthController,
-                    babyIdController: babyIdController,
-                    roomNumberController: roomNumberController
-                  ),
+                      nameController: nameController,
+                      noteController: noteController,
+                      weigthController: weigthController,
+                      babyIdController: babyIdController,
+                      roomNumberController: roomNumberController),
                 ),
               ],
             ),
@@ -107,6 +116,25 @@ class StartSession extends StatelessWidget {
             multiplier: 2,
           ),
           const PageTitle(title: "Status"),
+          const PaddingSpacing(),
+          ValueListenableBuilder(
+              valueListenable: cameraNotifier,
+              builder: (context, value, child) {
+                Timer(const Duration(seconds: 1), () {
+                  cameraNotifier.value++;
+                });
+
+                return FutureBuilder(
+                    future: fetchCameras(),
+                    builder: (BuildContext context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text("error");
+                      } else if (snapshot.hasData) {
+                        cameraStatus = snapshot.data!.isNotEmpty;
+                      }
+                      return CameraStatus(status: cameraStatus);
+                    });
+              }),
           const PaddingSpacing(
             multiplier: 2,
           ),
