@@ -18,6 +18,7 @@ List<Widget> calcThumbs(
     String sessionID,
     double progressBarWidth,
     ValueNotifier<List<Note>> noteList,
+    VideoPlayerController controller,
     BuildContext context) {
   final List<Widget> thumbWidgetList = [];
 
@@ -33,6 +34,8 @@ List<Widget> calcThumbs(
         top: -5,
         child: GestureDetector(
           onTap: () {
+            controller.seekTo(note.noteTime);
+            controller.pause();
             showNote(note, sessionID, noteList, context);
           },
           child: Container(
