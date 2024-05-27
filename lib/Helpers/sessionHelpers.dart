@@ -21,9 +21,9 @@ Future<String> getNewSessionUuid() async {
   return newId.v4();
 }
 
-Future<List<Session>> saveSession(Session session) async {
+Future<List<Session>> createSession(Session session) async {
   // Creating the folder for the session with the correct files included
-  String newSessionPath = sessionPath + session.id;
+  final newSessionPath = sessionPath + session.id;
   await createFolder(newSessionPath);
   await writeListToFile([], '$newSessionPath/videoNotes.json');
   await createFile('$newSessionPath/recordedData.csv');
@@ -34,11 +34,23 @@ Future<List<Session>> saveSession(Session session) async {
       session, sessionsJsonPath, Session.fromJson);
 }
 
+Future<void> updateSession(Session session) async {
+  final List<Session> sessions = await getSessions();
+  final int index = sessions.indexWhere((element) => element.id == session.id);
+
+  if (index == -1) {
+    throw Exception('Session not found');
+  }
+
+  sessions[index] = session;
+  await writeListToFile(sessions, sessionsJsonPath);
+}
+
 Future<void> updateRecordedData(SessionSerialData data) async {
   String csvPath = sessionPath + data.sessionId;
   String csv = listToCsv(data.csvData);
 
-  await stringToFile('${csvPath}/recordedData.csv', csv);
+  await stringToFile('$csvPath/recordedData.csv', csv);
 }
 
 Future<List<List<double>>> getSessionSerialData(String sessionId) async {

@@ -1,17 +1,34 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
-import 'package:zuurstofmasker/Helpers/navHelper.dart';
-import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class LowerRightPart extends StatelessWidget {
-  LowerRightPart({super.key});
+  LowerRightPart({
+    super.key,
+    required this.startedSession,
+    required this.onStartSession,
+    required this.onStopSession,
+    required this.onResetSession,
+    required this.session,
+  });
+
   final List<TimeChartData> pulseGraphData = [];
   final List<TimeChartData> leakGraphData = [];
+  final ValueNotifier<bool> startedSession;
+  final Session session;
+
+  final ValueNotifier<int> timeNotifier = ValueNotifier<int>(0);
+
+  final Function() onStartSession;
+  final Function() onStopSession;
+  final Function() onResetSession;
 
   @override
   Widget build(BuildContext context) {
@@ -60,15 +77,11 @@ class LowerRightPart extends StatelessWidget {
                         StreamBuilder(
                           stream: SerialPort('').listen(),
                           builder: (context, snapshot) {
-                            if (leakGraphData.isNotEmpty) {
-                              return Text(
-                                "${leakGraphData.last.y.toInt()}%",
-                                style: TextStyle(
-                                    fontSize: 40, color: settings.colors.leak),
-                              );
-                            } else {
-                              return const Text("");
-                            }
+                            return Text(
+                              "${leakGraphData.isEmpty ? "-" : leakGraphData.last.y.toInt()}%",
+                              style: TextStyle(
+                                  fontSize: 40, color: settings.colors.leak),
+                            );
                           },
                         ),
                       ],
@@ -145,19 +158,43 @@ class LowerRightPart extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  const Text("08:32",style: TextStyle(fontSize: 80),),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Button(
-                        onTap: () => {
-                          replaceAllPages(
-                              MaterialPageRoute(builder: (context) => const Dashboard()))
-                        },
-                        text: "homePage",
-                      ),
-                    ],
+                  ValueListenableBuilder(
+                    valueListenable: timeNotifier,
+                    builder: (context, value, child) {
+                      // Updates the widget every second
+                      Timer(const Duration(seconds: 1), () {
+                        timeNotifier.value++;
+                      });
+
+                      // Retrieving the elapsed time
+                      Duration time = DateTime.now().difference(session.birthTime);  
+
+                      return  Text(
+                       (!startedSession.value ? "00:00" : "${time.inMinutes.remainder(60).toString().padLeft(2, '0')}:${time.inSeconds.remainder(60).toString().padLeft(2, '0')}"),
+                        style: const TextStyle(fontSize: 80),
+                      );
+                    }
                   ),
+                  ValueListenableBuilder(
+                      valueListenable: startedSession,
+                      builder: (context, value, child) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: !value
+                              ? [
+                                  Button(
+                                      onTap: onStartSession,
+                                      text: "Start opvang"),
+                                ]
+                              : [
+                                  Button(
+                                      onTap: onResetSession,
+                                      text: "Reset opvang"),
+                                  Button(
+                                      onTap: onStopSession, text: "Stop opvang")
+                                ],
+                        );
+                      }),
                 ],
               ),
             ),
