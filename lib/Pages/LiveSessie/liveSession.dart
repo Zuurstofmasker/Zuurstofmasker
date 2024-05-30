@@ -6,6 +6,7 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/cameraHelpers.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
@@ -34,13 +35,48 @@ class _LiveSessieState extends State<LiveSessie> {
   Timer? periodicSessionDataSave;
   Timer? serialTimeout;
 
-  final Stream<Uint8List> flowStream = SerialPort('').listen(min: 0, max: 40);
-  final Stream<Uint8List> patientStream = SerialPort('').listen(min: -75, max: 75);
-  final Stream<Uint8List> vtiStream = SerialPort('').listen(min: 0, max: 10);
-  final Stream<Uint8List> fiO2Stream = SerialPort('').listen(min: 0, max: 100);
-  final Stream<Uint8List> spO2Stream = SerialPort('').listen(min: 0, max: 100);
-  final Stream<Uint8List> pulseStream = SerialPort('').listen(min: 30, max: 225);
-  final Stream<Uint8List> leakStream = SerialPort('').listen(min: 0, max:100);
+  final Stream<Uint8List> flowStream =
+      SerialPort('').listen(min: 0, max: 40).asBroadcastStream();
+  final Stream<Uint8List> patientStream =
+      SerialPort('').listen(min: -75, max: 75).asBroadcastStream();
+  final Stream<Uint8List> vtiStream =
+      SerialPort('').listen(min: 0, max: 10).asBroadcastStream();
+  final Stream<Uint8List> fiO2Stream =
+      SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
+  final Stream<Uint8List> spO2Stream =
+      SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
+  final Stream<Uint8List> pulseStream =
+      SerialPort('').listen(min: 30, max: 225).asBroadcastStream();
+  final Stream<Uint8List> leakStream =
+      SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
+
+  @override
+  void initState() {
+    SessionSerialData sessionSerial = widget.sessionData.$1;
+    flowStream.listen((value) => addDataToCSVObject(
+        sessionSerial.biasFlow, sessionSerial.biasSeconds, value));
+    patientStream.listen((value) => addDataToCSVObject(
+        sessionSerial.patientFlow, sessionSerial.patientSeconds, value));
+    vtiStream.listen((value) => addDataToCSVObject(
+        sessionSerial.vtiFlow, sessionSerial.vtiSeconds, value));
+    fiO2Stream.listen((value) => addDataToCSVObject(
+        sessionSerial.fiO2Flow, sessionSerial.fiO2Seconds, value));
+    spO2Stream.listen((value) => addDataToCSVObject(
+        sessionSerial.spO2Flow, sessionSerial.spO2Seconds, value));
+    pulseStream.listen((value) => addDataToCSVObject(
+        sessionSerial.vteFlow, sessionSerial.vteSeconds, value));
+    leakStream.listen((value) => addDataToCSVObject(
+        sessionSerial.stateOutFlow, sessionSerial.stateOutSeconds, value));
+    super.initState();
+  }
+
+  void addDataToCSVObject(
+      List<double> listToAdd, List<DateTime> timeListToAdd, Uint8List value) {
+    if (startedSession.value) {
+      timeListToAdd.add(DateTime.now());
+      listToAdd.add(uint8ListToDouble(value));
+    }
+  }
 
   Future onStartSession() async {
     PopupAndLoading.showLoading();
@@ -49,7 +85,8 @@ class _LiveSessieState extends State<LiveSessie> {
       startedSession.value = true;
       widget.sessionData.$2.birthTime = DateTime.now();
       // serialTimeout = Timer(const Duration(seconds: 5), onSerialTimeout);
-      periodicSessionDataSave = Timer(const Duration(seconds: 1), () => widget.sessionData.$1.saveToFile(widget.sessionData.$2.id));
+      periodicSessionDataSave = Timer(const Duration(seconds: 1),
+          () => widget.sessionData.$1.saveToFile(widget.sessionData.$2.id));
       await startRecording();
     } catch (e) {
       PopupAndLoading.showError("Opvang starten mislukt");
@@ -65,18 +102,11 @@ class _LiveSessieState extends State<LiveSessie> {
       widget.sessionData.$2.birthTime = DateTime.now();
 
       // Clearing all the old irrelevant data
-      widget.sessionData.$1.fiO2.clear();
-      widget.sessionData.$1.patientFlow.clear();
-      widget.sessionData.$1.biasFlow.clear();
-      widget.sessionData.$1.stateOutFlow.clear();
-      widget.sessionData.$1.vte.clear();
-      widget.sessionData.$1.vti.clear();
-      widget.sessionData.$1.stateOutSeconds.clear();
-      widget.sessionData.$1.biasSeconds.clear();
-      widget.sessionData.$1.patientSeconds.clear();
-      widget.sessionData.$1.fiO2Seconds.clear();
-      widget.sessionData.$1.vtiSeconds.clear();
-      widget.sessionData.$1.vteSeconds.clear();
+      SessionSerialData sessionSerial = widget.sessionData.$1;
+
+      for (int i = 0; i < sessionSerial.timestampsLists.length; i++) {
+        sessionSerial.timestampsLists[i].clear();
+      }
 
       var (_, video) = await stopRecording();
       if (video?.path != null) {
@@ -98,7 +128,7 @@ class _LiveSessieState extends State<LiveSessie> {
       widget.sessionData.$2.endTime = DateTime.now();
       await updateSession(widget.sessionData.$2);
 
-      widget.sessionData.$1.saveToFile(widget.sessionData.$2.id);
+      await widget.sessionData.$1.saveToFile(widget.sessionData.$2.id);
       await stopRecording(
           storeLocation: '$sessionPath${widget.sessionData.$2.id}/video.mp4');
 
@@ -113,7 +143,8 @@ class _LiveSessieState extends State<LiveSessie> {
   }
 
   Future onSerialTimeout() async {
-    PopupAndLoading.showError("Een of meerdere meetapparaturen geeft geen meeting(en). Is er een patient aan het appararaat gevestigd?");
+    PopupAndLoading.showError(
+        "Een of meerdere meetapparaturen geeft geen meeting(en). Is er een patient aan het appararaat gevestigd?");
   }
 
   @override
@@ -132,14 +163,13 @@ class _LiveSessieState extends State<LiveSessie> {
           mainAxisSize: MainAxisSize.min,
           children: [
             UpperPart(
-              sessionSerialData: widget.sessionData.$1,
-              sessionActive: startedSession,
-              flowStream: flowStream,
-              patientStream: patientStream,
-              vtiStream: vtiStream,
-              serialTimeOut: serialTimeout, 
-              timeoutCallback: onSerialTimeout
-              ),
+                sessionSerialData: widget.sessionData.$1,
+                sessionActive: startedSession,
+                flowStream: flowStream,
+                patientStream: patientStream,
+                vtiStream: vtiStream,
+                serialTimeOut: serialTimeout,
+                timeoutCallback: onSerialTimeout),
             const PaddingSpacing(
               multiplier: 2,
             ),
@@ -149,12 +179,12 @@ class _LiveSessieState extends State<LiveSessie> {
                 children: [
                   LowerLeftPart(
                     sessionSerialData: widget.sessionData.$1,
-                    sessionActive: startedSession, 
+                    sessionActive: startedSession,
                     fiO2Stream: fiO2Stream,
                     spO2Stream: spO2Stream,
-                    serialTimeOut: serialTimeout, 
+                    serialTimeOut: serialTimeout,
                     timeoutCallback: onSerialTimeout,
-                    ),
+                  ),
                   const PaddingSpacing(
                     multiplier: 2,
                   ),

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 
 extension SerialMocker on SerialPort {
   Stream<Uint8List> listen({int min = 70, int max = 190}) async* {
@@ -36,7 +37,7 @@ extension SerialMocker on SerialPort {
             milliseconds: random.nextInt(maxDelay - minDelay) + minDelay));
 
         // Sending the date to mock the serial port
-        yield Uint8List.fromList([heartBeat]);
+        yield doubleToUint8List(heartBeat.toDouble());
       }
     }
   }

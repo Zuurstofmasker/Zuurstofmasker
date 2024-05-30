@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'dart:math';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/config.dart';
 
 class SessionSerialData {
-  const SessionSerialData({
+  SessionSerialData({
     required this.sessionId,
     required this.stateOutSeconds,
     required this.stateOutFlow,
@@ -14,11 +14,13 @@ class SessionSerialData {
     required this.patientSeconds,
     required this.patientFlow,
     required this.fiO2Seconds,
-    required this.fiO2,
+    required this.fiO2Flow,
     required this.vtiSeconds,
-    required this.vti,
+    required this.vtiFlow,
     required this.vteSeconds,
-    required this.vte,
+    required this.vteFlow,
+    required this.spO2Seconds,
+    required this.spO2Flow,
   });
 
   final String sessionId;
@@ -29,102 +31,163 @@ class SessionSerialData {
   final List<DateTime> patientSeconds;
   final List<double> patientFlow;
   final List<DateTime> fiO2Seconds;
-  final List<double> fiO2;
+  final List<double> fiO2Flow;
   final List<DateTime> vtiSeconds;
-  final List<double> vti;
+  final List<double> vtiFlow;
   final List<DateTime> vteSeconds;
-  final List<double> vte;
+  final List<double> vteFlow;
+  final List<DateTime> spO2Seconds;
+  final List<double> spO2Flow;
+
+  late List<List<double>> valueLists = [
+    stateOutFlow,
+    biasFlow,
+    patientFlow,
+    fiO2Flow,
+    vtiFlow,
+    vteFlow,
+    spO2Flow
+  ];
+
+  late List<List<DateTime>> timestampsLists = [
+    stateOutSeconds,
+    biasSeconds,
+    patientSeconds,
+    fiO2Seconds,
+    vtiSeconds,
+    vteSeconds,
+    spO2Seconds
+  ];
 
   List<List<double>> get csvData => List<List<double>>.of([
-        stateOutSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
+        stateOutSeconds
+            .map((e) => e.microsecondsSinceEpoch.toDouble())
+            .toList(),
         stateOutFlow,
         biasSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
         biasFlow,
         patientSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
         patientFlow,
         fiO2Seconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
-        fiO2,
+        fiO2Flow,
         vtiSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
-        vti,
+        vtiFlow,
         vteSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
-        vte
+        vteFlow
       ]);
 
   Future<SessionSerialData> fromFile(String sessionId) async {
     final List<List<String>> csvData =
         await csvFromFile("$sessionPath$sessionId/recordedData.csv");
 
+    List<DateTime> CSVstateOutSeconds = [];
+    List<double> CSVstateOutFlow = [];
+    List<DateTime> CSVbiasSeconds = [];
+    List<double> CSVbiasFlow = [];
+    List<DateTime> CSVpatientSeconds = [];
+    List<double> CSVpatientFlow = [];
+    List<DateTime> CSVfiO2Seconds = [];
+    List<double> CSVfiO2Flow = [];
+    List<DateTime> CSVvtiSeconds = [];
+    List<double> CSVvtiFlow = [];
+    List<DateTime> CSVvteSeconds = [];
+    List<double> CSVvteFlow = [];
+    List<DateTime> CSVspO2Seconds = [];
+    List<double> CSVspO2Flow = [];
+
+    late List<List<double>> CSVvalueLists = [
+      CSVstateOutFlow,
+      CSVbiasFlow,
+      CSVpatientFlow,
+      CSVfiO2Flow,
+      CSVvtiFlow,
+      CSVvteFlow,
+      CSVspO2Flow
+    ];
+
+    late List<List<DateTime>> CSVtimestampsLists = [
+      CSVstateOutSeconds,
+      CSVbiasSeconds,
+      CSVpatientSeconds,
+      CSVfiO2Seconds,
+      CSVvtiSeconds,
+      CSVvteSeconds,
+      CSVspO2Seconds
+    ];
+
+    for (List<String> csvRow in csvData) {
+      for (int i = 0; i < timestampsLists.length; i = i + 2) {
+        CSVtimestampsLists[i].add(DateTime.tryParse(csvRow[i]) ??
+            DateTime.fromMicrosecondsSinceEpoch(0));
+      }
+      for (int i = 1; i < valueLists.length; i = i + 2) {
+        CSVvalueLists[i].add(double.tryParse(csvRow[i]) ?? 0.0);
+      }
+    }
+
     return SessionSerialData(
       sessionId: sessionId,
-      stateOutSeconds: csvData[0]
-          .skip(1)
-          .map((e) => DateTime.fromMillisecondsSinceEpoch(int.parse(e)))
-          .toList(),
-      stateOutFlow: csvData[1].skip(1).map((e) => double.parse(e)).toList(),
-      biasSeconds: csvData[2]
-          .skip(1)
-          .map((e) => DateTime.fromMillisecondsSinceEpoch(int.parse(e)))
-          .toList(),
-      biasFlow: csvData[3].skip(1).map((e) => double.parse(e)).toList(),
-      patientSeconds: csvData[4]
-          .skip(1)
-          .map((e) => DateTime.fromMillisecondsSinceEpoch(int.parse(e)))
-          .toList(),
-      patientFlow: csvData[5].skip(1).map((e) => double.parse(e)).toList(),
-      fiO2Seconds: csvData[6]
-          .skip(1)
-          .map((e) => DateTime.fromMillisecondsSinceEpoch(int.parse(e)))
-          .toList(),
-      fiO2: csvData[7].skip(1).map((e) => double.parse(e)).toList(),
-      vtiSeconds: csvData[8]
-          .skip(1)
-          .map((e) => DateTime.fromMillisecondsSinceEpoch(int.parse(e)))
-          .toList(),
-      vti: csvData[9].skip(1).map((e) => double.parse(e)).toList(),
-      vteSeconds: csvData[10]
-          .skip(1)
-          .map((e) => DateTime.fromMillisecondsSinceEpoch(int.parse(e)))
-          .toList(),
-      vte: csvData[11].skip(1).map((e) => double.parse(e)).toList(),
+      stateOutSeconds: CSVstateOutSeconds,
+      stateOutFlow: CSVstateOutFlow,
+      biasSeconds: CSVbiasSeconds,
+      biasFlow: CSVbiasFlow,
+      patientSeconds: CSVpatientSeconds,
+      patientFlow: CSVpatientFlow,
+      fiO2Seconds: CSVfiO2Seconds,
+      fiO2Flow: CSVfiO2Flow,
+      vtiSeconds: CSVvtiSeconds,
+      vtiFlow: CSVvtiFlow,
+      vteSeconds: CSVvteSeconds,
+      vteFlow: CSVvteFlow,
+      spO2Flow: CSVspO2Flow,
+      spO2Seconds: CSVspO2Seconds,
     );
   }
 
   Future<File> saveToFile(String sessionId) async {
     // Setting the titles of the csv
     final List<List<String>> csvData = [
-      ["stateOut time"],
-      ["stateOutFlow"],
-      ["bias time"],
-      ["biasFlow"],
-      ["patient time"],
-      ["patientFlow"],
-      ["fiO2 time"],
-      ["fiO2"],
-      ["vti time"],
-      ["vti"],
-      ["vte time"],
-      ["vte"]
+      [
+        "stateOut time",
+        "stateOutFlow",
+        "bias time",
+        "biasFlow",
+        "patient time",
+        "patientFlow",
+        "fiO2 time",
+        "fiO2",
+        "vti time",
+        "vti",
+        "vte time",
+        "vte",
+        "spO2 time",
+        "spO2"
+      ]
     ];
 
-    // converting the data to strings
-    csvData[0].addAll(stateOutSeconds.map((e) => e.millisecondsSinceEpoch.toString()));
-    csvData[1].addAll(stateOutFlow.map((e) => e.toString()));
-    csvData[2].addAll(biasSeconds.map((e) => e.millisecondsSinceEpoch.toString()));
-    csvData[3].addAll(biasFlow.map((e) => e.toString()));
-    csvData[4].addAll(patientSeconds.map((e) => e.millisecondsSinceEpoch.toString()));
-    csvData[5].addAll(patientFlow.map((e) => e.toString()));
-    csvData[6].addAll(fiO2Seconds.map((e) => e.millisecondsSinceEpoch.toString()));
-    csvData[7].addAll(fiO2.map((e) => e.toString()));
-    csvData[8].addAll(vtiSeconds.map((e) => e.millisecondsSinceEpoch.toString()));
-    csvData[9].addAll(vti.map((e) => e.toString()));
-    csvData[10].addAll(vteSeconds.map((e) => e.millisecondsSinceEpoch.toString()));
-    csvData[11].addAll(vte.map((e) => e.toString()));
+    // Get item with most values
+    int maxValue = timestampsLists.map((list) => list.length).reduce(max);
+    // Helper function to safely get a value or a default if out of bounds
+    String safeGetValue<T>(
+        List<T?> list, int index, String Function(T?) toString) {
+      if (index < list.length) {
+        return toString(list[index]);
+      }
+      return '';
+    }
+
+    // Loop through all items and add the corresponding value to csv list
+    for (int i = 0; i < maxValue; i++) {
+      List<String> row = [];
+      for (int j = 0; j < timestampsLists.length; j++) {
+        row.add(safeGetValue(timestampsLists[j], i,
+            (v) => v?.millisecondsSinceEpoch.toString() ?? ''));
+        row.add(safeGetValue(valueLists[j], i, (v) => v?.toString() ?? ''));
+      }
+      csvData.add(row);
+    }
 
     // Saving the data to the file
     return await csvToFile(csvData, "$sessionPath$sessionId/recordedData.csv");
   }
-
-  // void AddSecond(double increment) {
-  //   seconds.add(seconds.last + increment);
-  // }
 }

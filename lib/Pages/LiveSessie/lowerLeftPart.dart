@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
@@ -18,7 +19,7 @@ class LowerLeftPart extends StatelessWidget {
     required this.spO2Stream,
     this.serialTimeOut,
     required this.timeoutCallback,
-    });
+  });
   final List<TimeChartData> fi02GraphData = [];
   final List<TimeChartData> sp02GraphData = [];
   final SessionSerialData sessionSerialData;
@@ -105,9 +106,10 @@ class LowerLeftPart extends StatelessWidget {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
                           fi02GraphData.add(TimeChartData(
-                              y: snapshot.data![0].toDouble(),
+                              y: uint8ListToDouble(snapshot.data!),
                               time: DateTime.now()));
-                          sessionSerialData.fiO2.add(snapshot.data![0].toDouble());
+                          sessionSerialData.fiO2Flow
+                              .add(uint8ListToDouble(snapshot.data!));
                           sessionSerialData.fiO2Seconds.add(DateTime.now());
                         }
                         return TimeChart(
@@ -132,7 +134,7 @@ class LowerLeftPart extends StatelessWidget {
                         if (snapshot.hasData) {
                           sp02GraphData.add(
                             TimeChartData(
-                              y: snapshot.data![0].toDouble(),
+                              y: uint8ListToDouble(snapshot.data!),
                               time: DateTime.now(),
                             ),
                           );

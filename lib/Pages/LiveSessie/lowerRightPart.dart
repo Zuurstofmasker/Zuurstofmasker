@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
@@ -28,7 +29,7 @@ class LowerRightPart extends StatelessWidget {
   final Session session;
   final Stream<Uint8List> pulseStream;
   final Stream<Uint8List> leakStream;
-  
+
   final ValueNotifier<int> timeNotifier = ValueNotifier<int>(0);
 
   final Function() onStartSession;
@@ -113,7 +114,7 @@ class LowerRightPart extends StatelessWidget {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   pulseGraphData.add(TimeChartData(
-                                      y: snapshot.data![0].toDouble(),
+                                      y: uint8ListToDouble(snapshot.data!),
                                       time: DateTime.now()));
                                 }
                                 return TimeChart(
@@ -135,7 +136,7 @@ class LowerRightPart extends StatelessWidget {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   leakGraphData.add(TimeChartData(
-                                      y: snapshot.data![0].toDouble(),
+                                      y: uint8ListToDouble(snapshot.data!),
                                       time: DateTime.now()));
                                 }
                                 return TimeChart(
@@ -164,22 +165,24 @@ class LowerRightPart extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ValueListenableBuilder(
-                    valueListenable: timeNotifier,
-                    builder: (context, value, child) {
-                      // Updates the widget every second
-                      Timer(const Duration(seconds: 1), () {
-                        timeNotifier.value++;
-                      });
+                      valueListenable: timeNotifier,
+                      builder: (context, value, child) {
+                        // Updates the widget every second
+                        Timer(const Duration(seconds: 1), () {
+                          timeNotifier.value++;
+                        });
 
-                      // Retrieving the elapsed time
-                      Duration time = DateTime.now().difference(session.birthTime);  
+                        // Retrieving the elapsed time
+                        Duration time =
+                            DateTime.now().difference(session.birthTime);
 
-                      return  Text(
-                       (!startedSession.value ? "00:00" : "${time.inMinutes.remainder(60).toString().padLeft(2, '0')}:${time.inSeconds.remainder(60).toString().padLeft(2, '0')}"),
-                        style: const TextStyle(fontSize: 80),
-                      );
-                    }
-                  ),
+                        return Text(
+                          (!startedSession.value
+                              ? "00:00"
+                              : "${time.inMinutes.remainder(60).toString().padLeft(2, '0')}:${time.inSeconds.remainder(60).toString().padLeft(2, '0')}"),
+                          style: const TextStyle(fontSize: 80),
+                        );
+                      }),
                   ValueListenableBuilder(
                       valueListenable: startedSession,
                       builder: (context, value, child) {

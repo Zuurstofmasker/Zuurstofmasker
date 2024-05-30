@@ -43,7 +43,6 @@ class StartSession extends StatelessWidget {
   bool cameraStatus = false;
   final ValueNotifier<int> cameraNotifier = ValueNotifier<int>(0);
 
-
   Future<(SessionSerialData, Session)> startSession() async {
     String newSessionId = await getNewSessionUuid();
 
@@ -60,20 +59,21 @@ class StartSession extends StatelessWidget {
     await createSession(session);
 
     final SessionSerialData sessionSerialData = SessionSerialData(
-      sessionId: newSessionId,
-      stateOutSeconds: [],
-      stateOutFlow: [],
-      biasSeconds: [],
-      biasFlow: [],
-      patientSeconds: [],
-      patientFlow: [],
-      fiO2Seconds: [],
-      fiO2: [],
-      vtiSeconds: [],
-      vti: [],
-      vteSeconds: [],
-      vte: [],
-    );
+        sessionId: newSessionId,
+        stateOutSeconds: [],
+        stateOutFlow: [],
+        biasSeconds: [],
+        biasFlow: [],
+        patientSeconds: [],
+        patientFlow: [],
+        fiO2Seconds: [],
+        fiO2Flow: [],
+        vtiSeconds: [],
+        vtiFlow: [],
+        vteSeconds: [],
+        vteFlow: [],
+        spO2Flow: [],
+        spO2Seconds: []);
 
     await updateRecordedData(sessionSerialData);
 

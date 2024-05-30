@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
@@ -93,7 +94,9 @@ class UpperPart extends StatelessWidget {
                                     color: settings.colors.pressure,
                                   ),
                                 ),
-                                const PaddingSpacing(multiplier: 0.5,),
+                                const PaddingSpacing(
+                                  multiplier: 0.5,
+                                ),
                                 Text("PEEP",
                                     style: getsubTitleTextStyle(
                                         settings.colors.pressure)),
@@ -220,9 +223,10 @@ class UpperPart extends StatelessWidget {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
                           drukGraphData.add(TimeChartData(
-                              y: snapshot.data![0].toDouble(),
+                              y: uint8ListToDouble(snapshot.data!),
                               time: DateTime.now()));
-                          sessionSerialData.stateOutFlow.add(snapshot.data![0].toDouble());
+                          sessionSerialData.stateOutFlow
+                              .add(snapshot.data![0].toDouble());
                           sessionSerialData.stateOutSeconds.add(DateTime.now());
                         }
                         return TimeChart(
@@ -247,9 +251,10 @@ class UpperPart extends StatelessWidget {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
                           flowGraphData.add(TimeChartData(
-                              y: snapshot.data![0].toDouble(),
+                              y: uint8ListToDouble(snapshot.data!),
                               time: DateTime.now()));
-                          sessionSerialData.patientFlow.add(snapshot.data![0].toDouble());
+                          sessionSerialData.patientFlow
+                              .add(snapshot.data![0].toDouble());
                           sessionSerialData.patientSeconds.add(DateTime.now());
                         }
                         return TimeChart(
@@ -273,9 +278,10 @@ class UpperPart extends StatelessWidget {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
                           terugvolumeGraphData.add(TimeChartData(
-                              y: snapshot.data![0].toDouble(),
+                              y: uint8ListToDouble(snapshot.data!),
                               time: DateTime.now()));
-                          sessionSerialData.vti.add(snapshot.data![0].toDouble());
+                          sessionSerialData.vtiFlow
+                              .add(snapshot.data![0].toDouble());
                           sessionSerialData.vtiSeconds.add(DateTime.now());
                         }
                         return TimeChart(
