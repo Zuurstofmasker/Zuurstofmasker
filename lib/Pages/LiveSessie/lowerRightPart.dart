@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
@@ -17,13 +18,17 @@ class LowerRightPart extends StatelessWidget {
     required this.onStopSession,
     required this.onResetSession,
     required this.session,
+    required this.pulseStream,
+    required this.leakStream,
   });
 
   final List<TimeChartData> pulseGraphData = [];
   final List<TimeChartData> leakGraphData = [];
   final ValueNotifier<bool> startedSession;
   final Session session;
-
+  final Stream<Uint8List> pulseStream;
+  final Stream<Uint8List> leakStream;
+  
   final ValueNotifier<int> timeNotifier = ValueNotifier<int>(0);
 
   final Function() onStartSession;

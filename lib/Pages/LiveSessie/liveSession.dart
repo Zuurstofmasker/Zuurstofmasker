@@ -1,6 +1,11 @@
+import 'dart:ffi';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/cameraHelpers.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
+import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/sessionSerialData.dart';
@@ -26,6 +31,14 @@ class _LiveSessieState extends State<LiveSessie> {
   final ValueNotifier<bool> startedSession = ValueNotifier<bool>(false);
   Timer? periodicSessionDataSave;
   Timer? serialTimeout;
+
+  final Stream<Uint8List> flowStream = SerialPort('').listen(min: 0, max: 40);
+  final Stream<Uint8List> patientStream = SerialPort('').listen(min: -75, max: 75);
+  final Stream<Uint8List> vtiStream = SerialPort('').listen(min: 0, max: 10);
+  final Stream<Uint8List> fiO2Stream = SerialPort('').listen(min: 0, max: 100);
+  final Stream<Uint8List> spO2Stream = SerialPort('').listen(min: 0, max: 100);
+  final Stream<Uint8List> pulseStream = SerialPort('').listen(min: 30, max: 225);
+  final Stream<Uint8List> leakStream = SerialPort('').listen(min: 0, max:100);
 
   Future onStartSession() async {
     PopupAndLoading.showLoading();
@@ -116,6 +129,9 @@ class _LiveSessieState extends State<LiveSessie> {
             UpperPart(
               sessionSerialData: widget.sessionData.$1,
               sessionActive: startedSession,
+              flowStream: flowStream,
+              patientStream: patientStream,
+              vtiStream: vtiStream,
               serialTimeOut: serialTimeout, 
               timeoutCallback: onSerialTimeout
               ),
@@ -129,6 +145,8 @@ class _LiveSessieState extends State<LiveSessie> {
                   LowerLeftPart(
                     sessionSerialData: widget.sessionData.$1,
                     sessionActive: startedSession, 
+                    fiO2Stream: fiO2Stream,
+                    spO2Stream: spO2Stream,
                     serialTimeOut: serialTimeout, 
                     timeoutCallback: onSerialTimeout,
                     ),
@@ -141,6 +159,8 @@ class _LiveSessieState extends State<LiveSessie> {
                     onStopSession: onStopSession,
                     onResetSession: onResetSession,
                     session: widget.sessionData.$2,
+                    pulseStream: pulseStream,
+                    leakStream: leakStream,
                   ),
                 ],
               ),

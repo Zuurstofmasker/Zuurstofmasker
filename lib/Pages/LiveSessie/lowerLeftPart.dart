@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
@@ -12,6 +14,8 @@ class LowerLeftPart extends StatelessWidget {
     super.key,
     required this.sessionSerialData,
     required this.sessionActive,
+    required this.fiO2Stream,
+    required this.spO2Stream,
     this.serialTimeOut,
     required this.timeoutCallback,
     });
@@ -19,6 +23,8 @@ class LowerLeftPart extends StatelessWidget {
   final List<TimeChartData> sp02GraphData = [];
   final SessionSerialData sessionSerialData;
   final ValueNotifier<bool> sessionActive;
+  final Stream<Uint8List> fiO2Stream;
+  final Stream<Uint8List> spO2Stream;
   Timer? serialTimeOut;
   final Function timeoutCallback;
 
@@ -49,7 +55,7 @@ class LowerLeftPart extends StatelessWidget {
                       children: [
                         const Text("Fi02", style: liveTitleTextStyle),
                         StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: fiO2Stream,
                           builder: (context, snapshot) {
                             return Text(
                               "${fi02GraphData.isEmpty ? "-" : fi02GraphData.last.y.toInt()}%",
@@ -71,7 +77,7 @@ class LowerLeftPart extends StatelessWidget {
                       children: [
                         const Text("Sp02", style: liveTitleTextStyle),
                         StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: spO2Stream,
                           builder: (context, snapshot) {
                             return Text(
                               "${sp02GraphData.isEmpty ? "-" : sp02GraphData.last.y.toInt()}%",

@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
@@ -14,6 +15,9 @@ class UpperPart extends StatelessWidget {
     super.key,
     required this.sessionSerialData,
     required this.sessionActive,
+    required this.flowStream,
+    required this.patientStream,
+    required this.vtiStream,
     this.serialTimeOut,
     required this.timeoutCallback,
   });
@@ -22,6 +26,10 @@ class UpperPart extends StatelessWidget {
   final List<TimeChartData> terugvolumeGraphData = [];
   final SessionSerialData sessionSerialData;
   final ValueNotifier<bool> sessionActive;
+  final Stream<Uint8List> flowStream;
+  final Stream<Uint8List> patientStream;
+  final Stream<Uint8List> vtiStream;
+
   Timer? serialTimeOut;
   final Function timeoutCallback;
 
@@ -207,7 +215,7 @@ class UpperPart extends StatelessWidget {
                 children: [
                   Flexible(
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: 0, max: 40),
+                      stream: flowStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
@@ -234,7 +242,7 @@ class UpperPart extends StatelessWidget {
                   ),
                   Flexible(
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: -75, max: 75),
+                      stream: patientStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
@@ -260,7 +268,7 @@ class UpperPart extends StatelessWidget {
                   ),
                   Flexible(
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: 0, max: 10),
+                      stream: vtiStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
