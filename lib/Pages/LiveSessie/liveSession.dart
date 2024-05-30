@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/cameraHelpers.dart';
+import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
@@ -15,6 +16,7 @@ import 'package:zuurstofmasker/Pages/LiveSessie/lowerRightPart.dart';
 import 'package:zuurstofmasker/Pages/LiveSessie/upperPart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
+import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'dart:async';
 
@@ -76,7 +78,10 @@ class _LiveSessieState extends State<LiveSessie> {
       widget.sessionData.$1.vtiSeconds.clear();
       widget.sessionData.$1.vteSeconds.clear();
 
-      await stopRecording();
+      var (_, video) = await stopRecording();
+      if (video?.path != null) {
+        await deleteFile(video!.path);
+      }
       await startRecording();
     } catch (e) {
       PopupAndLoading.showError("Opvang resetten mislukt");

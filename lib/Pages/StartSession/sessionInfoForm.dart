@@ -11,6 +11,7 @@ class SessionInfoForm extends StatelessWidget {
     required this.noteController,
     required this.weigthController,
     required this.babyIdController,
+    required this.roomNumberController,
     this.isConfirm = false,
   });
 
@@ -18,14 +19,24 @@ class SessionInfoForm extends StatelessWidget {
   final TextEditingController noteController;
   final TextEditingController weigthController;
   final TextEditingController babyIdController;
+  final TextEditingController roomNumberController;
   final bool isConfirm;
 
   void updateWeigth(int value) {
     int currentValue = int.tryParse(weigthController.text) ?? 0;
     currentValue += value;
 
-    if(currentValue >= 0){
+    if (currentValue >= 0) {
       weigthController.text = currentValue.toString();
+    }
+  }
+
+  void updateRoomNumber(int value) {
+    int currentValue = int.tryParse(roomNumberController.text) ?? 0;
+    currentValue += value;
+
+    if (currentValue >= 1) {
+      roomNumberController.text = currentValue.toString();
     }
   }
 
@@ -75,11 +86,40 @@ class SessionInfoForm extends StatelessWidget {
           ],
         ),
         const PaddingSpacing(),
-        InputField(
-          isRequired: false,
-          controller: babyIdController,
-          labelText: "Baby ID",
+        Row(
+          children: [
+            SizedBox(
+              width: 100,
+              child: Button(
+                text: "- 1",
+                onTap: () => updateRoomNumber(-1),
+              ),
+            ),
+            const PaddingSpacing(),
+            Flexible(
+              child: InputField(
+                controller: roomNumberController,
+                labelText: "Kamer nummer",
+                isInt: true,
+              ),
+            ),
+            const PaddingSpacing(),
+            SizedBox(
+              width: 100,
+              child: Button(
+                text: "+ 1",
+                onTap: () => updateRoomNumber(1),
+              ),
+            ),
+          ],
         ),
+        if (isConfirm) const PaddingSpacing(),
+        if (isConfirm)
+          InputField(
+            isRequired: false,
+            controller: babyIdController,
+            labelText: "Baby ID",
+          ),
         const PaddingSpacing(),
         InputField(
           isRequired: false,

@@ -5,6 +5,7 @@ import 'package:zuurstofmasker/Models/note.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
+import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:video_player/video_player.dart';
 
@@ -18,6 +19,7 @@ List<Widget> calcThumbs(
     String sessionID,
     double progressBarWidth,
     ValueNotifier<List<Note>> noteList,
+    VideoPlayerController controller,
     BuildContext context) {
   final List<Widget> thumbWidgetList = [];
 
@@ -33,6 +35,8 @@ List<Widget> calcThumbs(
         top: -5,
         child: GestureDetector(
           onTap: () {
+            controller.seekTo(note.noteTime);
+            controller.pause();
             showNote(note, sessionID, noteList, context);
           },
           child: Container(
@@ -70,15 +74,22 @@ void addNote(String sessionID, Duration time,
         Button(
           onTap: () async {
             if (formKey.currentState!.validate()) {
+              PopupAndLoading.showLoading();
               noteList.value.add(Note(
                   id: const Uuid().v4(),
                   noteTime: time,
                   description: descriptionController.text,
                   title: titleController.text));
               noteList.notifyListeners();
-              await appendItemToListFile(noteList.value.last,
-                  "$sessionPath$sessionID/videoNotes.json", Note.fromJson);
-              Navigator.pop(context);
+              try {
+                await appendItemToListFile(noteList.value.last,
+                    "$sessionPath$sessionID/videoNotes.json", Note.fromJson);
+                PopupAndLoading.showSuccess("Notitie opgeslagen");
+                Navigator.pop(context);
+              } catch (e) {
+                PopupAndLoading.showError("Notitie is niet opgeslagen");
+              }
+              PopupAndLoading.endLoading();
             }
           },
           text: "Opslaan",
@@ -124,8 +135,17 @@ void showNote(Note note, String sessionID, ValueNotifier<List<Note>> noteList,
       shape: const RoundedRectangleBorder(borderRadius: borderRadius),
       actions: [
         Button(
-          onTap: () =>
-              {Navigator.pop(context), deleteNote(note, sessionID, noteList)},
+          onTap: () async {
+            PopupAndLoading.showLoading();
+            try {
+              await deleteNote(note, sessionID, noteList);
+              PopupAndLoading.showSuccess("Notitie verwijderd");
+              Navigator.pop(context);
+            } catch (e) {
+              PopupAndLoading.showError("Notitie verwijderd");
+            }
+            PopupAndLoading.endLoading();
+          },
           text: "Verwijderen",
           color: dangerColor,
         ),

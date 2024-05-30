@@ -25,18 +25,22 @@ Future<int> startRecording({
   MediaSettings settings = cameraSettings,
   Duration maxDuration = maxVideoDuration,
   bool doesDisposeOldCamera = true,
+  bool hideMissingCameraError = true,
 }) async {
   if (doesDisposeOldCamera) await disposeCamera(cameraId);
 
   List<CameraDescription> cameras = await fetchCameras();
+  if (index+1 > cameras.length && hideMissingCameraError == true) {
+    return 0;
+  }
   cameraId = await createCameraWithSettings(cameras[index], settings);
   await CameraPlatform.instance
       .startVideoRecording(cameraId, maxVideoDuration: maxVideoDuration);
   return cameraId;
 }
 
-Future<int> stopRecording({String? storeLocation}) async {
-  if (cameraId == -1) return cameraId;
+Future<(int, XFile?)> stopRecording({String? storeLocation}) async {
+  if (cameraId == -1) return (cameraId, null);
 
   XFile videoFile = await CameraPlatform.instance.stopVideoRecording(cameraId);
   await disposeCamera(cameraId);
@@ -49,5 +53,5 @@ Future<int> stopRecording({String? storeLocation}) async {
     deleteFile(orginFilePath);
   }
 
-  return cameraId;
+  return (cameraId, videoFile);
 }
