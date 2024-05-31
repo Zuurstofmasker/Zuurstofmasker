@@ -66,6 +66,9 @@ class ConfirmSession extends StatelessWidget {
               weigthController: weigthController,
               babyIdController: babyIdController,
               roomNumberController: roomNumberController,
+              startTime: session.birthTime,
+              endTimeController: session.birthTime,
+              sessionVar: session,
               isConfirm: true,
             ),
             const PaddingSpacing(

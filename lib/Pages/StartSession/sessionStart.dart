@@ -26,6 +26,16 @@ class StartSession extends StatelessWidget {
   final TextEditingController babyIdController = TextEditingController();
   final TextEditingController roomNumberController =
       TextEditingController(text: "1");
+  final DateTime startTime = DateTime.now();
+  final DateTime endTimeController = DateTime.now();
+  late Session globSession = Session(
+      id: '',
+      weight: 0,
+      nameMother: '',
+      birthTime: DateTime.now(),
+      endTime: DateTime.now(),
+      note: '',
+      roomNumber: 0);
 
   final TextEditingController stateOutController =
       TextEditingController(text: "0");
@@ -108,11 +118,15 @@ class StartSession extends StatelessWidget {
                 ),
                 Flexible(
                   child: SessionInfoForm(
-                      nameController: nameController,
-                      noteController: noteController,
-                      weigthController: weigthController,
-                      babyIdController: babyIdController,
-                      roomNumberController: roomNumberController),
+                    nameController: nameController,
+                    noteController: noteController,
+                    weigthController: weigthController,
+                    babyIdController: babyIdController,
+                    roomNumberController: roomNumberController,
+                    startTime: startTime,
+                    sessionVar: globSession,
+                    endTimeController: endTimeController,
+                  ),
                 ),
               ],
             ),
@@ -125,10 +139,12 @@ class StartSession extends StatelessWidget {
           ValueListenableBuilder(
               valueListenable: cameraNotifier,
               builder: (context, value, child) {
-                Timer(const Duration(seconds: 1), () {
-                  cameraNotifier.value++;
-                });
-
+                Timer(
+                  const Duration(seconds: 1),
+                  () {
+                    cameraNotifier.value++;
+                  },
+                );
                 return FutureBuilder(
                     future: fetchCameras(),
                     builder: (BuildContext context, snapshot) {
