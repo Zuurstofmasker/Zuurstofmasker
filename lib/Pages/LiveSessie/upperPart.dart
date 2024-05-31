@@ -1,6 +1,4 @@
-import 'dart:ffi';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialHelpers.dart';

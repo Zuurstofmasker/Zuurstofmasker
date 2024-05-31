@@ -59,88 +59,48 @@ class SessionSerialData {
     spO2Seconds
   ];
 
-  List<List<double>> get csvData => List<List<double>>.of([
-        stateOutSeconds
-            .map((e) => e.microsecondsSinceEpoch.toDouble())
-            .toList(),
-        stateOutFlow,
-        biasSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
-        biasFlow,
-        patientSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
-        patientFlow,
-        fiO2Seconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
-        fiO2Flow,
-        vtiSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
-        vtiFlow,
-        vteSeconds.map((e) => e.microsecondsSinceEpoch.toDouble()).toList(),
-        vteFlow
-      ]);
+  List<List<double>> get csvData {
+    List<List<double>> csvData = [];
+    for (int i = 0; i < valueLists.length; i++) {
+      csvData.add(valueLists[i]);
+      csvData.add(timestampsLists[i]
+          .map((e) => e.microsecondsSinceEpoch.toDouble())
+          .toList());
+    }
+    return csvData;
+  }
 
-  Future<SessionSerialData> fromFile(String sessionId) async {
+  static Future<SessionSerialData> fromFile(String sessionId) async {
     final List<List<String>> csvData =
         await csvFromFile("$sessionPath$sessionId/recordedData.csv");
 
-    List<DateTime> CSVstateOutSeconds = [];
-    List<double> CSVstateOutFlow = [];
-    List<DateTime> CSVbiasSeconds = [];
-    List<double> CSVbiasFlow = [];
-    List<DateTime> CSVpatientSeconds = [];
-    List<double> CSVpatientFlow = [];
-    List<DateTime> CSVfiO2Seconds = [];
-    List<double> CSVfiO2Flow = [];
-    List<DateTime> CSVvtiSeconds = [];
-    List<double> CSVvtiFlow = [];
-    List<DateTime> CSVvteSeconds = [];
-    List<double> CSVvteFlow = [];
-    List<DateTime> CSVspO2Seconds = [];
-    List<double> CSVspO2Flow = [];
-
-    late List<List<double>> CSVvalueLists = [
-      CSVstateOutFlow,
-      CSVbiasFlow,
-      CSVpatientFlow,
-      CSVfiO2Flow,
-      CSVvtiFlow,
-      CSVvteFlow,
-      CSVspO2Flow
-    ];
-
-    late List<List<DateTime>> CSVtimestampsLists = [
-      CSVstateOutSeconds,
-      CSVbiasSeconds,
-      CSVpatientSeconds,
-      CSVfiO2Seconds,
-      CSVvtiSeconds,
-      CSVvteSeconds,
-      CSVspO2Seconds
-    ];
+    final List<List<double>> csvValueLists = List.generate(6, (_) => []);
+    final List<List<DateTime>> csvTimestampsLists = List.generate(6, (_) => []);
 
     for (List<String> csvRow in csvData) {
-      for (int i = 0; i < timestampsLists.length; i = i + 2) {
-        CSVtimestampsLists[i].add(DateTime.tryParse(csvRow[i]) ??
+      for (int i = 0; i < csvTimestampsLists.length; i += 2) {
+        csvTimestampsLists[i].add(DateTime.tryParse(csvRow[i]) ??
             DateTime.fromMicrosecondsSinceEpoch(0));
-      }
-      for (int i = 1; i < valueLists.length; i = i + 2) {
-        CSVvalueLists[i].add(double.tryParse(csvRow[i]) ?? 0.0);
+        csvValueLists[i + 1].add(double.tryParse(csvRow[i]) ?? 0.0);
       }
     }
 
     return SessionSerialData(
       sessionId: sessionId,
-      stateOutSeconds: CSVstateOutSeconds,
-      stateOutFlow: CSVstateOutFlow,
-      biasSeconds: CSVbiasSeconds,
-      biasFlow: CSVbiasFlow,
-      patientSeconds: CSVpatientSeconds,
-      patientFlow: CSVpatientFlow,
-      fiO2Seconds: CSVfiO2Seconds,
-      fiO2Flow: CSVfiO2Flow,
-      vtiSeconds: CSVvtiSeconds,
-      vtiFlow: CSVvtiFlow,
-      vteSeconds: CSVvteSeconds,
-      vteFlow: CSVvteFlow,
-      spO2Flow: CSVspO2Flow,
-      spO2Seconds: CSVspO2Seconds,
+      stateOutSeconds: csvTimestampsLists[0],
+      stateOutFlow: csvValueLists[0],
+      biasSeconds: csvTimestampsLists[1],
+      biasFlow: csvValueLists[1],
+      patientSeconds: csvTimestampsLists[2],
+      patientFlow: csvValueLists[2],
+      fiO2Seconds: csvTimestampsLists[3],
+      fiO2Flow: csvValueLists[3],
+      vtiSeconds: csvTimestampsLists[4],
+      vtiFlow: csvValueLists[4],
+      vteSeconds: csvTimestampsLists[5],
+      vteFlow: csvValueLists[5],
+      spO2Seconds: csvTimestampsLists[6],
+      spO2Flow: csvValueLists[6],
     );
   }
 

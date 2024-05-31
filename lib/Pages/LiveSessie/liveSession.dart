@@ -1,6 +1,4 @@
-import 'dart:ffi';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/cameraHelpers.dart';
@@ -17,7 +15,6 @@ import 'package:zuurstofmasker/Pages/LiveSessie/lowerRightPart.dart';
 import 'package:zuurstofmasker/Pages/LiveSessie/upperPart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
-import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'dart:async';
 
@@ -50,24 +47,36 @@ class _LiveSessieState extends State<LiveSessie> {
   final Stream<Uint8List> leakStream =
       SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
 
+  late List<Stream> streams = [
+    flowStream,
+    patientStream,
+    vtiStream,
+    fiO2Stream,
+    spO2Stream,
+    pulseStream,
+    leakStream
+  ];
+
+  final List<StreamSubscription> streamSubscriptions = [];
+
   @override
   void initState() {
-    SessionSerialData sessionSerial = widget.sessionData.$1;
-    flowStream.listen((value) => addDataToCSVObject(
-        sessionSerial.biasFlow, sessionSerial.biasSeconds, value));
-    patientStream.listen((value) => addDataToCSVObject(
-        sessionSerial.patientFlow, sessionSerial.patientSeconds, value));
-    vtiStream.listen((value) => addDataToCSVObject(
-        sessionSerial.vtiFlow, sessionSerial.vtiSeconds, value));
-    fiO2Stream.listen((value) => addDataToCSVObject(
-        sessionSerial.fiO2Flow, sessionSerial.fiO2Seconds, value));
-    spO2Stream.listen((value) => addDataToCSVObject(
-        sessionSerial.spO2Flow, sessionSerial.spO2Seconds, value));
-    pulseStream.listen((value) => addDataToCSVObject(
-        sessionSerial.vteFlow, sessionSerial.vteSeconds, value));
-    leakStream.listen((value) => addDataToCSVObject(
-        sessionSerial.stateOutFlow, sessionSerial.stateOutSeconds, value));
+    // Subscribing to all the streams
+    subscribeToStreams();
+
     super.initState();
+  }
+
+  void subscribeToStreams() {
+    SessionSerialData sessionSerialData = widget.sessionData.$1;
+    for (int i = 0; i < streams.length; i++) {
+      streamSubscriptions.add(
+        streams[i].listen(
+          (value) => addDataToCSVObject(sessionSerialData.csvData[i],
+              sessionSerialData.timestampsLists[i], value),
+        ),
+      );
+    }
   }
 
   void addDataToCSVObject(
@@ -103,9 +112,11 @@ class _LiveSessieState extends State<LiveSessie> {
 
       // Clearing all the old irrelevant data
       SessionSerialData sessionSerial = widget.sessionData.$1;
-
-      for (int i = 0; i < sessionSerial.timestampsLists.length; i++) {
-        sessionSerial.timestampsLists[i].clear();
+      for (List<dynamic> list in [
+        ...sessionSerial.csvData,
+        ...sessionSerial.timestampsLists
+      ]) {
+        list.clear();
       }
 
       var (_, video) = await stopRecording();
@@ -151,6 +162,11 @@ class _LiveSessieState extends State<LiveSessie> {
   void dispose() {
     stopRecording(
         storeLocation: '$sessionPath${widget.sessionData.$2.id}/video.mp4');
+
+    for (StreamSubscription stream in streamSubscriptions) {
+      stream.cancel();
+    }
+
     super.dispose();
   }
 
