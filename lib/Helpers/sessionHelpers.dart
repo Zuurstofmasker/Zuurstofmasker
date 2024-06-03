@@ -46,13 +46,6 @@ Future<void> updateSession(Session session) async {
   await writeListToFile(sessions, sessionsJsonPath);
 }
 
-Future<void> updateRecordedData(SessionSerialData data) async {
-  String csvPath = sessionPath + data.sessionId;
-  String csv = listToCsv(data.csvData);
-
-  await stringToFile('$csvPath/recordedData.csv', csv);
-}
-
 Future<List<List<double>>> getSessionSerialData(String sessionId) async {
   String csvPath = sessionPath + sessionId;
   String data = await stringFromFile('${csvPath}/recordedData.csv');

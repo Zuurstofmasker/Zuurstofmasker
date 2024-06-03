@@ -174,7 +174,7 @@ class LowerRightPart extends StatelessWidget {
 
                         // Retrieving the elapsed time
                         Duration time =
-                            DateTime.now().difference(session.birthTime);
+                            DateTime.now().difference(session.birthDateTime);
 
                         return Text(
                           (!startedSession.value

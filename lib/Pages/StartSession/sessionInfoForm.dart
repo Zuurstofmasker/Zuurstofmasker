@@ -1,37 +1,45 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
-import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
-import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/Widgets/titles.dart';
-import 'package:zuurstofmasker/config.dart';
 
 class SessionInfoForm extends StatelessWidget {
-  SessionInfoForm({
+  SessionInfoForm.start({
     super.key,
     required this.nameController,
     required this.noteController,
     required this.weigthController,
     required this.babyIdController,
     required this.roomNumberController,
-    required this.startTime,
+  })  : isConfirm = false,
+        endTimeValidator = null,
+        onEndTimePick = null,
+        endTimeController = null,
+        birthTimeController = null;
+
+  SessionInfoForm.confirm({
+    super.key,
+    required this.nameController,
+    required this.noteController,
+    required this.weigthController,
+    required this.babyIdController,
+    required this.roomNumberController,
     required this.endTimeController,
-    required this.sessionVar,
-    this.isConfirm = false,
-  });
+    required this.birthTimeController,
+    required this.onEndTimePick,
+    required this.endTimeValidator,
+  }) : isConfirm = true;
 
   final TextEditingController nameController;
   final TextEditingController noteController;
   final TextEditingController weigthController;
   final TextEditingController babyIdController;
   final TextEditingController roomNumberController;
-  final DateTime startTime;
-  late DateTime endTimeController;
-  final Session sessionVar;
+  final TextEditingController? endTimeController;
+  final TextEditingController? birthTimeController;
+  final Function()? onEndTimePick;
+  final String? Function()? endTimeValidator;
   final bool isConfirm;
 
   ValueNotifier<bool> endTimeNotifier = ValueNotifier(true);
@@ -51,50 +59,6 @@ class SessionInfoForm extends StatelessWidget {
 
     if (currentValue >= 1) {
       roomNumberController.text = currentValue.toString();
-    }
-  }
-
-  Future<void> endTimePopup(context) async {
-    TimeOfDay? newEndTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(endTimeController),
-    );
-
-    DateTime tempEndTime = DateTime(
-        endTimeController.year,
-        endTimeController.month,
-        endTimeController.day,
-        newEndTime?.hour ?? 0,
-        newEndTime?.minute ?? 0);
-
-    endTimeNotifier.notifyListeners();
-    if (newEndTime == null) {
-      // Cancelled
-      return;
-    } else if (tempEndTime.isAfter(startTime)) {
-      endTimeController = tempEndTime;
-      int endTimeMilliseconds = endTimeController.millisecondsSinceEpoch;
-      List<List<dynamic>> csvData =
-          await csvFromFile("$sessionPath${sessionVar.id}/recordedData.csv");
-      List<List<String>> newCsv = [];
-      for (int i = 1; i < csvData.length; i++) {
-        // Skip the line with column names
-        List<String> newCsvLine = [];
-        for (int j = 0; j < csvData[i].length; j += 2) {
-          // Starts with time and skips over values
-          if ((csvData[i][j].runtimeType == int ? csvData[i][j] : 0) >
-              endTimeMilliseconds) {
-            continue;
-          }
-          newCsvLine
-              .addAll([csvData[i][j].toString(), csvData[i][j + 1].toString()]);
-        }
-        newCsv.add(newCsvLine);
-      }
-    } else {
-      PopupAndLoading.showError(
-          "Datum kan niet ouder zijn dan starttijd (${startTime.hour}:${startTime.minute})");
-      return;
     }
   }
 
@@ -171,13 +135,38 @@ class SessionInfoForm extends StatelessWidget {
             ),
           ],
         ),
-        if (isConfirm) const PaddingSpacing(),
-        if (isConfirm)
+        if (isConfirm) ...[
+          const PaddingSpacing(),
           InputField(
             isRequired: false,
             controller: babyIdController,
             labelText: "Baby ID",
           ),
+          const PaddingSpacing(),
+          InputField(
+            labelText: "Geboortetijd",
+            icon: Icons.timer,
+            isReadOnly: true,
+            controller: birthTimeController,
+          ),
+          const PaddingSpacing(),
+          InputField(
+            icon: Icons.timer,
+            labelText: "Eindtijd",
+            isReadOnly: true,
+            controller: endTimeController,
+            validator: (p0) {
+              if (endTimeValidator != null) {
+                return endTimeValidator!();
+              }
+            },
+            onTap: () {
+              if (onEndTimePick != null) {
+                onEndTimePick!();
+              }
+            },
+          ),
+        ],
         const PaddingSpacing(),
         InputField(
           isRequired: false,
@@ -185,23 +174,6 @@ class SessionInfoForm extends StatelessWidget {
           controller: noteController,
           labelText: "Notitie",
         ),
-        if (isConfirm) const PaddingSpacing(),
-        if (isConfirm)
-          Row(
-            children: [
-              Button(
-                  onTap: () async {
-                    await endTimePopup(context);
-                  },
-                  text: "Tijd aanpassen"),
-              const PaddingSpacing(),
-              ValueListenableBuilder(
-                valueListenable: endTimeNotifier,
-                builder: ((context, value, child) => Text(
-                    "Einde van sessie: ${endTimeController.hour}:${endTimeController.minute}")),
-              ),
-            ],
-          )
       ],
     );
   }

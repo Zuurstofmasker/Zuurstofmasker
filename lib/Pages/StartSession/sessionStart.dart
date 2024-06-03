@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:zuurstofmasker/Helpers/cameraHelpers.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
@@ -27,15 +25,7 @@ class StartSession extends StatelessWidget {
   final TextEditingController roomNumberController =
       TextEditingController(text: "1");
   final DateTime startTime = DateTime.now();
-  final DateTime endTimeController = DateTime.now();
-  late Session globSession = Session(
-      id: '',
-      weight: 0,
-      nameMother: '',
-      birthTime: DateTime.now(),
-      endTime: DateTime.now(),
-      note: '',
-      roomNumber: 0);
+  final TextEditingController endTimeController = TextEditingController();
 
   final TextEditingController stateOutController =
       TextEditingController(text: "0");
@@ -46,6 +36,7 @@ class StartSession extends StatelessWidget {
   final TextEditingController fiO2Controller = TextEditingController(text: "0");
   final TextEditingController vtiController = TextEditingController(text: "0");
   final TextEditingController vteController = TextEditingController(text: "0");
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   StartSession({super.key});
@@ -60,8 +51,8 @@ class StartSession extends StatelessWidget {
       nameMother: nameController.text,
       id: newSessionId,
       note: noteController.text,
-      birthTime: DateTime.now(),
-      endTime: DateTime.now(),
+      birthDateTime: DateTime.now(),
+      endDateTime: DateTime.now(),
       babyId: babyIdController.text,
       weight: int.parse(weigthController.text),
       roomNumber: int.parse(roomNumberController.text),
@@ -70,22 +61,22 @@ class StartSession extends StatelessWidget {
 
     final SessionSerialData sessionSerialData = SessionSerialData(
         sessionId: newSessionId,
-        stateOutSeconds: [],
-        stateOutFlow: [],
-        biasSeconds: [],
-        biasFlow: [],
-        patientSeconds: [],
-        patientFlow: [],
-        fiO2Seconds: [],
-        fiO2Flow: [],
-        vtiSeconds: [],
-        vtiFlow: [],
-        vteSeconds: [],
-        vteFlow: [],
-        spO2Flow: [],
-        spO2Seconds: []);
+        pressureDateTime: [],
+        pressureData: [],
+        flowDateTime: [],
+        flowData: [],
+        tidalVolumeDateTime: [],
+        tidalVolumeData: [],
+        fiO2DateTime: [],
+        fiO2Data: [],
+        sp02DateTime: [],
+        sp02Data: [],
+        pulseDateTime: [],
+        pulseData: [],
+        leakData: [],
+        leakDateTime: []);
 
-    await updateRecordedData(sessionSerialData);
+    await sessionSerialData.saveToFile(session.id);
 
     return (sessionSerialData, session);
   }
@@ -117,15 +108,12 @@ class StartSession extends StatelessWidget {
                   multiplier: 2,
                 ),
                 Flexible(
-                  child: SessionInfoForm(
+                  child: SessionInfoForm.start(
                     nameController: nameController,
                     noteController: noteController,
                     weigthController: weigthController,
                     babyIdController: babyIdController,
                     roomNumberController: roomNumberController,
-                    startTime: startTime,
-                    sessionVar: globSession,
-                    endTimeController: endTimeController,
                   ),
                 ),
               ],
@@ -164,8 +152,14 @@ class StartSession extends StatelessWidget {
               if (_formKey.currentState!.validate()) {
                 PopupAndLoading.showLoading();
                 await startSession().then((value) {
-                  pushPage(MaterialPageRoute(
-                      builder: (context) => LiveSessie(sessionData: value)));
+                  pushPage(
+                    MaterialPageRoute(
+                      builder: (context) => LiveSessie(
+                        serialData: value.$1,
+                        session: value.$2,
+                      ),
+                    ),
+                  );
                 }).catchError((error) {
                   PopupAndLoading.showError("Data oplsaan mislukt");
                 });

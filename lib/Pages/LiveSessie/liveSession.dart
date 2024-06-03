@@ -19,10 +19,14 @@ import 'package:zuurstofmasker/config.dart';
 import 'dart:async';
 
 class LiveSessie extends StatefulWidget {
-  const LiveSessie({super.key, required this.sessionData});
+  const LiveSessie({
+    super.key,
+    required this.session,
+    required this.serialData,
+  });
 
-  final (SessionSerialData, Session) sessionData;
-
+  final Session session;
+  final SessionSerialData serialData;
   @override
   State<LiveSessie> createState() => _LiveSessieState();
 }
@@ -32,11 +36,11 @@ class _LiveSessieState extends State<LiveSessie> {
   Timer? periodicSessionDataSave;
   Timer? serialTimeout;
 
-  final Stream<Uint8List> flowStream =
+  final Stream<Uint8List> pressureStream =
       SerialPort('').listen(min: 0, max: 40).asBroadcastStream();
-  final Stream<Uint8List> patientStream =
+  final Stream<Uint8List> flowStream =
       SerialPort('').listen(min: -75, max: 75).asBroadcastStream();
-  final Stream<Uint8List> vtiStream =
+  final Stream<Uint8List> tidalVolumeStream =
       SerialPort('').listen(min: 0, max: 10).asBroadcastStream();
   final Stream<Uint8List> fiO2Stream =
       SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
@@ -48,9 +52,9 @@ class _LiveSessieState extends State<LiveSessie> {
       SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
 
   late List<Stream> streams = [
+    pressureStream,
     flowStream,
-    patientStream,
-    vtiStream,
+    tidalVolumeStream,
     fiO2Stream,
     spO2Stream,
     pulseStream,
@@ -68,13 +72,13 @@ class _LiveSessieState extends State<LiveSessie> {
   }
 
   void subscribeToStreams() {
-    SessionSerialData sessionSerialData = widget.sessionData.$1;
+    SessionSerialData sessionSerialData = widget.serialData;
     for (int i = 0; i < streams.length; i++) {
       streamSubscriptions.add(
-        streams[i].listen(
-          (value) => addDataToCSVObject(sessionSerialData.csvData[i],
-              sessionSerialData.timestampsLists[i], value),
-        ),
+        streams[i].listen((value) {
+          addDataToCSVObject(sessionSerialData.valueLists[i],
+              sessionSerialData.timestampsLists[i], value);
+        }),
       );
     }
   }
@@ -92,10 +96,10 @@ class _LiveSessieState extends State<LiveSessie> {
 
     try {
       startedSession.value = true;
-      widget.sessionData.$2.birthTime = DateTime.now();
+      widget.session.birthDateTime = DateTime.now();
       // serialTimeout = Timer(const Duration(seconds: 5), onSerialTimeout);
       periodicSessionDataSave = Timer(const Duration(seconds: 1),
-          () => widget.sessionData.$1.saveToFile(widget.sessionData.$2.id));
+          () => widget.serialData.saveToFile(widget.session.id));
       await startRecording();
     } catch (e) {
       PopupAndLoading.showError("Opvang starten mislukt");
@@ -108,12 +112,12 @@ class _LiveSessieState extends State<LiveSessie> {
     PopupAndLoading.showLoading();
 
     try {
-      widget.sessionData.$2.birthTime = DateTime.now();
+      widget.session.birthDateTime = DateTime.now();
 
       // Clearing all the old irrelevant data
-      SessionSerialData sessionSerial = widget.sessionData.$1;
+      SessionSerialData sessionSerial = widget.serialData;
       for (List<dynamic> list in [
-        ...sessionSerial.csvData,
+        ...sessionSerial.valueLists,
         ...sessionSerial.timestampsLists
       ]) {
         list.clear();
@@ -136,16 +140,21 @@ class _LiveSessieState extends State<LiveSessie> {
 
     try {
       startedSession.value = false;
-      widget.sessionData.$2.endTime = DateTime.now();
-      await updateSession(widget.sessionData.$2);
+      widget.session.endDateTime = DateTime.now();
+      await updateSession(widget.session);
 
-      await widget.sessionData.$1.saveToFile(widget.sessionData.$2.id);
+      await widget.serialData.saveToFile(widget.session.id);
       await stopRecording(
-          storeLocation: '$sessionPath${widget.sessionData.$2.id}/video.mp4');
+          storeLocation: '$sessionPath${widget.session.id}/video.mp4');
 
-      pushPage(MaterialPageRoute(
-          builder: (context) =>
-              ConfirmSession(session: widget.sessionData.$2)));
+      pushPage(
+        MaterialPageRoute(
+          builder: (context) => ConfirmSession(
+            session: widget.session,
+            serialData: widget.serialData,
+          ),
+        ),
+      );
     } catch (e) {
       PopupAndLoading.showError("Opvang stoppen mislukt");
     }
@@ -160,8 +169,7 @@ class _LiveSessieState extends State<LiveSessie> {
 
   @override
   void dispose() {
-    stopRecording(
-        storeLocation: '$sessionPath${widget.sessionData.$2.id}/video.mp4');
+    stopRecording(storeLocation: '$sessionPath${widget.session.id}/video.mp4');
 
     for (StreamSubscription stream in streamSubscriptions) {
       stream.cancel();
@@ -179,11 +187,11 @@ class _LiveSessieState extends State<LiveSessie> {
           mainAxisSize: MainAxisSize.min,
           children: [
             UpperPart(
-                sessionSerialData: widget.sessionData.$1,
+                sessionSerialData: widget.serialData,
                 sessionActive: startedSession,
+                pressureStream: pressureStream,
                 flowStream: flowStream,
-                patientStream: patientStream,
-                vtiStream: vtiStream,
+                tidalVolumeStream: tidalVolumeStream,
                 serialTimeOut: serialTimeout,
                 timeoutCallback: onSerialTimeout),
             const PaddingSpacing(
@@ -194,7 +202,7 @@ class _LiveSessieState extends State<LiveSessie> {
               child: Row(
                 children: [
                   LowerLeftPart(
-                    sessionSerialData: widget.sessionData.$1,
+                    sessionSerialData: widget.serialData,
                     sessionActive: startedSession,
                     fiO2Stream: fiO2Stream,
                     spO2Stream: spO2Stream,
@@ -209,7 +217,7 @@ class _LiveSessieState extends State<LiveSessie> {
                     onStartSession: onStartSession,
                     onStopSession: onStopSession,
                     onResetSession: onResetSession,
-                    session: widget.sessionData.$2,
+                    session: widget.session,
                     pulseStream: pulseStream,
                     leakStream: leakStream,
                   ),

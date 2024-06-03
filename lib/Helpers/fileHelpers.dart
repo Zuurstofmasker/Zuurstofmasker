@@ -20,9 +20,6 @@ Future<bool> doesFolderOrFileExist(String path,
 Future<String> stringFromFile(String path) async =>
     await File(path).readAsString();
 
-// Reading from file
-String stringFromFileSync(String path) => File(path).readAsStringSync();
-
 // Writing to file
 Future<File> stringToFile(String path, String data,
         [FileMode fileMode = FileMode.write]) async =>
@@ -143,10 +140,6 @@ Future<File> csvToFile<T>(List<List<T>> csv, String path) async =>
 // Retrieve csv from a file
 Future<List<List<T>>> csvFromFile<T>(String path) async =>
     csvToList<T>(await stringFromFile(path));
-
-// Retrieve csv from a file
-List<List<T>> csvFromFileSync<T>(String path) =>
-    csvToList<T>(stringFromFileSync(path));
 
 // Apending csv to a file
 Future<File> appendCsvToFile<T>(List<List<T>> csv, String path) async =>

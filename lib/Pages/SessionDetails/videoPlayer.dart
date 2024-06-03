@@ -1,15 +1,9 @@
 import 'dart:developer';
-
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Models/note.dart';
-import 'package:zuurstofmasker/Pages/TerugKijken/notesFunctions.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/notesFunctions.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
-import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:video_player/video_player.dart';

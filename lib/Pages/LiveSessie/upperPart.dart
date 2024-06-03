@@ -14,9 +14,9 @@ class UpperPart extends StatelessWidget {
     super.key,
     required this.sessionSerialData,
     required this.sessionActive,
+    required this.pressureStream,
     required this.flowStream,
-    required this.patientStream,
-    required this.vtiStream,
+    required this.tidalVolumeStream,
     this.serialTimeOut,
     required this.timeoutCallback,
   });
@@ -25,9 +25,9 @@ class UpperPart extends StatelessWidget {
   final List<TimeChartData> terugvolumeGraphData = [];
   final SessionSerialData sessionSerialData;
   final ValueNotifier<bool> sessionActive;
+  final Stream<Uint8List> pressureStream;
   final Stream<Uint8List> flowStream;
-  final Stream<Uint8List> patientStream;
-  final Stream<Uint8List> vtiStream;
+  final Stream<Uint8List> tidalVolumeStream;
 
   Timer? serialTimeOut;
   final Function timeoutCallback;
@@ -216,16 +216,15 @@ class UpperPart extends StatelessWidget {
                 children: [
                   Flexible(
                     child: StreamBuilder(
-                      stream: flowStream,
+                      stream: pressureStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
-                          drukGraphData.add(TimeChartData(
+                          drukGraphData.add(
+                            TimeChartData(
                               y: uint8ListToDouble(snapshot.data!),
-                              time: DateTime.now()));
-                          sessionSerialData.stateOutFlow
-                              .add(snapshot.data![0].toDouble());
-                          sessionSerialData.stateOutSeconds.add(DateTime.now());
+                              time: DateTime.now(),
+                            ),
+                          );
                         }
                         return TimeChart(
                           chartData: TimeChartLine(
@@ -244,16 +243,16 @@ class UpperPart extends StatelessWidget {
                   ),
                   Flexible(
                     child: StreamBuilder(
-                      stream: patientStream,
+                      stream: flowStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
-                          flowGraphData.add(TimeChartData(
+                          flowGraphData.add(
+                            TimeChartData(
                               y: uint8ListToDouble(snapshot.data!),
-                              time: DateTime.now()));
-                          sessionSerialData.patientFlow
-                              .add(snapshot.data![0].toDouble());
-                          sessionSerialData.patientSeconds.add(DateTime.now());
+                              time: DateTime.now(),
+                            ),
+                          );
                         }
                         return TimeChart(
                           chartData: TimeChartLine(
@@ -271,16 +270,16 @@ class UpperPart extends StatelessWidget {
                   ),
                   Flexible(
                     child: StreamBuilder(
-                      stream: vtiStream,
+                      stream: tidalVolumeStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
-                          terugvolumeGraphData.add(TimeChartData(
+                          terugvolumeGraphData.add(
+                            TimeChartData(
                               y: uint8ListToDouble(snapshot.data!),
-                              time: DateTime.now()));
-                          sessionSerialData.vtiFlow
-                              .add(snapshot.data![0].toDouble());
-                          sessionSerialData.vtiSeconds.add(DateTime.now());
+                              time: DateTime.now(),
+                            ),
+                          );
                         }
                         return TimeChart(
                           chartData: TimeChartLine(

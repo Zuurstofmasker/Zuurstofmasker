@@ -103,13 +103,12 @@ class LowerLeftPart extends StatelessWidget {
                       stream: SerialPort('').listen(min: 0, max: 100),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          // serialTimeOut = Timer(const Duration(seconds: 5), timeoutCallback());
-                          fi02GraphData.add(TimeChartData(
+                          fi02GraphData.add(
+                            TimeChartData(
                               y: uint8ListToDouble(snapshot.data!),
-                              time: DateTime.now()));
-                          sessionSerialData.fiO2Flow
-                              .add(uint8ListToDouble(snapshot.data!));
-                          sessionSerialData.fiO2Seconds.add(DateTime.now());
+                              time: DateTime.now(),
+                            ),
+                          );
                         }
                         return TimeChart(
                           chartData: TimeChartLine(
