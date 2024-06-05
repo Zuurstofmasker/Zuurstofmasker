@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Models/note.dart';
-import 'package:zuurstofmasker/Pages/SessionDetails/notesFunctions.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/Parts/VideoPlayer/notesFunctions.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Models/session.dart';
@@ -20,7 +20,7 @@ class VideoPlr extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlr> {
-  ValueNotifier<List<Note>> noteList = ValueNotifier<List<Note>>([]);
+  final ValueNotifier<List<Note>> noteList = ValueNotifier<List<Note>>([]);
 
   bool videoExists = false;
   void reload() {

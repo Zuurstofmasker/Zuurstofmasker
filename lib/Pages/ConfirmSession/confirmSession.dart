@@ -4,7 +4,7 @@ import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/sessionSerialData.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
-import 'package:zuurstofmasker/Pages/StartSession/sessionInfoForm.dart';
+import 'package:zuurstofmasker/Pages/StartSession/Parts/sessionInfoForm.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';

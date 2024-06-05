@@ -1,8 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
-import 'package:zuurstofmasker/Helpers/serialMocker.dart';
+import 'package:zuurstofmasker/Pages/LiveSessie/liveSession.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
@@ -16,8 +15,6 @@ class LowerLeftPart extends StatelessWidget {
     required this.sessionActive,
     required this.fiO2Stream,
     required this.spO2Stream,
-    this.serialTimeOut,
-    required this.timeoutCallback,
   });
   final List<TimeChartData> fi02GraphData = [];
   final List<TimeChartData> sp02GraphData = [];
@@ -25,8 +22,6 @@ class LowerLeftPart extends StatelessWidget {
   final ValueNotifier<bool> sessionActive;
   final Stream<Uint8List> fiO2Stream;
   final Stream<Uint8List> spO2Stream;
-  Timer? serialTimeOut;
-  final Function timeoutCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +53,7 @@ class LowerLeftPart extends StatelessWidget {
                           stream: fiO2Stream,
                           builder: (context, snapshot) {
                             return Text(
-                              "${fi02GraphData.isEmpty ? "-" : fi02GraphData.last.y.toInt()}%",
+                              "${fi02GraphData.lastOrNull?.y.toInt() ??  "-"}%",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.fiO2),
                             );
@@ -80,7 +75,7 @@ class LowerLeftPart extends StatelessWidget {
                           stream: spO2Stream,
                           builder: (context, snapshot) {
                             return Text(
-                              "${sp02GraphData.isEmpty ? "-" : sp02GraphData.last.y.toInt()}%",
+                              "${sp02GraphData.lastOrNull?.y.toInt() ?? "-"}%",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.spO2),
                             );
@@ -100,21 +95,16 @@ class LowerLeftPart extends StatelessWidget {
                   Expanded(
                     flex: 3,
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: 0, max: 100),
+                      stream: fiO2Stream,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          fi02GraphData.add(
-                            TimeChartData(
-                              y: uint8ListToDouble(snapshot.data!),
-                              time: DateTime.now(),
-                            ),
-                          );
-                        }
+                        saveDateFromStream(snapshot, fi02GraphData);
                         return TimeChart(
-                          chartData: TimeChartLine(
-                            chartData: fi02GraphData,
-                            color: settings.colors.fiO2,
-                          ),
+                          chartTimeLines: [
+                            TimeChartLine(
+                              chartData: fi02GraphData,
+                              color: settings.colors.fiO2,
+                            )
+                          ],
                           minY: 0,
                           maxY: 100,
                         );
@@ -127,21 +117,16 @@ class LowerLeftPart extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: 0, max: 100),
+                      stream: spO2Stream,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          sp02GraphData.add(
-                            TimeChartData(
-                              y: uint8ListToDouble(snapshot.data!),
-                              time: DateTime.now(),
-                            ),
-                          );
-                        }
+                       saveDateFromStream(snapshot, sp02GraphData);
                         return TimeChart(
-                          chartData: TimeChartLine(
-                            chartData: sp02GraphData,
-                            color: settings.colors.spO2,
-                          ),
+                          chartTimeLines: [
+                            TimeChartLine(
+                              chartData: sp02GraphData,
+                              color: settings.colors.spO2,
+                            )
+                          ],
                           minY: 0,
                           maxY: 100,
                           chartSize: 600,

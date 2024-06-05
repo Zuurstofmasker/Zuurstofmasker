@@ -1,14 +1,12 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:zuurstofmasker/Models/sessionSerialData.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/Parts/VideoPlayer/videoPlayer.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/config.dart';
-import 'package:zuurstofmasker/Pages/SessionDetails/chartsLeftPart.dart';
-import 'package:zuurstofmasker/Pages/SessionDetails/videoPlayer.dart';
-import 'package:zuurstofmasker/Pages/SessionDetails/chartsLowerPart.dart';
-import 'package:zuurstofmasker/Pages/SessionDetails/infoNavBar.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/Parts/Charts/chartsLeftPart.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/Parts/Charts/chartsLowerPart.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/Parts/Charts/infoNavBar.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -22,21 +20,21 @@ class SessionDetails extends StatelessWidget {
   final SessionSerialData serialData;
 
   VideoPlayerController? controller;
-  int currentTime = 0;
   late List<TimeChartData> pressureData = getTimeChartDataList(
       serialData.pressureDateTime, serialData.pressureData); //pressure
-  late List<TimeChartData> flowData =
-      getTimeChartDataList(serialData.flowDateTime, serialData.flowData); // flow
+  late List<TimeChartData> flowData = getTimeChartDataList(
+      serialData.flowDateTime, serialData.flowData); // flow
   late List<TimeChartData> tidalVolumeData = getTimeChartDataList(
-      serialData.tidalVolumeDateTime, serialData.tidalVolumeData); // tidalVolume
+      serialData.tidalVolumeDateTime,
+      serialData.tidalVolumeData); // tidalVolume
   late List<TimeChartData> fiO2Data =
       getTimeChartDataList(serialData.fiO2DateTime, serialData.fiO2Data); //fi02
-  late List<TimeChartData> spO2Data = getTimeChartDataList(
-      serialData.sp02DateTime, serialData.sp02Data); //spo2
-  late List<TimeChartData> pulseData =
-      getTimeChartDataList(serialData.pulseDateTime, serialData.pulseData); // pulse
-  late List<TimeChartData> leakData =
-      getTimeChartDataList(serialData.leakDateTime, serialData.leakData); // leak
+  late List<TimeChartData> spO2Data =
+      getTimeChartDataList(serialData.sp02DateTime, serialData.sp02Data); //spo2
+  late List<TimeChartData> pulseData = getTimeChartDataList(
+      serialData.pulseDateTime, serialData.pulseData); // pulse
+  late List<TimeChartData> leakData = getTimeChartDataList(
+      serialData.leakDateTime, serialData.leakData); // leak
 
   List<TimeChartData> getTimeChartDataList(
           List<DateTime> dates, List<double> values) =>
@@ -53,7 +51,7 @@ class SessionDetails extends StatelessWidget {
     }
   }
 
-  void chartTouche(LineTouchResponse? lineTouchResponse, double? value) {
+  void chartTouch(LineTouchResponse? lineTouchResponse, double? value) {
     if (controller == null || value == null) {
       return;
     }
@@ -82,14 +80,13 @@ class SessionDetails extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: SizedBox(
-                    height: 600,
                     child: ChartsLeftPart(
                       session: session,
-                      callback: chartTouche,
-                      runTime: controller?.value.position.inSeconds ?? 0,
-                      duration: controller?.value.duration.inSeconds ?? 0,
+                      callback: chartTouch,
                       pulseGraphData: pulseData,
                       spO2GraphData: spO2Data,
+                      fiO2GraphData: fiO2Data,
+                      videoController: controller,
                     ),
                   ),
                 ),
@@ -99,28 +96,25 @@ class SessionDetails extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: SizedBox(
-                    child: VideoPlr(
-                      session: session,
-                      controller: controller,
-                    ),
-                  ),
+                      child: VideoPlr(
+                        session: session,
+                        controller: controller,
+                      ),
+                      ),
                 ),
                 const PaddingSpacing(
                   multiplier: 3,
                 ),
               ],
             ),
-            const PaddingSpacing(
-              multiplier: 2,
-            ),
+            const PaddingSpacing(),
             SizedBox(
               height: 300,
               width: 1900,
               child: ChartsLowerPart(
+                videoController: controller,
                 session: session,
-                callback: chartTouche,
-                runTime: controller?.value.position.inSeconds ?? 0,
-                duration: controller?.value.duration.inSeconds ?? 0,
+                callback: chartTouch,
                 flowGraphData: flowData,
                 leakGraphData: leakData,
                 pressureGraphData: pressureData,

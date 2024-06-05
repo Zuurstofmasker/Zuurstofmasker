@@ -4,6 +4,9 @@ import 'package:camera_platform_interface/camera_platform_interface.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
+import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Models/settings.dart';
 
 // Navigator key used for easy navigation wihtout the need of context
@@ -25,6 +28,7 @@ const Color secondaryColor = Color(0xff181c74);
 const Color greyTextColor = Color(0xff8a8a8a);
 const Color dangerColor = Color(0xffe74c3c);
 const Color successColor = Color(0xff2ecc71);
+const Color borderLineColor = Colors.black87;
 
 // Border radius
 const double borderRadiusSize = 8;
@@ -83,3 +87,15 @@ const MediaSettings cameraSettings = MediaSettings(
 );
 
 const Locale locale = Locale('nl', 'NL');
+
+// Streams and serial configuration
+const int serialTimeoutInSeconds = 5;
+const int saveDateTimeInSeconds = 30;
+
+final Stream<Uint8List> pressureStream = createNewStream('', 0, 40);
+final Stream<Uint8List> flowStream = createNewStream('', -75, 75);
+final Stream<Uint8List> tidalVolumeStream = createNewStream('', 0, 10);
+final Stream<Uint8List> fiO2Stream = createNewStream('', 0, 100);
+final Stream<Uint8List> spO2Stream = createNewStream('', 0, 100);
+final Stream<Uint8List> pulseStream = createNewStream('', 30, 225);
+final Stream<Uint8List> leakStream = createNewStream('', 0, 100);

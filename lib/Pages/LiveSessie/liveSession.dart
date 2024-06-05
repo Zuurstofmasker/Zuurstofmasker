@@ -1,25 +1,24 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/cameraHelpers.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
-import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/sessionSerialData.dart';
 import 'package:zuurstofmasker/Pages/ConfirmSession/confirmSession.dart';
-import 'package:zuurstofmasker/Pages/LiveSessie/lowerLeftPart.dart';
-import 'package:zuurstofmasker/Pages/LiveSessie/lowerRightPart.dart';
-import 'package:zuurstofmasker/Pages/LiveSessie/upperPart.dart';
+import 'package:zuurstofmasker/Pages/LiveSessie/Parts/lowerLeftPart.dart';
+import 'package:zuurstofmasker/Pages/LiveSessie/Parts/lowerRightPart.dart';
+import 'package:zuurstofmasker/Pages/LiveSessie/Parts/upperPart.dart';
+import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'dart:async';
 
-class LiveSessie extends StatefulWidget {
-  const LiveSessie({
+class LiveSession extends StatefulWidget {
+  const LiveSession({
     super.key,
     required this.session,
     required this.serialData,
@@ -28,28 +27,14 @@ class LiveSessie extends StatefulWidget {
   final Session session;
   final SessionSerialData serialData;
   @override
-  State<LiveSessie> createState() => _LiveSessieState();
+  State<LiveSession> createState() => _LiveSessionState();
 }
 
-class _LiveSessieState extends State<LiveSessie> {
+class _LiveSessionState extends State<LiveSession> {
   final ValueNotifier<bool> startedSession = ValueNotifier<bool>(false);
   Timer? periodicSessionDataSave;
-  Timer? serialTimeout;
-
-  final Stream<Uint8List> pressureStream =
-      SerialPort('').listen(min: 0, max: 40).asBroadcastStream();
-  final Stream<Uint8List> flowStream =
-      SerialPort('').listen(min: -75, max: 75).asBroadcastStream();
-  final Stream<Uint8List> tidalVolumeStream =
-      SerialPort('').listen(min: 0, max: 10).asBroadcastStream();
-  final Stream<Uint8List> fiO2Stream =
-      SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
-  final Stream<Uint8List> spO2Stream =
-      SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
-  final Stream<Uint8List> pulseStream =
-      SerialPort('').listen(min: 30, max: 225).asBroadcastStream();
-  final Stream<Uint8List> leakStream =
-      SerialPort('').listen(min: 0, max: 100).asBroadcastStream();
+  DateTime timeLastReceivedData = DateTime.now();
+  late Timer timeoutTimer;
 
   late List<Stream> streams = [
     pressureStream,
@@ -67,6 +52,14 @@ class _LiveSessieState extends State<LiveSessie> {
   void initState() {
     // Subscribing to all the streams
     subscribeToStreams();
+
+    timeoutTimer = Timer.periodic(
+        const Duration(seconds: serialTimeoutInSeconds), (timer) {
+      if (timeLastReceivedData.difference(DateTime.now()).inSeconds >
+          serialTimeoutInSeconds) {
+        onSerialTimeout();
+      }
+    });
 
     super.initState();
   }
@@ -86,7 +79,8 @@ class _LiveSessieState extends State<LiveSessie> {
   void addDataToCSVObject(
       List<double> listToAdd, List<DateTime> timeListToAdd, Uint8List value) {
     if (startedSession.value) {
-      timeListToAdd.add(DateTime.now());
+      timeLastReceivedData = DateTime.now();
+      timeListToAdd.add(timeLastReceivedData);
       listToAdd.add(uint8ListToDouble(value));
     }
   }
@@ -97,8 +91,8 @@ class _LiveSessieState extends State<LiveSessie> {
     try {
       startedSession.value = true;
       widget.session.birthDateTime = DateTime.now();
-      // serialTimeout = Timer(const Duration(seconds: 5), onSerialTimeout);
-      periodicSessionDataSave = Timer(const Duration(seconds: 1),
+      periodicSessionDataSave = Timer(
+          const Duration(seconds: saveDateTimeInSeconds),
           () => widget.serialData.saveToFile(widget.session.id));
       await startRecording();
     } catch (e) {
@@ -170,10 +164,15 @@ class _LiveSessieState extends State<LiveSessie> {
   @override
   void dispose() {
     stopRecording(storeLocation: '$sessionPath${widget.session.id}/video.mp4');
+    if (periodicSessionDataSave?.isActive ?? false) {
+      periodicSessionDataSave!.cancel();
+    }
 
     for (StreamSubscription stream in streamSubscriptions) {
       stream.cancel();
     }
+
+    timeoutTimer.cancel();
 
     super.dispose();
   }
@@ -187,13 +186,12 @@ class _LiveSessieState extends State<LiveSessie> {
           mainAxisSize: MainAxisSize.min,
           children: [
             UpperPart(
-                sessionSerialData: widget.serialData,
-                sessionActive: startedSession,
-                pressureStream: pressureStream,
-                flowStream: flowStream,
-                tidalVolumeStream: tidalVolumeStream,
-                serialTimeOut: serialTimeout,
-                timeoutCallback: onSerialTimeout),
+              sessionSerialData: widget.serialData,
+              sessionActive: startedSession,
+              pressureStream: pressureStream,
+              flowStream: flowStream,
+              tidalVolumeStream: tidalVolumeStream,
+            ),
             const PaddingSpacing(
               multiplier: 2,
             ),
@@ -206,8 +204,6 @@ class _LiveSessieState extends State<LiveSessie> {
                     sessionActive: startedSession,
                     fiO2Stream: fiO2Stream,
                     spO2Stream: spO2Stream,
-                    serialTimeOut: serialTimeout,
-                    timeoutCallback: onSerialTimeout,
                   ),
                   const PaddingSpacing(
                     multiplier: 2,
@@ -226,6 +222,18 @@ class _LiveSessieState extends State<LiveSessie> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+void saveDateFromStream(
+    AsyncSnapshot<Uint8List> snapshot, List<TimeChartData> items) {
+  if (snapshot.hasData) {
+    items.add(
+      TimeChartData(
+        y: uint8ListToDouble(snapshot.data!),
+        time: DateTime.now(),
       ),
     );
   }

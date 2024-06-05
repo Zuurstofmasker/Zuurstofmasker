@@ -11,7 +11,7 @@ import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 
-Timer _timer = Timer(Duration(seconds: 0), () { });
+Timer _timer = Timer(Duration(seconds: 0), () {});
 
 void mainOld() async {
   readFromSerialPort('COM2', (data) {
@@ -54,8 +54,9 @@ void writeToSerialPort(String name, Uint8List data) {
   port.write(data);
 }
 
-void timeoutSerialPort(){
-  print("Er is een timeout gedetecteerd. Is er een patiënt aangesloten op het apparaat?");
+void timeoutSerialPort() {
+  print(
+      "Er is een timeout gedetecteerd. Is er een patiënt aangesloten op het apparaat?");
 }
 
 class MyApp extends StatelessWidget {
@@ -240,10 +241,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   ]),
                   const SizedBox(height: 25),
                   TimeChart(
-                    chartData: TimeChartLine(
-                      chartData: timeChartItems,
-                      color: Colors.red,
-                    ),
+                    chartTimeLines: [
+                      TimeChartLine(
+                        chartData: timeChartItems,
+                        color: Colors.red,
+                      )
+                    ],
                     minY: 70,
                     maxY: 190,
                   ),

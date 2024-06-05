@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
-import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Models/session.dart';
+import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+import 'package:zuurstofmasker/Pages/LiveSessie/liveSession.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
@@ -60,12 +60,11 @@ class LowerRightPart extends StatelessWidget {
                       children: [
                         const Text("Pulse", style: liveTitleTextStyle),
                         StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: pulseStream,
                           builder: (context, snapshot) {
                             return Text(
-                              pulseGraphData.isEmpty
-                                  ? "-"
-                                  : pulseGraphData.last.y.toInt().toString(),
+                              pulseGraphData.lastOrNull?.y.toInt().toString() ??
+                                  "-",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.pulse),
                             );
@@ -81,10 +80,10 @@ class LowerRightPart extends StatelessWidget {
                       children: [
                         const Text("Leak", style: liveTitleTextStyle),
                         StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: leakStream,
                           builder: (context, snapshot) {
                             return Text(
-                              "${leakGraphData.isEmpty ? "-" : leakGraphData.last.y.toInt()}%",
+                              "${leakGraphData.lastOrNull?.y.toInt() ?? "-"}%",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.leak),
                             );
@@ -110,17 +109,16 @@ class LowerRightPart extends StatelessWidget {
                         children: [
                           Expanded(
                             child: StreamBuilder(
-                              stream: SerialPort('').listen(min: 30, max: 225),
+                              stream: pulseStream,
                               builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  pulseGraphData.add(TimeChartData(
-                                      y: uint8ListToDouble(snapshot.data!),
-                                      time: DateTime.now()));
-                                }
+                                saveDateFromStream(snapshot, pulseGraphData);
                                 return TimeChart(
-                                  chartData: TimeChartLine(
+                                  chartTimeLines: [
+                                    TimeChartLine(
                                       chartData: pulseGraphData,
-                                      color: settings.colors.pulse),
+                                      color: settings.colors.pulse,
+                                    )
+                                  ],
                                   minY: 30,
                                   maxY: 225,
                                   autoScale: true,
@@ -132,17 +130,16 @@ class LowerRightPart extends StatelessWidget {
                           const PaddingSpacing(multiplier: 2),
                           Expanded(
                             child: StreamBuilder(
-                              stream: SerialPort('').listen(min: 0, max: 100),
+                              stream: leakStream,
                               builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  leakGraphData.add(TimeChartData(
-                                      y: uint8ListToDouble(snapshot.data!),
-                                      time: DateTime.now()));
-                                }
+                                saveDateFromStream(snapshot, leakGraphData);
                                 return TimeChart(
-                                  chartData: TimeChartLine(
+                                  chartTimeLines: [
+                                    TimeChartLine(
                                       chartData: leakGraphData,
-                                      color: settings.colors.leak),
+                                      color: settings.colors.leak,
+                                    )
+                                  ],
                                   minY: 0,
                                   maxY: 100,
                                   autoScale: true,
@@ -193,6 +190,16 @@ class LowerRightPart extends StatelessWidget {
                                   Button(
                                       onTap: onStartSession,
                                       text: "Start opvang"),
+                                  Button(
+                                    text: "Annuleren",
+                                    onTap: () {
+                                      replaceAllPages(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Dashboard()),
+                                          context: context);
+                                    },
+                                  ),
                                 ]
                               : [
                                   Button(
