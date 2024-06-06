@@ -1,7 +1,9 @@
 import 'dart:typed_data';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Pages/LiveSession/liveSession.dart';
+import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
@@ -53,7 +55,7 @@ class LowerLeftPart extends StatelessWidget {
                           stream: fiO2Stream,
                           builder: (context, snapshot) {
                             return Text(
-                              "${fi02GraphData.lastOrNull?.y.toInt() ??  "-"}%",
+                              "${fi02GraphData.lastOrNull?.y.toInt() ?? "-"}%",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.fiO2),
                             );
@@ -103,10 +105,11 @@ class LowerLeftPart extends StatelessWidget {
                             TimeChartLine(
                               chartData: fi02GraphData,
                               color: settings.colors.fiO2,
-                            )
+                            ),
                           ],
                           minY: 0,
                           maxY: 100,
+                          autoScale: true,
                         );
                       },
                     ),
@@ -119,7 +122,7 @@ class LowerLeftPart extends StatelessWidget {
                     child: StreamBuilder(
                       stream: spO2Stream,
                       builder: (context, snapshot) {
-                       saveDateFromStream(snapshot, sp02GraphData);
+                        saveDateFromStream(snapshot, sp02GraphData);
                         return TimeChart(
                           chartTimeLines: [
                             TimeChartLine(

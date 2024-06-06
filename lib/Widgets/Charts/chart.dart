@@ -176,9 +176,9 @@ List<HorizontalLine> getHorizontalLines(List<double> horizontalLinesValues,
       .toList();
 }
 
-List<VerticalLine> getVerticalLines(List<double> horizontalLinesValues,
+List<VerticalLine> getVerticalLines(List<double> verticalLinesValues,
     [Color color = borderLineColor, bool showLabels = true]) {
-  return horizontalLinesValues
+  return verticalLinesValues
       .map(
         (e) => VerticalLine(
           label: VerticalLineLabel(
