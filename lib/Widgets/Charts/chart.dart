@@ -156,7 +156,8 @@ class ChartLineBase<T> {
 }
 
 List<HorizontalLine> getHorizontalLines(List<double> horizontalLinesValues,
-    [Color color = borderLineColor, bool showLabels = true]) {
+    [Color? color, bool showLabels = true]) {
+  color ??= settings.colors.limitValues;
   return horizontalLinesValues
       .map(
         (e) => HorizontalLine(

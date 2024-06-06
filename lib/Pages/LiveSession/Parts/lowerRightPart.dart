@@ -5,7 +5,7 @@ import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
-import 'package:zuurstofmasker/Pages/LiveSessie/liveSession.dart';
+import 'package:zuurstofmasker/Pages/LiveSession/liveSession.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
