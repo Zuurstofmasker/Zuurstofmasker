@@ -16,6 +16,9 @@ class PlayBackChart extends StatelessWidget {
   final List<double> horizontalLines;
   final String title;
   final Widget Function() bottomWidgetBuilder;
+  final List<ChartLine> chartLines;
+  final double? width;
+
 
   const PlayBackChart({
     super.key,
@@ -26,7 +29,9 @@ class PlayBackChart extends StatelessWidget {
     required this.title,
     required this.bottomWidgetBuilder,
     this.horizontalLines = const [],
+    this.chartLines = const [],
     this.onLineTouch,
+    this.width,
   });
 
   Widget getChart(double? videoPosition) => TimeChart(
@@ -37,7 +42,9 @@ class PlayBackChart extends StatelessWidget {
         autoScale: true,
         horizontalLines: horizontalLines,
         onLineTouch: onLineTouch,
+        chartLines: chartLines,
         verticalLines: videoPosition == null ? [] : [videoPosition],
+        width: width,
       );
 
   @override

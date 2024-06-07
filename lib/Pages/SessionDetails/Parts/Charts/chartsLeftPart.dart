@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/settings.dart';
+import 'package:zuurstofmasker/Pages/LiveSession/Functions/chartTreshhold.dart';
 import 'package:zuurstofmasker/Pages/SessionDetails/Parts/Charts/chartsFunctions.dart';
 import 'package:zuurstofmasker/Pages/SessionDetails/Widgets/playBackChart.dart';
 import 'package:zuurstofmasker/config.dart';
@@ -65,8 +66,10 @@ class ChartsLeftPart extends StatelessWidget {
               color: settings.colors.fiO2,
             )
           ],
+          chartLines: [generateLowerTreshhold(),generateUpperTreshhold()],
           videoController: videoController,
           title: "Zuurstofsaturatie + fiO2",
+          width: 30*60,
           onLineTouch: callback,
           bottomWidgetBuilder: () => Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
