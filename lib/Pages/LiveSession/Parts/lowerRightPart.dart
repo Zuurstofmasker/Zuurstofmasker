@@ -1,9 +1,11 @@
 import 'dart:async';
-
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
-import 'package:zuurstofmasker/Helpers/serialMocker.dart';
+import 'package:zuurstofmasker/Helpers/navHelper.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
+import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
+import 'package:zuurstofmasker/Pages/LiveSession/liveSession.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
@@ -17,12 +19,16 @@ class LowerRightPart extends StatelessWidget {
     required this.onStopSession,
     required this.onResetSession,
     required this.session,
+    required this.pulseStream,
+    required this.leakStream,
   });
 
   final List<TimeChartData> pulseGraphData = [];
   final List<TimeChartData> leakGraphData = [];
   final ValueNotifier<bool> startedSession;
   final Session session;
+  final Stream<Uint8List> pulseStream;
+  final Stream<Uint8List> leakStream;
 
   final ValueNotifier<int> timeNotifier = ValueNotifier<int>(0);
 
@@ -54,12 +60,11 @@ class LowerRightPart extends StatelessWidget {
                       children: [
                         const Text("Pulse", style: liveTitleTextStyle),
                         StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: pulseStream,
                           builder: (context, snapshot) {
                             return Text(
-                              pulseGraphData.isEmpty
-                                  ? "-"
-                                  : pulseGraphData.last.y.toInt().toString(),
+                              pulseGraphData.lastOrNull?.y.toInt().toString() ??
+                                  "-",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.pulse),
                             );
@@ -75,10 +80,10 @@ class LowerRightPart extends StatelessWidget {
                       children: [
                         const Text("Leak", style: liveTitleTextStyle),
                         StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: leakStream,
                           builder: (context, snapshot) {
                             return Text(
-                              "${leakGraphData.isEmpty ? "-" : leakGraphData.last.y.toInt()}%",
+                              "${leakGraphData.lastOrNull?.y.toInt() ?? "-"}%",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.leak),
                             );
@@ -104,17 +109,16 @@ class LowerRightPart extends StatelessWidget {
                         children: [
                           Expanded(
                             child: StreamBuilder(
-                              stream: SerialPort('').listen(min: 30, max: 225),
+                              stream: pulseStream,
                               builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  pulseGraphData.add(TimeChartData(
-                                      y: snapshot.data![0].toDouble(),
-                                      time: DateTime.now()));
-                                }
+                                saveDateFromStream(snapshot, pulseGraphData);
                                 return TimeChart(
-                                  chartData: TimeChartLine(
+                                  chartTimeLines: [
+                                    TimeChartLine(
                                       chartData: pulseGraphData,
-                                      color: settings.colors.pulse),
+                                      color: settings.colors.pulse,
+                                    )
+                                  ],
                                   minY: 30,
                                   maxY: 225,
                                   autoScale: true,
@@ -126,17 +130,16 @@ class LowerRightPart extends StatelessWidget {
                           const PaddingSpacing(multiplier: 2),
                           Expanded(
                             child: StreamBuilder(
-                              stream: SerialPort('').listen(min: 0, max: 100),
+                              stream: leakStream,
                               builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  leakGraphData.add(TimeChartData(
-                                      y: snapshot.data![0].toDouble(),
-                                      time: DateTime.now()));
-                                }
+                                saveDateFromStream(snapshot, leakGraphData);
                                 return TimeChart(
-                                  chartData: TimeChartLine(
+                                  chartTimeLines: [
+                                    TimeChartLine(
                                       chartData: leakGraphData,
-                                      color: settings.colors.leak),
+                                      color: settings.colors.leak,
+                                    )
+                                  ],
                                   minY: 0,
                                   maxY: 100,
                                   autoScale: true,
@@ -159,22 +162,24 @@ class LowerRightPart extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ValueListenableBuilder(
-                    valueListenable: timeNotifier,
-                    builder: (context, value, child) {
-                      // Updates the widget every second
-                      Timer(const Duration(seconds: 1), () {
-                        timeNotifier.value++;
-                      });
+                      valueListenable: timeNotifier,
+                      builder: (context, value, child) {
+                        // Updates the widget every second
+                        Timer(const Duration(seconds: 1), () {
+                          timeNotifier.value++;
+                        });
 
-                      // Retrieving the elapsed time
-                      Duration time = DateTime.now().difference(session.birthTime);  
+                        // Retrieving the elapsed time
+                        Duration time =
+                            DateTime.now().difference(session.birthDateTime);
 
-                      return  Text(
-                       (!startedSession.value ? "00:00" : "${time.inMinutes.remainder(60).toString().padLeft(2, '0')}:${time.inSeconds.remainder(60).toString().padLeft(2, '0')}"),
-                        style: const TextStyle(fontSize: 80),
-                      );
-                    }
-                  ),
+                        return Text(
+                          (!startedSession.value
+                              ? "00:00"
+                              : "${time.inMinutes.remainder(60).toString().padLeft(2, '0')}:${time.inSeconds.remainder(60).toString().padLeft(2, '0')}"),
+                          style: const TextStyle(fontSize: 80),
+                        );
+                      }),
                   ValueListenableBuilder(
                       valueListenable: startedSession,
                       builder: (context, value, child) {
@@ -185,6 +190,16 @@ class LowerRightPart extends StatelessWidget {
                                   Button(
                                       onTap: onStartSession,
                                       text: "Start opvang"),
+                                  Button(
+                                    text: "Annuleren",
+                                    onTap: () {
+                                      replaceAllPages(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Dashboard()),
+                                          context: context);
+                                    },
+                                  ),
                                 ]
                               : [
                                   Button(

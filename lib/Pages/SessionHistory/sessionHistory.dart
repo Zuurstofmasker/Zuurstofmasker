@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
+import 'package:zuurstofmasker/Models/sessionSerialData.dart';
 import 'package:zuurstofmasker/Models/sorting.dart';
-import 'package:zuurstofmasker/Pages/TerugKijken/terugKijkenPage.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/sessionDetails.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
@@ -39,7 +40,7 @@ class SessionHistory extends StatelessWidget {
         if (key.isEmpty) continue;
 
         if (session.id.toString().toLowerCase().contains(key) ||
-            session.birthTime.toString().toLowerCase().contains(key) ||
+            session.birthDateTime.toString().toLowerCase().contains(key) ||
             session.nameMother.toLowerCase().contains(key) ||
             session.note.toLowerCase().contains(key)) {
           return true;
@@ -55,7 +56,7 @@ class SessionHistory extends StatelessWidget {
     if (tableSorting.sortColumn == 0) {
       sessions.sort((a, b) => a.id.compareTo(b.id));
     } else if (tableSorting.sortColumn == 1) {
-      sessions.sort((a, b) => a.birthTime.compareTo(b.birthTime));
+      sessions.sort((a, b) => a.birthDateTime.compareTo(b.birthDateTime));
     } else if (tableSorting.sortColumn == 2) {
       sessions.sort((a, b) => a.nameMother.compareTo(b.nameMother));
     } else if (tableSorting.sortColumn == 3) {
@@ -97,7 +98,7 @@ class SessionHistory extends StatelessWidget {
 
     return sessions.where((session) {
       // Getting only the date part and removing the time part
-      final DateTime birthTime = DateUtils.dateOnly(session.birthTime);
+      final DateTime birthTime = DateUtils.dateOnly(session.birthDateTime);
       return !birthTime.isBefore(startDate!) && !birthTime.isAfter(endDate!);
     }).toList();
   }
@@ -183,7 +184,7 @@ class SessionHistory extends StatelessWidget {
                             border: TableBorder.all(borderRadius: borderRadius),
                             headingRowHeight: 40,
                             columns: ([
-                              'ID',
+                              'Opvangkamer',
                               'Geboorte datum',
                               'Naam moeder',
                               'Opmerking'
@@ -223,21 +224,29 @@ List<DataRow> getSessionHistoryItems(List<Session> sessions) {
   List<DataRow> items = [];
   for (var session in sessions) {
     var row = DataRow(
-      color: MaterialStateProperty.resolveWith<Color?>(
-          (Set<MaterialState> states) {
-        if (states.contains(MaterialState.hovered)) {
+      color: WidgetStateProperty.resolveWith<Color?>(
+          (Set<WidgetState> states) {
+        if (states.contains(WidgetState.hovered)) {
           return primaryColor.withOpacity(0.2);
         }
 
         return null;
       }),
-      onSelectChanged: (value) {
-        pushPage(MaterialPageRoute(
-            builder: (context) => TerugKijken(session: session)));
+      onSelectChanged: (value) async {
+        final SessionSerialData serialData =
+            await SessionSerialData.fromFile(session.id);
+        pushPage(
+          MaterialPageRoute(
+            builder: (context) => SessionDetails(
+              session: session,
+              serialData: serialData,
+            ),
+          ),
+        );
       },
       cells: <DataCell>[
-        DataCell(Text(session.id.toString())),
-        DataCell(Text(session.birthTime.toString())),
+        DataCell(Text("Opvangkamer ${session.roomNumber}")),
+        DataCell(Text(session.birthDateTime.toString())),
         DataCell(Text(session.nameMother.toString())),
         DataCell(Text(session.note.toString())),
       ],

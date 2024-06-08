@@ -4,8 +4,8 @@ class Session {
     required this.weight,
     this.babyId,
     required this.nameMother,
-    required this.birthTime,
-    required this.endTime,
+    required this.birthDateTime,
+    required this.endDateTime,
     required this.note,
     required this.roomNumber,
   });
@@ -15,8 +15,8 @@ class Session {
   int weight;
   String nameMother;
   String note;
-  DateTime birthTime;
-  DateTime endTime;
+  DateTime birthDateTime;
+  DateTime endDateTime;
   int roomNumber;
 
   factory Session.fromJson(Map<String, dynamic> json) => Session(
@@ -25,8 +25,8 @@ class Session {
         babyId: json['babyId'],
         nameMother: json['nameMother'],
         note: json['note'],
-        birthTime: DateTime.fromMillisecondsSinceEpoch(json['birthTime']),
-        endTime: DateTime.fromMillisecondsSinceEpoch(json['endTime']),
+        birthDateTime: DateTime.fromMillisecondsSinceEpoch(json['birthTime']),
+        endDateTime: DateTime.fromMillisecondsSinceEpoch(json['endTime']),
         roomNumber: json['roomNumber'],
       );
 
@@ -34,8 +34,8 @@ class Session {
         'id': id,
         'weight': weight,
         'nameMother': nameMother,
-        'birthTime': birthTime.millisecondsSinceEpoch,
-        'endTime': endTime.millisecondsSinceEpoch,
+        'birthTime': birthDateTime.millisecondsSinceEpoch,
+        'endTime': endDateTime.millisecondsSinceEpoch,
         'babyId': babyId,
         'note': note,
         'roomNumber': roomNumber

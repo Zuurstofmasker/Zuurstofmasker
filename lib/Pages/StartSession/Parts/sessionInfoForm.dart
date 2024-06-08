@@ -5,22 +5,44 @@ import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/titles.dart';
 
 class SessionInfoForm extends StatelessWidget {
-  SessionInfoForm({
+  SessionInfoForm.start({
     super.key,
     required this.nameController,
     required this.noteController,
     required this.weigthController,
     required this.babyIdController,
     required this.roomNumberController,
-    this.isConfirm = false,
-  });
+  })  : isConfirm = false,
+        endTimeValidator = null,
+        onEndTimePick = null,
+        endTimeController = null,
+        birthTimeController = null;
+
+  SessionInfoForm.confirm({
+    super.key,
+    required this.nameController,
+    required this.noteController,
+    required this.weigthController,
+    required this.babyIdController,
+    required this.roomNumberController,
+    required this.endTimeController,
+    required this.birthTimeController,
+    required this.onEndTimePick,
+    required this.endTimeValidator,
+  }) : isConfirm = true;
 
   final TextEditingController nameController;
   final TextEditingController noteController;
   final TextEditingController weigthController;
   final TextEditingController babyIdController;
   final TextEditingController roomNumberController;
+  final TextEditingController? endTimeController;
+  final TextEditingController? birthTimeController;
+  final Function()? onEndTimePick;
+  final String? Function()? endTimeValidator;
   final bool isConfirm;
+
+  ValueNotifier<bool> endTimeNotifier = ValueNotifier(true);
 
   void updateWeigth(int value) {
     int currentValue = int.tryParse(weigthController.text) ?? 0;
@@ -113,13 +135,38 @@ class SessionInfoForm extends StatelessWidget {
             ),
           ],
         ),
-        if (isConfirm) const PaddingSpacing(),
-        if (isConfirm)
+        if (isConfirm) ...[
+          const PaddingSpacing(),
           InputField(
             isRequired: false,
             controller: babyIdController,
             labelText: "Baby ID",
           ),
+          const PaddingSpacing(),
+          InputField(
+            labelText: "Geboortetijd",
+            icon: Icons.timer,
+            isReadOnly: true,
+            controller: birthTimeController,
+          ),
+          const PaddingSpacing(),
+          InputField(
+            icon: Icons.timer,
+            labelText: "Eindtijd",
+            isReadOnly: true,
+            controller: endTimeController,
+            validator: (p0) {
+              if (endTimeValidator != null) {
+                return endTimeValidator!();
+              }
+            },
+            onTap: () {
+              if (onEndTimePick != null) {
+                onEndTimePick!();
+              }
+            },
+          ),
+        ],
         const PaddingSpacing(),
         InputField(
           isRequired: false,

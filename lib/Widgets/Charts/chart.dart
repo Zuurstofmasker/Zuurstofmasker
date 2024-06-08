@@ -17,6 +17,7 @@ class Chart extends StatelessWidget {
     this.height = 200,
     this.width,
     this.horizontalLines = const [],
+    this.verticalLines = const [],
     this.onLineTouch,
   });
 
@@ -31,8 +32,15 @@ class Chart extends StatelessWidget {
   final double? maxY;
   final double? height;
   final double? width;
-  final List<HorizontalLine> horizontalLines;
+  final List<double> horizontalLines;
+  final List<double> verticalLines;
   final Function(LineTouchResponse?, double? firstX)? onLineTouch;
+
+  List<HorizontalLine> get compiledHorizontalLines =>
+      getHorizontalLines(horizontalLines);
+
+  List<VerticalLine> get compiledVerticalLines =>
+      getVerticalLines(verticalLines, borderLineColor, false);
 
   List<LineChartBarData> getLineBarsData() {
     List<LineChartBarData> items = [];
@@ -89,25 +97,16 @@ class Chart extends StatelessWidget {
           borderData: FlBorderData(
             show: true,
             border: const Border(
-              bottom: BorderSide(
-                color: greyTextColor,
-                width: 1,
-              ),
-              left: BorderSide(
-                color: Colors.transparent,
-                width: 1,
-              ),
-              right: BorderSide(
-                color: Colors.transparent,
-              ),
-              top: BorderSide(
-                color: greyTextColor,
-              ),
+              bottom: BorderSide(color: greyTextColor),
+              left: BorderSide(color: Colors.transparent),
+              right: BorderSide(color: Colors.transparent),
+              top: BorderSide(color: greyTextColor),
             ),
           ),
           gridData: const FlGridData(show: false),
           extraLinesData: ExtraLinesData(
-            horizontalLines: horizontalLines,
+            horizontalLines: compiledHorizontalLines,
+            verticalLines: compiledVerticalLines,
           ),
           titlesData: FlTitlesData(
             topTitles: const AxisTitles(),
@@ -157,12 +156,42 @@ class ChartLineBase<T> {
 }
 
 List<HorizontalLine> getHorizontalLines(List<double> horizontalLinesValues,
-    [Color color = const Color.fromARGB(97, 0, 0, 0)]) {
+    [Color? color, bool showLabels = true]) {
+  color ??= settings.colors.limitValues;
   return horizontalLinesValues
-      .map((e) => HorizontalLine(
-            y: e,
-            color: color,
-            strokeWidth: 1,
-          ))
+      .map(
+        (e) => HorizontalLine(
+          label: HorizontalLineLabel(
+            alignment: Alignment.topRight,
+            padding: EdgeInsets.zero,
+            show: showLabels,
+            style: TextStyle(fontSize: 15, color: color),
+            labelResolver: (value) => value.y.toInt().toString(),
+          ),
+          y: e,
+          color: color,
+          strokeWidth: 1,
+        ),
+      )
+      .toList();
+}
+
+List<VerticalLine> getVerticalLines(List<double> verticalLinesValues,
+    [Color color = borderLineColor, bool showLabels = true]) {
+  return verticalLinesValues
+      .map(
+        (e) => VerticalLine(
+          label: VerticalLineLabel(
+            alignment: Alignment.topRight,
+            padding: EdgeInsets.zero,
+            show: showLabels,
+            style: TextStyle(fontSize: 15, color: color),
+            labelResolver: (value) => value.x.toInt().toString(),
+          ),
+          x: e,
+          color: color,
+          strokeWidth: 1,
+        ),
+      )
       .toList();
 }

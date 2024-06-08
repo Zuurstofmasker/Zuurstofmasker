@@ -1,15 +1,9 @@
 import 'dart:developer';
-
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
 import 'package:zuurstofmasker/Models/note.dart';
-import 'package:zuurstofmasker/Pages/TerugKijken/notesFunctions.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/Parts/VideoPlayer/notesFunctions.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
-import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:video_player/video_player.dart';
@@ -26,7 +20,8 @@ class VideoPlr extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlr> {
-  ValueNotifier<List<Note>> noteList = ValueNotifier<List<Note>>([]);
+  final ValueNotifier<List<Note>> noteList = ValueNotifier<List<Note>>([]);
+  final ValueNotifier<double> videoSpeedNotifier = ValueNotifier(1);
 
   bool videoExists = false;
   void reload() {
@@ -66,6 +61,23 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
   void dispose() {
     super.dispose();
     widget.controller?.dispose();
+  }
+
+  void setVideoSpeed(VideoPlayerController? videoPlayerCtrl) {
+    if (videoPlayerCtrl == null) return;
+    if (videoSpeedNotifier.value == 1) {
+      videoSpeedNotifier.value = 2;
+    } else if (videoSpeedNotifier.value == 2) {
+      videoSpeedNotifier.value = 0.5;
+    } else if (videoSpeedNotifier.value == 0.5) {
+      videoSpeedNotifier.value = 1;
+    }
+    // Going faster than 2 appears to not be function (on windows atleast)
+    //else if (videoSpeedNotifier.value == 5) {
+    //   videoSpeedNotifier.value = 1;
+    // }
+    videoPlayerCtrl.setPlaybackSpeed(videoSpeedNotifier.value);
+    videoSpeedNotifier.notifyListeners();
   }
 
   @override
@@ -129,40 +141,59 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
                         },
                       ),
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => widget.controller?.seekTo(Duration(
-                            milliseconds: widget
-                                    .controller!.value.position.inMilliseconds -
-                                10 * 1000,
-                          )),
-                          child: const Icon(Icons.arrow_back),
-                        ),
-                        ValueListenableBuilder<VideoPlayerValue>(
-                          valueListenable: widget.controller!,
-                          builder: (context, value, child) {
-                            return ElevatedButton(
-                              onPressed: () => value.isPlaying
-                                  ? widget.controller?.pause()
-                                  : widget.controller?.play(),
-                              child: value.isPlaying
-                                  ? const Icon(Icons.pause)
-                                  : const Icon(Icons.play_arrow),
-                            );
-                          },
-                        ),
-                        ElevatedButton(
+                    Padding(
+                      padding: mainPadding.copyWith(top: 0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
                             onPressed: () => widget.controller?.seekTo(Duration(
-                                milliseconds: widget.controller!.value.position
-                                        .inMilliseconds +
-                                    10 * 1000)),
-                            child: const Icon(Icons.arrow_forward)),
-                      ],
-                    ),
+                              milliseconds: widget.controller!.value.position
+                                      .inMilliseconds -
+                                  10 * 1000,
+                            )),
+                            child: const Icon(Icons.arrow_back),
+                          ),
+                          ValueListenableBuilder<VideoPlayerValue>(
+                            valueListenable: widget.controller!,
+                            builder: (context, value, child) {
+                              return ElevatedButton(
+                                onPressed: () => value.isPlaying
+                                    ? widget.controller?.pause()
+                                    : widget.controller?.play(),
+                                child: value.isPlaying
+                                    ? const Icon(Icons.pause)
+                                    : const Icon(Icons.play_arrow),
+                              );
+                            },
+                          ),
+                          ElevatedButton(
+                              onPressed: () => widget.controller?.seekTo(
+                                  Duration(
+                                      milliseconds: widget.controller!.value
+                                              .position.inMilliseconds +
+                                          10 * 1000)),
+                              child: const Icon(Icons.arrow_forward)),
+                        ],
+                      ),
+                    )
                   ],
+                ),
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: ValueListenableBuilder(
+                    valueListenable: videoSpeedNotifier,
+                    builder: (context, value, child) {
+                      return Button(
+                        onTap: () {
+                          setVideoSpeed(widget.controller);
+                        },
+                        text: "${value}x",
+                      );
+                    },
+                  ),
                 ),
                 Positioned(
                     top: 10,

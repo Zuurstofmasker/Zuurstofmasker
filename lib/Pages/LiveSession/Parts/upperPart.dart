@@ -1,15 +1,30 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
-import 'package:zuurstofmasker/Helpers/serialMocker.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
+import 'package:zuurstofmasker/Pages/LiveSession/liveSession.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'package:zuurstofmasker/Models/sessionSerialData.dart';
+import 'dart:async';
 
 class UpperPart extends StatelessWidget {
-  UpperPart({super.key});
-  final List<TimeChartData> drukGraphData = [];
-  final List<TimeChartData> flowGraphData = [];
-  final List<TimeChartData> terugvolumeGraphData = [];
+  UpperPart({
+    super.key,
+    required this.sessionSerialData,
+    required this.sessionActive,
+    required this.pressureStream,
+    required this.flowStream,
+    required this.tidalVolumeStream,
+  });
+  final List<TimeChartData> pressureGraphData = [];
+  final List<TimeChartData> flowData = [];
+  final List<TimeChartData> tidalVolumeGraphData = [];
+  final SessionSerialData sessionSerialData;
+  final ValueNotifier<bool> sessionActive;
+  final Stream<Uint8List> pressureStream;
+  final Stream<Uint8List> flowStream;
+  final Stream<Uint8List> tidalVolumeStream;
 
   TextStyle getsubTitleTextStyle(Color color) {
     return TextStyle(
@@ -51,7 +66,7 @@ class UpperPart extends StatelessWidget {
                       SizedBox(
                         width: 75,
                         child: StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: pressureStream,
                           builder: (context, snapshot) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,22 +78,26 @@ class UpperPart extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  drukGraphData.isEmpty
-                                      ? "-"
-                                      : drukGraphData.last.y.toInt().toString(),
+                                  pressureGraphData.lastOrNull?.y
+                                          .toInt()
+                                          .toString() ??
+                                      "-",
                                   style: TextStyle(
                                     fontSize: 30,
                                     color: settings.colors.pressure,
                                   ),
                                 ),
-                                const PaddingSpacing(multiplier: 0.5,),
+                                const PaddingSpacing(
+                                  multiplier: 0.5,
+                                ),
                                 Text("PEEP",
                                     style: getsubTitleTextStyle(
                                         settings.colors.pressure)),
                                 Text(
-                                  drukGraphData.isEmpty
-                                      ? "-"
-                                      : drukGraphData.last.y.toInt().toString(),
+                                  pressureGraphData.lastOrNull?.y
+                                          .toInt()
+                                          .toString() ??
+                                      "-",
                                   style: TextStyle(
                                     fontSize: 30,
                                     color: settings.colors.pressure,
@@ -115,14 +134,13 @@ class UpperPart extends StatelessWidget {
                                 ),
                               ),
                               StreamBuilder(
-                                stream: SerialPort('').listen(),
+                                stream: flowStream,
                                 builder: (context, snapshot) {
                                   return Text(
-                                    flowGraphData.isEmpty
-                                        ? "-"
-                                        : flowGraphData.last.y
+                                    flowData.lastOrNull?.y
                                             .toInt()
-                                            .toString(),
+                                            .toString() ??
+                                        "-",
                                     style: TextStyle(
                                       fontSize: 30,
                                       color: settings.colors.flow,
@@ -160,14 +178,13 @@ class UpperPart extends StatelessWidget {
                                 ),
                               ),
                               StreamBuilder(
-                                stream: SerialPort('').listen(),
+                                stream: tidalVolumeStream,
                                 builder: (context, snapshot) {
                                   return Text(
-                                    terugvolumeGraphData.isEmpty
-                                        ? "-"
-                                        : terugvolumeGraphData.last.y
+                                    tidalVolumeGraphData.lastOrNull?.y
                                             .toInt()
-                                            .toString(),
+                                            .toString() ??
+                                        "-",
                                     style: TextStyle(
                                       fontSize: 30,
                                       color: settings.colors.tidalVolume,
@@ -193,21 +210,19 @@ class UpperPart extends StatelessWidget {
                 children: [
                   Flexible(
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: 0, max: 40),
+                      stream: pressureStream,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          drukGraphData.add(TimeChartData(
-                              y: snapshot.data![0].toDouble(),
-                              time: DateTime.now()));
-                        }
+                       saveDateFromStream(snapshot, pressureGraphData);
                         return TimeChart(
-                          chartData: TimeChartLine(
-                            chartData: drukGraphData,
-                            color: settings.colors.pressure,
-                          ),
+                          chartTimeLines: [
+                            TimeChartLine(
+                              chartData: pressureGraphData,
+                              color: settings.colors.pressure,
+                            )
+                          ],
                           minY: 0,
                           maxY: 40,
-                          horizontalLinesValues: const [25],
+                          horizontalLines: const [25],
                         );
                       },
                     ),
@@ -217,20 +232,19 @@ class UpperPart extends StatelessWidget {
                   ),
                   Flexible(
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: -75, max: 75),
+                      stream: flowStream,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          flowGraphData.add(TimeChartData(
-                              y: snapshot.data![0].toDouble(),
-                              time: DateTime.now()));
-                        }
+                        saveDateFromStream(snapshot, flowData);
                         return TimeChart(
-                          chartData: TimeChartLine(
-                              chartData: flowGraphData,
-                              color: settings.colors.flow),
+                          chartTimeLines: [
+                            TimeChartLine(
+                              chartData: flowData,
+                              color: settings.colors.flow,
+                            )
+                          ],
                           minY: -75,
                           maxY: 75,
-                          horizontalLinesValues: const [0],
+                          horizontalLines: const [0],
                         );
                       },
                     ),
@@ -240,20 +254,19 @@ class UpperPart extends StatelessWidget {
                   ),
                   Flexible(
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: 0, max: 10),
+                      stream: tidalVolumeStream,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          terugvolumeGraphData.add(TimeChartData(
-                              y: snapshot.data![0].toDouble(),
-                              time: DateTime.now()));
-                        }
+                      saveDateFromStream(snapshot, tidalVolumeGraphData);
                         return TimeChart(
-                          chartData: TimeChartLine(
-                              chartData: terugvolumeGraphData,
-                              color: settings.colors.tidalVolume),
+                          chartTimeLines: [
+                            TimeChartLine(
+                              chartData: tidalVolumeGraphData,
+                              color: settings.colors.tidalVolume,
+                            )
+                          ],
                           minY: 0,
                           maxY: 10,
-                          horizontalLinesValues: const [4, 8],
+                          horizontalLines: const [4, 8],
                         );
                       },
                     ),

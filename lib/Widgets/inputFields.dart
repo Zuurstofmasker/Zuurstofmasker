@@ -68,30 +68,35 @@ class InputField extends StatelessWidget {
   final bool isDouble;
   final bool isMultiLine;
   final bool isRequired;
+  final bool isReadOnly;
   final String? Function(String?)? validator;
   final Function(String?)? onChange;
+  final Function()? onTap;
 
   final TextEditingController? controller;
-  const InputField({
-    super.key,
-    this.icon,
-    this.hintText,
-    this.labelText,
-    this.controller,
-    this.textAlign,
-    this.isPassword = false,
-    this.isInt = false,
-    this.isRequired = true,
-    this.validator,
-    this.isDouble = false,
-    this.onChange,
-    this.isMultiLine = false,
-  });
+  const InputField(
+      {super.key,
+      this.icon,
+      this.hintText,
+      this.labelText,
+      this.controller,
+      this.textAlign,
+      this.isPassword = false,
+      this.isInt = false,
+      this.isRequired = true,
+      this.validator,
+      this.isDouble = false,
+      this.onChange,
+      this.isMultiLine = false,
+      this.isReadOnly = false,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: isReadOnly,
       controller: controller,
+      onTap: onTap,
       maxLines: isMultiLine ? 5 : 1,
       validator: (value) =>
           validation(value, isRequired, validator, labelText, isDouble, isInt),

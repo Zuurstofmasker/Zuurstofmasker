@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 
 Stream<Uint8List> readFromSerialPort(String name) {
   SerialPort port = SerialPort(name);
@@ -52,3 +53,6 @@ Uint8List doubleToUint8List(double doubleVar) {
   byteData.setFloat64(0, doubleVar);
   return byteData.buffer.asUint8List();
 }
+
+Stream<Uint8List> createNewStream(String name, int min, int max) =>
+    SerialPort(name).listen(min: min, max: max).asBroadcastStream();

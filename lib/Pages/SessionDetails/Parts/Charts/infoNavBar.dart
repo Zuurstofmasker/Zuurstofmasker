@@ -5,15 +5,15 @@ import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 
-class TerugKijkenNavBar extends StatelessWidget {
-  const TerugKijkenNavBar({super.key, required this.session});
+class InfoNavBar extends StatelessWidget {
+  const InfoNavBar({super.key, required this.session});
 
   final Session session;
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Row(children: [
           Button(
@@ -32,11 +32,11 @@ class TerugKijkenNavBar extends StatelessWidget {
                 const PaddingSpacing(
                   multiplier: 1,
                 ),
-                Text(session.birthTime.toString()),
+                Text(session.birthDateTime.toString()),
                 const PaddingSpacing(
                   multiplier: 1,
                 ),
-                const Text("Opvangkamer 1"),
+                Text("Opvangkamer ${session.roomNumber}"),
                 const PaddingSpacing(
                   multiplier: 1,
                 ),

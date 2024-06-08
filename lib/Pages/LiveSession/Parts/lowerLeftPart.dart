@@ -1,14 +1,30 @@
+import 'dart:typed_data';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
-import 'package:zuurstofmasker/Helpers/serialMocker.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
+import 'package:zuurstofmasker/Pages/LiveSession/Functions/chartTreshhold.dart';
+import 'package:zuurstofmasker/Pages/LiveSession/liveSession.dart';
+import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
+import 'package:zuurstofmasker/Models/sessionSerialData.dart';
+import 'dart:async';
 
 class LowerLeftPart extends StatelessWidget {
-  LowerLeftPart({super.key});
+  LowerLeftPart({
+    super.key,
+    required this.sessionSerialData,
+    required this.sessionActive,
+    required this.fiO2Stream,
+    required this.spO2Stream,
+  });
   final List<TimeChartData> fi02GraphData = [];
   final List<TimeChartData> sp02GraphData = [];
+  final SessionSerialData sessionSerialData;
+  final ValueNotifier<bool> sessionActive;
+  final Stream<Uint8List> fiO2Stream;
+  final Stream<Uint8List> spO2Stream;
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +53,10 @@ class LowerLeftPart extends StatelessWidget {
                       children: [
                         const Text("Fi02", style: liveTitleTextStyle),
                         StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: fiO2Stream,
                           builder: (context, snapshot) {
                             return Text(
-                              "${fi02GraphData.isEmpty ? "-" : fi02GraphData.last.y.toInt()}%",
+                              "${fi02GraphData.lastOrNull?.y.toInt() ?? "-"}%",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.fiO2),
                             );
@@ -59,10 +75,10 @@ class LowerLeftPart extends StatelessWidget {
                       children: [
                         const Text("Sp02", style: liveTitleTextStyle),
                         StreamBuilder(
-                          stream: SerialPort('').listen(),
+                          stream: spO2Stream,
                           builder: (context, snapshot) {
                             return Text(
-                              "${sp02GraphData.isEmpty ? "-" : sp02GraphData.last.y.toInt()}%",
+                              "${sp02GraphData.lastOrNull?.y.toInt() ?? "-"}%",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.spO2),
                             );
@@ -82,20 +98,21 @@ class LowerLeftPart extends StatelessWidget {
                   Expanded(
                     flex: 3,
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: 0, max: 100),
+                      stream: fiO2Stream,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          fi02GraphData.add(TimeChartData(
-                              y: snapshot.data![0].toDouble(),
-                              time: DateTime.now()));
-                        }
+                        saveDateFromStream(snapshot, fi02GraphData);
                         return TimeChart(
-                          chartData: TimeChartLine(
-                            chartData: fi02GraphData,
-                            color: settings.colors.fiO2,
-                          ),
+                          chartTimeLines: [
+                            TimeChartLine(
+                              chartData: fi02GraphData,
+                              color: settings.colors.fiO2,
+                            ),
+                          ],
+                          chartLines: [generateLowerTreshhold(), generateUpperTreshhold()],
                           minY: 0,
                           maxY: 100,
+                          chartSize: 60 * 30,
+                          autoScale: true,
                         );
                       },
                     ),
@@ -106,21 +123,16 @@ class LowerLeftPart extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: StreamBuilder(
-                      stream: SerialPort('').listen(min: 0, max: 100),
+                      stream: spO2Stream,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          sp02GraphData.add(
-                            TimeChartData(
-                              y: snapshot.data![0].toDouble(),
-                              time: DateTime.now(),
-                            ),
-                          );
-                        }
+                        saveDateFromStream(snapshot, sp02GraphData);
                         return TimeChart(
-                          chartData: TimeChartLine(
-                            chartData: sp02GraphData,
-                            color: settings.colors.spO2,
-                          ),
+                          chartTimeLines: [
+                            TimeChartLine(
+                              chartData: sp02GraphData,
+                              color: settings.colors.spO2,
+                            )
+                          ],
                           minY: 0,
                           maxY: 100,
                           chartSize: 600,

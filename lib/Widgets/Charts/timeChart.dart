@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
@@ -6,7 +8,7 @@ import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
 class TimeChart extends StatelessWidget {
   TimeChart({
     super.key,
-    required this.chartData,
+    required this.chartTimeLines,
     this.chartLines = const [],
     this.autoScale = false,
     this.initalTime,
@@ -15,7 +17,8 @@ class TimeChart extends StatelessWidget {
     this.minY,
     this.height,
     this.width,
-    this.horizontalLinesValues = const [],
+    this.horizontalLines = const [],
+    this.verticalLines = const [],
     this.onLineTouch,
   }) {
     setChartData();
@@ -24,42 +27,52 @@ class TimeChart extends StatelessWidget {
   late DateTime? initalTime;
   final double chartSize;
   final bool autoScale;
-  final TimeChartLine chartData;
+  final List<TimeChartLine> chartTimeLines;
   final List<ChartLine> chartLines;
   final double? minY;
   final double? maxY;
   final double? height;
   final double? width;
 
-  late List<FlSpot> chartDataLine = [];
-  final List<double> horizontalLinesValues;
+  final List<ChartLine> compiledChartLines = [];
+  final List<double> horizontalLines;
+  final List<double> verticalLines;
   final Function(LineTouchResponse?, double? firstX)? onLineTouch;
 
-  List<HorizontalLine> get horizontalLine =>
-      getHorizontalLines(horizontalLinesValues);
+  DateTime get startTime {
+    if (initalTime != null) return initalTime!;
+    final int minTime = chartTimeLines
+        .map<int>((e) =>
+            (e.chartData.firstOrNull?.time.millisecondsSinceEpoch ??
+                DateTime.now().millisecondsSinceEpoch))
+        .reduce(min);   
 
-  DateTime get startTime => (initalTime ??
-      (chartData.chartData.isEmpty
-          ? DateTime.now()
-          : chartData.chartData.first.time));
+    return DateTime.fromMillisecondsSinceEpoch(minTime);
+  }
 
   double get maxX {
-    if (chartDataLine.isNotEmpty && chartDataLine.last.x > chartSize) {
-      return chartDataLine.last.x;
-    }
-    return chartSize;
+    final double maxValue = compiledChartLines
+        .map<double>((e) => (e.chartData.lastOrNull?.x ?? 0.0))
+        .reduce(max);
+    return maxValue > chartSize ? maxValue : chartSize;
   }
 
   double get minX => autoScale ? 0 : (maxX - chartSize);
 
-  List<FlSpot> setChartData() {
-    chartDataLine.clear();
-    for (TimeChartData data in chartData.chartData) {
-      chartDataLine
-          .add(FlSpot(differenceInSeconds(data.time, startTime), data.y));
+  List<ChartLine> setChartData() {
+    compiledChartLines.clear();
+    for (TimeChartLine chartTimeLine in chartTimeLines) {
+      final List<FlSpot> spots = chartTimeLine.chartData
+          .map((e) => FlSpot(differenceInSeconds(e.time, startTime), e.y))
+          .toList();
+
+      compiledChartLines.add(ChartLine(
+        chartData: spots,
+        color: chartTimeLine.color,
+      ));
     }
 
-    return chartDataLine;
+    return chartLines;
   }
 
   double differenceInSeconds(DateTime startTime, DateTime endTime) {
@@ -69,10 +82,7 @@ class TimeChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Chart(
-      chartLines: [
-        ChartLine(chartData: chartDataLine, color: chartData.color),
-        ...chartLines
-      ],
+      chartLines: [...compiledChartLines, ...chartLines],
       onLineTouch: onLineTouch,
       maxX: maxX.floorToDouble(),
       minX: minX.floorToDouble(),
@@ -85,7 +95,8 @@ class TimeChart extends StatelessWidget {
       minY: minY,
       width: width,
       height: height,
-      horizontalLines: horizontalLine,
+      horizontalLines: horizontalLines,
+      verticalLines: verticalLines, 
     );
   }
 }
