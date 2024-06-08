@@ -4,9 +4,7 @@ import 'package:camera_platform_interface/camera_platform_interface.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
-import 'package:zuurstofmasker/Helpers/serialMocker.dart';
 import 'package:zuurstofmasker/Models/settings.dart';
 
 // Navigator key used for easy navigation wihtout the need of context

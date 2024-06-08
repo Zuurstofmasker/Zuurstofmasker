@@ -20,29 +20,6 @@ void main() async {
   runApp(App(home: (context) => const Dashboard()));
 }
 
-Future<void> jsonAndFileHelperTests() async {
-  Settings settings = await getGenericFromFile(settingsPath, Settings.fromJson);
-
-  settings.comparePassword('test')
-      ? print('Password correct')
-      : print('Password incorrect');
-  // print all settings of the settings object
-  print(settings.passwordHash);
-  print(settings.colors.spO2);
-  print(settings.colors.pulse);
-  print(settings.colors.fiO2);
-  print(settings.colors.leak);
-  print(settings.colors.pressure);
-  print(settings.colors.flow);
-  print(settings.colors.tidalVolume);
-  print(settings.colors.limitValues);
-  print(settings.limits.lowPulse);
-  print(settings.limits.cprPulse);
-  print(settings.limits.spO2);
-  print(settings.limits.cSrO2);
-  print(settings.limits.cFTOE);
-}
-
 Future<void> setupFileStructure() async {
   // Checking for settings file
   if (!await doesFolderOrFileExist(settingsJsonPath)) {

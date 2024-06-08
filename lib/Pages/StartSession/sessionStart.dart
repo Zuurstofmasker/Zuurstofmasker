@@ -16,6 +16,7 @@ import 'package:zuurstofmasker/Widgets/titles.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Widgets/cameraStatus.dart';
 
+// ignore: must_be_immutable
 class StartSession extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController noteController = TextEditingController();

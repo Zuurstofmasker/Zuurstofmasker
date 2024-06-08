@@ -37,7 +37,7 @@ class Nav extends StatelessWidget {
     ),
   ];
 
-  Nav({
+  const Nav({super.key, 
     required this.child,
     this.title,
     this.actions,
@@ -126,7 +126,7 @@ class MenuItemDesktop extends StatelessWidget {
   final IconData? icon;
   final bool? selected;
 
-  const MenuItemDesktop({this.text, this.icon, this.selected});
+  const MenuItemDesktop({super.key, this.text, this.icon, this.selected});
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +159,7 @@ class MenuItemBase extends StatelessWidget {
   final Widget? child;
   final Widget Function(BuildContext context) page;
 
-  MenuItemBase({required this.index, required this.child, required this.page});
+  const MenuItemBase({super.key, required this.index, required this.child, required this.page});
 
   @override
   Widget build(BuildContext context) {

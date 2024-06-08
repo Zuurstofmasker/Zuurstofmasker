@@ -1,10 +1,7 @@
 import 'dart:typed_data';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Pages/LiveSession/Functions/chartTreshhold.dart';
 import 'package:zuurstofmasker/Pages/LiveSession/liveSession.dart';
-import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/config.dart';
