@@ -67,8 +67,6 @@ void main() {
 
     test('createSession creates a session with correct files', () async {
       var tempDir2 = await createTempDir("2222");
-
-      var tempSessionsJsonPath = p.join(tempDir2, 'sessions.json');
       sessionPath = "$tempDir2\\";
       sessionsJsonPath = '${sessionPath}sessions.json';
       final session = Session(
