@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Models/session.dart';
-import 'package:zuurstofmasker/Models/settings.dart';
 import 'package:zuurstofmasker/Pages/LiveSession/Functions/chartTreshhold.dart';
 import 'package:zuurstofmasker/Pages/SessionDetails/Parts/Charts/chartsFunctions.dart';
 import 'package:zuurstofmasker/Pages/SessionDetails/Widgets/playBackChart.dart';

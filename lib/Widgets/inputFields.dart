@@ -137,6 +137,7 @@ class InputDropDown<T> extends StatefulWidget {
   final String? Function(T?)? validator;
 
   @override
+  // ignore: no_logic_in_create_state
   State<InputDropDown> createState() => _InputDropDownState<T>(
         onChange: onChange,
         validator: validator,

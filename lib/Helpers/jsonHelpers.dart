@@ -14,11 +14,11 @@ T jsonToGeneric<T>(
     if (jsonToObject == null) return decodedJson as T;
 
     // Using the given conversion method convert the json to the correct object
-    if (decodedJson is! Map<String, dynamic>) return fallbackValue!;
+    if (decodedJson is! Map<String, dynamic>) return fallbackValue as T;
 
     return jsonToObject(decodedJson);
   } catch (e) {
-    return fallbackValue!;
+    return fallbackValue as T;
   }
 }
 

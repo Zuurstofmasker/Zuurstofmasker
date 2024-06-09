@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';

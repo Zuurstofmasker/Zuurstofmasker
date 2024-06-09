@@ -10,10 +10,10 @@ import 'package:video_player/video_player.dart';
 import 'dart:io';
 
 class VideoPlr extends StatefulWidget {
-  VideoPlr({super.key, required this.session, required this.controller});
+  const VideoPlr({super.key, required this.session, required this.controller});
 
   final Session session;
-  VideoPlayerController? controller;
+  final VideoPlayerController? controller;
 
   @override
   State<VideoPlr> createState() => _VideoPlayerScreenState();

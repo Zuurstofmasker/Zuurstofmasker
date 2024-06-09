@@ -4,6 +4,7 @@ import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/titles.dart';
 
+// ignore: must_be_immutable
 class SessionInfoForm extends StatelessWidget {
   SessionInfoForm.start({
     super.key,
@@ -159,6 +160,7 @@ class SessionInfoForm extends StatelessWidget {
               if (endTimeValidator != null) {
                 return endTimeValidator!();
               }
+              return null;
             },
             onTap: () {
               if (onEndTimePick != null) {

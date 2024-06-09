@@ -2,7 +2,6 @@ import 'package:uuid/uuid.dart';
 import 'package:zuurstofmasker/Helpers/csvHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
-import 'package:zuurstofmasker/Models/sessionSerialData.dart';
 
 import 'package:zuurstofmasker/config.dart';
 
@@ -48,7 +47,7 @@ Future<void> updateSession(Session session) async {
 
 Future<List<List<double>>> getSessionSerialData(String sessionId) async {
   String csvPath = sessionPath + sessionId;
-  String data = await stringFromFile('${csvPath}/recordedData.csv');
+  String data = await stringFromFile('$csvPath/recordedData.csv');
 
   return csvToList(data);
 }

@@ -36,20 +36,22 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.6
-  fl_chart: ^0.66.2
-  csv: ^6.0.0
-  uuid: ^4.4.0
-  flutter_svg: ^2.0.10+1
-  crypto: ^3.0.3
-  flutter_colorpicker: ^1.1.0
-  flutter_easyloading: ^3.0.5
-  flutter_libserialport: ^0.4.0
-  camera_windows: ^0.2.2
-  video_player_win: ^2.3.6
-  audio_video_progress_bar: ^2.0.3
+  cupertino_icons: 1.0.6
+  fl_chart: 0.66.2
+  csv: 6.0.0
+  uuid: 4.4.0
+  flutter_svg: 2.0.10+1
+  crypto: 3.0.3
+  flutter_colorpicker: 1.1.0
+  flutter_easyloading: 3.0.5
+  flutter_libserialport: 0.4.0
+  camera_windows: 0.2.2
+  video_player_win: 2.3.6
+  audio_video_progress_bar: 2.0.3
   
 
+  camera_platform_interface: any
+  video_player: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
