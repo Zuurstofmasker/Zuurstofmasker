@@ -6,7 +6,7 @@ import 'dart:convert';
 void main() {
   group('jsonToGeneric', () {
     test('should convert JSON string to a Map', () {
-      final jsonString = '{"id": "123", "nameMother": "Jane Doe"}';
+      const jsonString = '{"id": "123", "nameMother": "Jane Doe"}';
       final result = jsonToGeneric<Map<String, dynamic>>(jsonString);
 
       expect(result, isA<Map<String, dynamic>>());
@@ -111,7 +111,7 @@ void main() {
 
   group('jsonToMap', () {
     test('should convert JSON string to a Map', () {
-      final jsonString = '{"id": "123", "nameMother": "Jane Doe"}';
+      const jsonString = '{"id": "123", "nameMother": "Jane Doe"}';
       final result = jsonToMap(jsonString);
 
       expect(result, isA<Map<String, dynamic>>());
@@ -120,7 +120,7 @@ void main() {
     });
 
     test('should return fallback value if JSON string is invalid', () {
-      final jsonString = 'invalid json';
+      const jsonString = 'invalid json';
       final fallbackValue = {'error': 'Invalid JSON'};
       final result = jsonToMap(jsonString, fallbackValue: fallbackValue);
 
@@ -167,7 +167,7 @@ void main() {
     });
 
     test('should return fallback value if JSON string is invalid', () {
-      final jsonString = 'invalid json';
+      const jsonString = 'invalid json';
       final fallbackValue = <Session>[];
       final result = jsonToList<Session>(jsonString, null, fallbackValue);
 

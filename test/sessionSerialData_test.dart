@@ -37,7 +37,7 @@ void main() {
         tidalVolumeData: [],
         tidalVolumeDateTime: [],
       );
-      createFolder(sessionPath + "0");
+      createFolder("${sessionPath}0");
       // Use the saveToFile method to create a CSV file
       var file = await sessionData.saveToFile("0");
 

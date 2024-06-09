@@ -14,7 +14,7 @@ void main() {
   group('Settings', () {
     test('getSettingsFromFile should create correct Settings', () async {
       var tempDir = await createTempDir('1');
-      settingsJsonPath = '${tempDir}\\settings.json';
+      settingsJsonPath = '$tempDir\\settings.json';
       // Create a temporary file with some JSON data
       final file = await File(settingsJsonPath).writeAsString(
           '{"passwordHash":"5f4dcc3b5aa765d61d8327deb882cf99","colors":{"spO2":4293467747,"pulse":4278190080,"fiO2":4278190080,"leak":4280391411,"pressure":4278190080,"flow":4278190080,"tidalVolume":4278190080,"limitValues":4278190080},"limits":{"lowPulse":0,"cprPulse":0,"spO2":0,"cSrO2":0,"cFTOE":0}}');
@@ -39,7 +39,7 @@ void main() {
       // Create a Settings object
 
       var tempDir = await createTempDir('2');
-      settingsJsonPath = '${tempDir}\\settings.json';
+      settingsJsonPath = '$tempDir\\settings.json';
 
       final settings = Settings(
         passwordHash: "5f4dcc3b5aa765d61d8327deb882cf99",
@@ -80,7 +80,7 @@ void main() {
     test('hashPassword, setPassword, and comparePassword should work correctly',
         () async {
       var tempDir = await createTempDir('3');
-      settingsJsonPath = '${tempDir}\\settings.json';
+      settingsJsonPath = '$tempDir\\settings.json';
       // Create a Settings object
       final settings = Settings(
         passwordHash: "",

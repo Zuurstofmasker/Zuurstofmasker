@@ -54,7 +54,7 @@ void main() {
         babyId: 'baby_1',
         nameMother: 'Jane Doe',
         birthDateTime: DateTime.now(),
-        endDateTime: DateTime.now().add(Duration(hours: 1)),
+        endDateTime: DateTime.now().add(const Duration(hours: 1)),
         note: 'Note',
         roomNumber: 101,
       );
@@ -70,7 +70,7 @@ void main() {
         babyId: 'baby_1',
         nameMother: 'Jane Doe',
         birthDateTime: DateTime.now(),
-        endDateTime: DateTime.now().add(Duration(hours: 1)),
+        endDateTime: DateTime.now().add(const Duration(hours: 1)),
         note: 'Note',
         roomNumber: 101,
       );
@@ -80,7 +80,7 @@ void main() {
         babyId: 'baby_2',
         nameMother: 'Mary Smith',
         birthDateTime: DateTime.now(),
-        endDateTime: DateTime.now().add(Duration(hours: 2)),
+        endDateTime: DateTime.now().add(const Duration(hours: 2)),
         note: 'Another note',
         roomNumber: 102,
       );
@@ -99,7 +99,7 @@ void main() {
         babyId: 'baby_1',
         nameMother: 'Jane Doe',
         birthDateTime: DateTime.now(),
-        endDateTime: DateTime.now().add(Duration(hours: 1)),
+        endDateTime: DateTime.now().add(const Duration(hours: 1)),
         note: 'Note',
         roomNumber: 101,
       );
@@ -109,7 +109,7 @@ void main() {
         babyId: 'baby_2',
         nameMother: 'Mary Smith',
         birthDateTime: DateTime.now(),
-        endDateTime: DateTime.now().add(Duration(hours: 2)),
+        endDateTime: DateTime.now().add(const Duration(hours: 2)),
         note: 'Another note',
         roomNumber: 102,
       );
@@ -122,7 +122,7 @@ void main() {
         babyId: 'baby_2',
         nameMother: 'Mary Smith',
         birthDateTime: DateTime.now(),
-        endDateTime: DateTime.now().add(Duration(hours: 3)),
+        endDateTime: DateTime.now().add(const Duration(hours: 3)),
         note: 'Updated note',
         roomNumber: 102,
       );
@@ -140,7 +140,7 @@ void main() {
         babyId: 'baby_1',
         nameMother: 'Jane Doe',
         birthDateTime: DateTime.now(),
-        endDateTime: DateTime.now().add(Duration(hours: 1)),
+        endDateTime: DateTime.now().add(const Duration(hours: 1)),
         note: 'Note',
         roomNumber: 101,
       );
@@ -150,7 +150,7 @@ void main() {
         babyId: 'baby_2',
         nameMother: 'Mary Smith',
         birthDateTime: DateTime.now(),
-        endDateTime: DateTime.now().add(Duration(hours: 2)),
+        endDateTime: DateTime.now().add(const Duration(hours: 2)),
         note: 'Another note',
         roomNumber: 102,
       );
