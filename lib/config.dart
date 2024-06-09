@@ -17,8 +17,8 @@ Settings settings = defaultSettings;
 bool settingsFromFile = false;
 
 // Path to the json files
-const String sessionPath = 'Data/Sessions/';
-const String sessionsJsonPath = '${sessionPath}sessions.json';
+String sessionPath = 'Data/Sessions/';
+String sessionsJsonPath = '${sessionPath}sessions.json';
 const String settingsPath = 'Data/Settings/';
 const String settingsJsonPath = '${settingsPath}settings.json';
 
