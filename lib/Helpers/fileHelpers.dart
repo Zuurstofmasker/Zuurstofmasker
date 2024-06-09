@@ -140,7 +140,3 @@ Future<File> csvToFile<T>(List<List<T>> csv, String path) async =>
 // Retrieve csv from a file
 Future<List<List<T>>> csvFromFile<T>(String path) async =>
     csvToList<T>(await stringFromFile(path));
-
-// Apending csv to a file
-Future<File> appendCsvToFile<T>(List<List<T>> csv, String path) async =>
-    await appendStringToFile(path, '\n${listToCsv(csv)}');
