@@ -12,6 +12,7 @@ import 'package:zuurstofmasker/Models/session.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:video_player/video_player.dart';
 
+// ignore: must_be_immutable
 class SessionDetails extends StatelessWidget {
   SessionDetails({super.key, required this.session, required this.serialData}) {
     loadVideoPlayer();

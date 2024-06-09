@@ -12,6 +12,7 @@ import 'package:zuurstofmasker/Widgets/titles.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 
+// ignore: must_be_immutable
 class SessionHistory extends StatelessWidget {
   SessionHistory({super.key});
 

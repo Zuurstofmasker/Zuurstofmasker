@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
+import 'package:zuurstofmasker/Pages/LiveSession/Functions/chartTreshhold.dart';
 import 'package:zuurstofmasker/Pages/LiveSession/liveSession.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
@@ -53,7 +53,7 @@ class LowerLeftPart extends StatelessWidget {
                           stream: fiO2Stream,
                           builder: (context, snapshot) {
                             return Text(
-                              "${fi02GraphData.lastOrNull?.y.toInt() ??  "-"}%",
+                              "${fi02GraphData.lastOrNull?.y.toInt() ?? "-"}%",
                               style: TextStyle(
                                   fontSize: 40, color: settings.colors.fiO2),
                             );
@@ -103,10 +103,13 @@ class LowerLeftPart extends StatelessWidget {
                             TimeChartLine(
                               chartData: fi02GraphData,
                               color: settings.colors.fiO2,
-                            )
+                            ),
                           ],
+                          chartLines: [generateLowerTreshhold(), generateUpperTreshhold()],
                           minY: 0,
                           maxY: 100,
+                          chartSize: 60 * 30,
+                          autoScale: true,
                         );
                       },
                     ),
@@ -119,7 +122,7 @@ class LowerLeftPart extends StatelessWidget {
                     child: StreamBuilder(
                       stream: spO2Stream,
                       builder: (context, snapshot) {
-                       saveDateFromStream(snapshot, sp02GraphData);
+                        saveDateFromStream(snapshot, sp02GraphData);
                         return TimeChart(
                           chartTimeLines: [
                             TimeChartLine(

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:zuurstofmasker/Models/session.dart';
+import 'package:zuurstofmasker/Pages/SessionDetails/Parts/Charts/chartsFunctions.dart';
 import 'package:zuurstofmasker/Pages/SessionDetails/Widgets/playBackChart.dart';
 import 'package:zuurstofmasker/config.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
@@ -48,6 +49,10 @@ class ChartsLowerPart extends StatelessWidget {
             videoController: videoController,
             title: "Leak",
             onLineTouch: callback,
+            bottomWidgetBuilder: () => Text(
+              "${getNearestChartValue(videoController?.value, leakGraphData, session)}%",
+              style: liveTitleTextStyle.copyWith(color: settings.colors.leak),
+            ),
           ),
         ),
         const PaddingSpacing(
@@ -66,6 +71,11 @@ class ChartsLowerPart extends StatelessWidget {
             videoController: videoController,
             title: "Druk",
             onLineTouch: callback,
+            bottomWidgetBuilder: () => Text(
+                getNearestChartValue(
+                    videoController?.value, pressureGraphData, session),
+                style: liveTitleTextStyle.copyWith(
+                    color: settings.colors.pressure)),
           ),
         ),
         const PaddingSpacing(
@@ -84,6 +94,11 @@ class ChartsLowerPart extends StatelessWidget {
             videoController: videoController,
             title: "Flow",
             onLineTouch: callback,
+            bottomWidgetBuilder: () => Text(
+              getNearestChartValue(
+                  videoController?.value, flowGraphData, session),
+              style: liveTitleTextStyle.copyWith(color: settings.colors.flow),
+            ),
           ),
         ),
         const PaddingSpacing(
@@ -100,8 +115,14 @@ class ChartsLowerPart extends StatelessWidget {
               ),
             ],
             videoController: videoController,
-            title: "Terugvolume",
+            title: "Teugvolume",
             onLineTouch: callback,
+            bottomWidgetBuilder: () => Text(
+              getNearestChartValue(
+                  videoController?.value, tidalVolumeGraphData, session),
+              style: liveTitleTextStyle.copyWith(
+                  color: settings.colors.tidalVolume),
+            ),
           ),
         ),
       ],

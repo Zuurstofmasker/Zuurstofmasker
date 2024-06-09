@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
+import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Models/note.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
@@ -85,7 +86,7 @@ void addNote(String sessionID, Duration time,
                 await appendItemToListFile(noteList.value.last,
                     "$sessionPath$sessionID/videoNotes.json", Note.fromJson);
                 PopupAndLoading.showSuccess("Notitie opgeslagen");
-                Navigator.pop(context);
+                popPage();
               } catch (e) {
                 PopupAndLoading.showError("Notitie is niet opgeslagen");
               }
@@ -140,7 +141,7 @@ void showNote(Note note, String sessionID, ValueNotifier<List<Note>> noteList,
             try {
               await deleteNote(note, sessionID, noteList);
               PopupAndLoading.showSuccess("Notitie verwijderd");
-              Navigator.pop(context);
+              popPage();
             } catch (e) {
               PopupAndLoading.showError("Notitie verwijderd");
             }

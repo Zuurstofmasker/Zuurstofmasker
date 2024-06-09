@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zuurstofmasker/Widgets/Charts/chart.dart';
@@ -14,6 +15,10 @@ class PlayBackChart extends StatelessWidget {
   final List<ChartLineBase<TimeChartData>> chartTimeLines;
   final List<double> horizontalLines;
   final String title;
+  final Widget Function() bottomWidgetBuilder;
+  final List<ChartLine> chartLines;
+  final double? width;
+
 
   const PlayBackChart({
     super.key,
@@ -22,8 +27,11 @@ class PlayBackChart extends StatelessWidget {
     required this.chartTimeLines,
     required this.videoController,
     required this.title,
+    required this.bottomWidgetBuilder,
     this.horizontalLines = const [],
+    this.chartLines = const [],
     this.onLineTouch,
+    this.width,
   });
 
   Widget getChart(double? videoPosition) => TimeChart(
@@ -34,7 +42,9 @@ class PlayBackChart extends StatelessWidget {
         autoScale: true,
         horizontalLines: horizontalLines,
         onLineTouch: onLineTouch,
+        chartLines: chartLines,
         verticalLines: videoPosition == null ? [] : [videoPosition],
+        width: width,
       );
 
   @override
@@ -58,8 +68,17 @@ class PlayBackChart extends StatelessWidget {
                 ? getChart(null)
                 : ValueListenableBuilder<VideoPlayerValue>(
                     valueListenable: videoController!,
-                    builder: (context, value, child) => getChart(
-                      value.position.inMilliseconds.toDouble(),
+                    builder: (context, value, child) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: getChart(
+                            value.position.inMilliseconds.toDouble() / 1000,
+                          ),
+                        ),
+                        const PaddingSpacing(),
+                        bottomWidgetBuilder(),
+                      ],
                     ),
                   ),
           ),
