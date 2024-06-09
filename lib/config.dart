@@ -20,7 +20,7 @@ bool settingsFromFile = false;
 String sessionPath = 'Data/Sessions/';
 String sessionsJsonPath = '${sessionPath}sessions.json';
 const String settingsPath = 'Data/Settings/';
-const String settingsJsonPath = '${settingsPath}settings.json';
+String settingsJsonPath = '${settingsPath}settings.json';
 
 // Colors
 const Color primaryColor = Color(0xff86d1ed);
