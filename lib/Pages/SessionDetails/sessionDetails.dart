@@ -97,11 +97,11 @@ class SessionDetails extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: SizedBox(
-                      child: VideoPlr(
-                        session: session,
-                        controller: controller,
-                      ),
-                      ),
+                    child: VideoPlr(
+                      session: session,
+                      controller: controller,
+                    ),
+                  ),
                 ),
                 const PaddingSpacing(
                   multiplier: 3,
@@ -111,7 +111,6 @@ class SessionDetails extends StatelessWidget {
             const PaddingSpacing(),
             SizedBox(
               height: 300,
-              width: 1900,
               child: ChartsLowerPart(
                 videoController: controller,
                 session: session,

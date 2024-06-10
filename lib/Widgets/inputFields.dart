@@ -206,6 +206,7 @@ class _InputColorState extends State<InputColor> {
               onColorChanged: (color) {
                 newColor = color;
               },
+              hexInputBar: true,
               pickerAreaHeightPercent: 0.8,
             ),
           ),

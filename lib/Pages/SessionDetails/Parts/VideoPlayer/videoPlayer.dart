@@ -82,137 +82,131 @@ class _VideoPlayerScreenState extends State<VideoPlr> {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: SizedBox(
-        height: 600,
-        width: double.infinity,
-        child: videoExists
-            ? Stack(children: [
-                VideoPlayer(widget.controller!),
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FractionallySizedBox(
-                      widthFactor: 0.9,
-                      alignment: FractionalOffset.center,
-                      child: ValueListenableBuilder<VideoPlayerValue>(
-                        valueListenable: widget.controller!,
-                        builder: (context, videoplayerValue, child) {
-                          return LayoutBuilder(
-                            builder: (context, constraints) {
-                              double progressBarWidth = constraints.maxWidth;
+    return SizedBox(
+      height: 600,
+      width: double.infinity,
+      child: videoExists
+          ? Stack(children: [
+              VideoPlayer(widget.controller!),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FractionallySizedBox(
+                    widthFactor: 0.9,
+                    alignment: FractionalOffset.center,
+                    child: ValueListenableBuilder<VideoPlayerValue>(
+                      valueListenable: widget.controller!,
+                      builder: (context, videoplayerValue, child) {
+                        return LayoutBuilder(
+                          builder: (context, constraints) {
+                            double progressBarWidth = constraints.maxWidth;
 
-                              return ValueListenableBuilder(
-                                  valueListenable: noteList,
-                                  builder: (context, value, child) {
-                                    return Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        ProgressBar(
-                                          progress:
-                                              widget.controller!.value.position,
-                                          total:
-                                              widget.controller!.value.duration,
-                                          progressBarColor: Colors.blue,
-                                          baseBarColor: Colors.white,
-                                          bufferedBarColor: Colors.white,
-                                          thumbColor: Colors.blue[800],
-                                          timeLabelTextStyle: const TextStyle(
-                                              color: Colors.white),
-                                          barHeight: 3.0,
-                                          thumbRadius: 5.0,
-                                          onSeek: (duration) {
-                                            widget.controller?.seekTo(duration);
-                                          },
-                                        ),
-                                        ...calcThumbs(
-                                            videoplayerValue,
-                                            widget.session.id,
-                                            progressBarWidth,
-                                            noteList,
-                                            widget.controller!,
-                                            context),
-                                      ],
-                                    );
-                                  });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: mainPadding.copyWith(top: 0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () => widget.controller?.seekTo(Duration(
-                              milliseconds: widget.controller!.value.position
-                                      .inMilliseconds -
-                                  10 * 1000,
-                            )),
-                            child: const Icon(Icons.arrow_back),
-                          ),
-                          ValueListenableBuilder<VideoPlayerValue>(
-                            valueListenable: widget.controller!,
-                            builder: (context, value, child) {
-                              return ElevatedButton(
-                                onPressed: () => value.isPlaying
-                                    ? widget.controller?.pause()
-                                    : widget.controller?.play(),
-                                child: value.isPlaying
-                                    ? const Icon(Icons.pause)
-                                    : const Icon(Icons.play_arrow),
-                              );
-                            },
-                          ),
-                          ElevatedButton(
-                              onPressed: () => widget.controller?.seekTo(
-                                  Duration(
-                                      milliseconds: widget.controller!.value
-                                              .position.inMilliseconds +
-                                          10 * 1000)),
-                              child: const Icon(Icons.arrow_forward)),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                Positioned(
-                  top: 10,
-                  left: 10,
-                  child: ValueListenableBuilder(
-                    valueListenable: videoSpeedNotifier,
-                    builder: (context, value, child) {
-                      return Button(
-                        onTap: () {
-                          setVideoSpeed(widget.controller);
-                        },
-                        text: "${value}x",
-                      );
-                    },
-                  ),
-                ),
-                Positioned(
-                    top: 10,
-                    right: 10,
-                    child: Button(
-                      onTap: () => {
-                        widget.controller?.pause(),
-                        addNote(
-                            widget.session.id,
-                            widget.controller!.value.position,
-                            noteList,
-                            context)
+                            return ValueListenableBuilder(
+                                valueListenable: noteList,
+                                builder: (context, value, child) {
+                                  return Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      ProgressBar(
+                                        progress:
+                                            widget.controller!.value.position,
+                                        total:
+                                            widget.controller!.value.duration,
+                                        progressBarColor: Colors.blue,
+                                        baseBarColor: Colors.white,
+                                        bufferedBarColor: Colors.white,
+                                        thumbColor: Colors.blue[800],
+                                        timeLabelTextStyle: const TextStyle(
+                                            color: Colors.white),
+                                        barHeight: 3.0,
+                                        thumbRadius: 5.0,
+                                        onSeek: (duration) {
+                                          widget.controller?.seekTo(duration);
+                                        },
+                                      ),
+                                      ...calcThumbs(
+                                          videoplayerValue,
+                                          widget.session.id,
+                                          progressBarWidth,
+                                          noteList,
+                                          widget.controller!,
+                                          context),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
                       },
-                      padding: const EdgeInsets.all(10),
-                      text: "Notitie toevoegen",
-                    ))
-              ])
-            : const Text("Geen video opgenomen"),
-      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: mainPadding.copyWith(top: 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => widget.controller?.seekTo(Duration(
+                            milliseconds: widget
+                                    .controller!.value.position.inMilliseconds -
+                                10 * 1000,
+                          )),
+                          child: const Icon(Icons.arrow_back),
+                        ),
+                        ValueListenableBuilder<VideoPlayerValue>(
+                          valueListenable: widget.controller!,
+                          builder: (context, value, child) {
+                            return ElevatedButton(
+                              onPressed: () => value.isPlaying
+                                  ? widget.controller?.pause()
+                                  : widget.controller?.play(),
+                              child: value.isPlaying
+                                  ? const Icon(Icons.pause)
+                                  : const Icon(Icons.play_arrow),
+                            );
+                          },
+                        ),
+                        ElevatedButton(
+                            onPressed: () => widget.controller?.seekTo(Duration(
+                                milliseconds: widget.controller!.value.position
+                                        .inMilliseconds +
+                                    10 * 1000)),
+                            child: const Icon(Icons.arrow_forward)),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              Positioned(
+                top: 10,
+                left: 10,
+                child: ValueListenableBuilder(
+                  valueListenable: videoSpeedNotifier,
+                  builder: (context, value, child) {
+                    return Button(
+                      onTap: () {
+                        setVideoSpeed(widget.controller);
+                      },
+                      text: "${value}x",
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                  top: 10,
+                  right: 10,
+                  child: Button(
+                    onTap: () => {
+                      widget.controller?.pause(),
+                      addNote(widget.session.id,
+                          widget.controller!.value.position, noteList, context)
+                    },
+                    padding: const EdgeInsets.all(10),
+                    text: "Notitie toevoegen",
+                  ))
+            ])
+          : const Text("Geen video opgenomen"),
     );
   }
 }
