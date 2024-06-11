@@ -124,10 +124,6 @@ class SettingsInputsContent extends StatelessWidget {
       value: LimitType.TenToNinetyDawson,
       child: Text('10-90 Dawson'),
     ),
-    DropdownMenuItem(
-      value: LimitType.Custom,
-      child: Text('Custom'),
-    ),
   ];
 
   late TextEditingController cprPulseController =
@@ -264,7 +260,7 @@ class SettingsInputsContent extends StatelessWidget {
               onChange: (color) => colors.limitValues = color,
             ),
             const PaddingSpacing(multiplier: 2),
-            const PageTitle(title: 'Nieuw Wachtwoord'),
+            const PageTitle(title: 'Nieuw wachtwoord'),
             const PaddingSpacing(),
             InputField(
               isRequired: false,
@@ -275,7 +271,7 @@ class SettingsInputsContent extends StatelessWidget {
             const PaddingSpacing(multiplier: 2),
             Button(
               onTap: () => saveSettings(context),
-              text: 'Opslaan',
+              text: 'Wijzigingen opslaan',
             ),
           ],
         ),

@@ -165,11 +165,11 @@ void main() {
     test('Write and read CSV from file', () async {
       final csvData = [
         ['ID', 'Name', 'LastName'],
-        ['A', 'Alice', 'Alice2'],
-        ['B', 'Bob', 'Bob2'],
+        [1, 'Alice', 'Alice2'],
+        [2, 'Bob', 'Bob2'],
       ];
       await csvToFile(csvData, testFilePath);
-      final result = await csvFromFile<String>(testFilePath);
+      final result = await csvFromFile(testFilePath);
       expect(result, csvData);
     });
   });

@@ -186,7 +186,7 @@ class SessionHistory extends StatelessWidget {
                             headingRowHeight: 40,
                             columns: ([
                               'Opvangkamer',
-                              'Geboorte datum',
+                              'Geboortedatum',
                               'Naam moeder',
                               'Opmerking'
                             ]
@@ -225,8 +225,7 @@ List<DataRow> getSessionHistoryItems(List<Session> sessions) {
   List<DataRow> items = [];
   for (var session in sessions) {
     var row = DataRow(
-      color: WidgetStateProperty.resolveWith<Color?>(
-          (Set<WidgetState> states) {
+      color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
         if (states.contains(WidgetState.hovered)) {
           return primaryColor.withOpacity(0.2);
         }

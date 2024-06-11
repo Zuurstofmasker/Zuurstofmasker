@@ -86,8 +86,9 @@ void addNote(String sessionID, Duration time,
                 await appendItemToListFile(noteList.value.last,
                     "$sessionPath$sessionID/videoNotes.json", Note.fromJson);
                 PopupAndLoading.showSuccess("Notitie opgeslagen");
-                popPage();
+                Navigator.pop(context);
               } catch (e) {
+                print(e);
                 PopupAndLoading.showError("Notitie is niet opgeslagen");
               }
               PopupAndLoading.endLoading();
@@ -141,9 +142,10 @@ void showNote(Note note, String sessionID, ValueNotifier<List<Note>> noteList,
             try {
               await deleteNote(note, sessionID, noteList);
               PopupAndLoading.showSuccess("Notitie verwijderd");
-              popPage();
+              Navigator.pop(context);
             } catch (e) {
-              PopupAndLoading.showError("Notitie verwijderd");
+              print(e);
+              PopupAndLoading.showError("Notitie verwijderd mislukt");
             }
             PopupAndLoading.endLoading();
           },

@@ -12,39 +12,36 @@ class InfoNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: SizedBox(
-        width: double.infinity,
-        child: Row(children: [
-          Button(
-              icon: Icons.tune, onTap: () => {popPage()}, color: primaryColor),
-          const PaddingSpacing(
-            multiplier: 1,
+    return SizedBox(
+      width: double.infinity,
+      child: Row(children: [
+        Button(icon: Icons.tune, onTap: () => {popPage()}, color: primaryColor),
+        const PaddingSpacing(
+          multiplier: 1,
+        ),
+        Flexible(
+          child: Container(
+            decoration: const BoxDecoration(
+                color: primaryColor, borderRadius: borderRadius),
+            width: double.infinity,
+            padding: const EdgeInsets.all(11),
+            child: Row(children: [
+              Text(session.nameMother),
+              const PaddingSpacing(
+                multiplier: 1,
+              ),
+              Text(session.birthDateTime.toString()),
+              const PaddingSpacing(
+                multiplier: 1,
+              ),
+              Text("Opvangkamer ${session.roomNumber}"),
+              const PaddingSpacing(
+                multiplier: 1,
+              ),
+            ]),
           ),
-          Flexible(
-            child: Container(
-              decoration: const BoxDecoration(
-                  color: primaryColor, borderRadius: borderRadius),
-              width: double.infinity,
-              padding: const EdgeInsets.all(11),
-              child: Row(children: [
-                Text(session.nameMother),
-                const PaddingSpacing(
-                  multiplier: 1,
-                ),
-                Text(session.birthDateTime.toString()),
-                const PaddingSpacing(
-                  multiplier: 1,
-                ),
-                Text("Opvangkamer ${session.roomNumber}"),
-                const PaddingSpacing(
-                  multiplier: 1,
-                ),
-              ]),
-            ),
-          ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 }
