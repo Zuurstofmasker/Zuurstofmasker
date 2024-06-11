@@ -10,8 +10,8 @@ void main() {
       babyId: '456',
       nameMother: 'Alice',
       note: 'This is a test session',
-      birthDateTime: DateTime(2023, 1, 1, 10, 0),
-      endDateTime: DateTime(2023, 1, 1, 11, 0),
+      birthDateTime: DateTime(2023, 1, 1, 10, 0).toUtc(),
+      endDateTime: DateTime(2023, 1, 1, 11, 0).toUtc(),
       roomNumber: 101,
     );
 
@@ -24,7 +24,7 @@ void main() {
     expect(jsonMap['babyId'], '456');
     expect(jsonMap['nameMother'], 'Alice');
     expect(jsonMap['note'], 'This is a test session');
-    expect(jsonMap['birthTime'], 1672567200000);
+    expect(jsonMap['birthTime'], 1672563600000);
     expect(jsonMap['endTime'], 1672567200000);
     expect(jsonMap['roomNumber'], 101);
   });
