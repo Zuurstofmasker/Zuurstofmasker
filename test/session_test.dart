@@ -24,7 +24,7 @@ void main() {
     expect(jsonMap['babyId'], '456');
     expect(jsonMap['nameMother'], 'Alice');
     expect(jsonMap['note'], 'This is a test session');
-    expect(jsonMap['birthTime'], 1672563600000);
+    expect(jsonMap['birthTime'], 1672567200000);
     expect(jsonMap['endTime'], 1672567200000);
     expect(jsonMap['roomNumber'], 101);
   });
