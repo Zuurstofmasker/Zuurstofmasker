@@ -9,6 +9,7 @@ import 'package:zuurstofmasker/config.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   PopupAndLoading.baseStyle();
 
   await setupFileStructure();
@@ -50,7 +51,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      title: 'Maasgroep 18 Applicatie',
+      title: 'Zuurstofmasker',
       builder: EasyLoading.init(),
       locale: locale,
       localizationsDelegates: const [

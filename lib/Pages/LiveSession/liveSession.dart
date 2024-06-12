@@ -12,6 +12,7 @@ import 'package:zuurstofmasker/Pages/LiveSession/Parts/lowerLeftPart.dart';
 import 'package:zuurstofmasker/Pages/LiveSession/Parts/lowerRightPart.dart';
 import 'package:zuurstofmasker/Pages/LiveSession/Parts/upperPart.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
+import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/config.dart';
@@ -33,10 +34,12 @@ class LiveSession extends StatefulWidget {
 class _LiveSessionState extends State<LiveSession> {
   final ValueNotifier<bool> startedSession = ValueNotifier<bool>(false);
   Timer? periodicSessionDataSave;
-  DateTime timeLastReceivedData = DateTime.now();
-  late Timer timeoutTimer;
 
-  late List<Stream> streams = [
+  StreamSubscription? timeoutStream;
+  bool hasIgnoredTimeout = false;
+  bool hasClosedWarning = true;
+
+  late List<Stream<Uint8List>> streams = [
     pressureStream,
     flowStream,
     tidalVolumeStream,
@@ -48,20 +51,17 @@ class _LiveSessionState extends State<LiveSession> {
 
   final List<StreamSubscription> streamSubscriptions = [];
 
-  @override
-  void initState() {
-    // Subscribing to all the streams
-    subscribeToStreams();
-
-    timeoutTimer = Timer.periodic(
-        const Duration(seconds: serialTimeoutInSeconds), (timer) {
-      if (timeLastReceivedData.difference(DateTime.now()).inSeconds >
-          serialTimeoutInSeconds) {
-        onSerialTimeout();
-      }
+  void startTimeOut() {
+    // Starting the timeout stream
+    timeoutStream = streamsHasData(
+      streams,
+      validator: serialDataValidator,
+      interval: const Duration(
+        seconds: serialTimeoutInSeconds,
+      ),
+    ).listen((active) {
+      if (active.any((e) => !e) && !hasIgnoredTimeout) onSerialTimeout();
     });
-
-    super.initState();
   }
 
   void subscribeToStreams() {
@@ -78,11 +78,8 @@ class _LiveSessionState extends State<LiveSession> {
 
   void addDataToCSVObject(
       List<double> listToAdd, List<DateTime> timeListToAdd, Uint8List value) {
-    if (startedSession.value) {
-      timeLastReceivedData = DateTime.now();
-      timeListToAdd.add(timeLastReceivedData);
-      listToAdd.add(uint8ListToDouble(value));
-    }
+    timeListToAdd.add(DateTime.now());
+    listToAdd.add(uint8ListToDouble(value));
   }
 
   Future onStartSession() async {
@@ -90,10 +87,16 @@ class _LiveSessionState extends State<LiveSession> {
 
     try {
       startedSession.value = true;
+
+      // Subscribing to all the streams
+      subscribeToStreams();
+      startTimeOut();
+
       widget.session.birthDateTime = DateTime.now();
       periodicSessionDataSave = Timer(
           const Duration(seconds: saveDateTimeInSeconds),
           () => widget.serialData.saveToFile(widget.session.id));
+
       await startRecording();
     } catch (e) {
       PopupAndLoading.showError("Opvang starten mislukt");
@@ -129,19 +132,19 @@ class _LiveSessionState extends State<LiveSession> {
     PopupAndLoading.endLoading();
   }
 
-  Future onStopSession() async {
+  Future onStopSession([DateTime? endDateTime]) async {
     PopupAndLoading.showLoading();
 
     try {
       startedSession.value = false;
-      widget.session.endDateTime = DateTime.now();
+      widget.session.endDateTime = endDateTime ?? DateTime.now();
       await updateSession(widget.session);
 
       await widget.serialData.saveToFile(widget.session.id);
       await stopRecording(
           storeLocation: '$sessionPath${widget.session.id}/video.mp4');
 
-      pushPage(
+      pushAndReplacePage(
         MaterialPageRoute(
           builder: (context) => ConfirmSession(
             session: widget.session,
@@ -157,8 +160,48 @@ class _LiveSessionState extends State<LiveSession> {
   }
 
   Future onSerialTimeout() async {
-    PopupAndLoading.showError(
-        "Een of meerdere meetapparaturen geeft geen meeting(en). Is er een patient aan het appararaat gevestigd?");
+    if (!hasClosedWarning) return;
+    hasClosedWarning = false;
+
+    final DateTime timeoutTime = DateTime.now();
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: borderRadius,
+          ),
+          title: const Text("Timeout"),
+          content: const Text(
+              "Een of meerdere meetapparaturen geeft geen meeting(en). Is er een patient aan het appararaat gevestigd?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                hasIgnoredTimeout = true;
+                Navigator.of(context).pop();
+              },
+              child: const Text("Negeer"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                widget.serialData.cutDataFrom(timeoutTime);
+                onStopSession(timeoutTime);
+              },
+              child: Text(
+                  "Stoppen vanaf ${timeOfDayToString(TimeOfDay.fromDateTime(timeoutTime))}"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Doorgaan"),
+            ),
+          ],
+        );
+      },
+    );
+
+    hasClosedWarning = true;
   }
 
   @override
@@ -172,7 +215,7 @@ class _LiveSessionState extends State<LiveSession> {
       stream.cancel();
     }
 
-    timeoutTimer.cancel();
+    timeoutStream?.cancel();
 
     super.dispose();
   }

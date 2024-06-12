@@ -7,6 +7,13 @@ int cameraId = -1;
 Future<List<CameraDescription>> fetchCameras() async =>
     await CameraPlatform.instance.availableCameras();
 
+Stream<List<CameraDescription>> fetchCamerasStream(
+    {Duration interval = const Duration(seconds: 1)}) async* {
+  yield* Stream.periodic(interval, (_) {
+    return fetchCameras();
+  }).asyncMap((event) async => await event);
+}
+
 Future<int> createCameraWithSettings(
         CameraDescription camera, MediaSettings settings) async =>
     await CameraPlatform.instance.createCameraWithSettings(camera, settings);
@@ -30,7 +37,7 @@ Future<int> startRecording({
   if (doesDisposeOldCamera) await disposeCamera(cameraId);
 
   List<CameraDescription> cameras = await fetchCameras();
-  if (index+1 > cameras.length && hideMissingCameraError == true) {
+  if (index + 1 > cameras.length && hideMissingCameraError == true) {
     return 0;
   }
   cameraId = await createCameraWithSettings(cameras[index], settings);

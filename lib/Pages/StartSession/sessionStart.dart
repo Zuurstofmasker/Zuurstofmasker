@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/cameraHelpers.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
+import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
 import 'package:zuurstofmasker/Models/sessionSerialData.dart';
@@ -14,7 +17,7 @@ import 'package:zuurstofmasker/Pages/StartSession/Parts/sessionCalibrationForm.d
 import 'package:zuurstofmasker/Widgets/popups.dart';
 import 'package:zuurstofmasker/Widgets/titles.dart';
 import 'package:zuurstofmasker/config.dart';
-import 'package:zuurstofmasker/Widgets/cameraStatus.dart';
+import 'package:zuurstofmasker/Widgets/statusIndicator.dart';
 
 // ignore: must_be_immutable
 class StartSession extends StatelessWidget {
@@ -41,9 +44,6 @@ class StartSession extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   StartSession({super.key});
-
-  bool cameraStatus = false;
-  final ValueNotifier<int> cameraNotifier = ValueNotifier<int>(0);
 
   Future<(SessionSerialData, Session)> startSession() async {
     String newSessionId = await getNewSessionUuid();
@@ -81,6 +81,9 @@ class StartSession extends StatelessWidget {
 
     return (sessionSerialData, session);
   }
+
+  Stream<List<bool>> getStatusStream(Stream<Uint8List> stream) =>
+      streamsHasData([stream], validator: serialDataValidator);
 
   @override
   Widget build(BuildContext context) {
@@ -125,26 +128,78 @@ class StartSession extends StatelessWidget {
           ),
           const PageTitle(title: "Status"),
           const PaddingSpacing(),
-          ValueListenableBuilder(
-              valueListenable: cameraNotifier,
-              builder: (context, value, child) {
-                Timer(
-                  const Duration(seconds: 1),
-                  () {
-                    cameraNotifier.value++;
-                  },
-                );
-                return FutureBuilder(
-                    future: fetchCameras(),
-                    builder: (BuildContext context, snapshot) {
-                      if (snapshot.hasError) {
-                        return const Text("error");
-                      } else if (snapshot.hasData) {
-                        cameraStatus = snapshot.data!.isNotEmpty;
-                      }
-                      return CameraStatus(status: cameraStatus);
-                    });
-              }),
+          SizedBox(
+            width: 500,
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    StatusIndictor(
+                      name: 'Druk',
+                      statusStream: getStatusStream(pressureStream),
+                    ),
+                    const PaddingSpacing(
+                      multiplier: 0.25,
+                    ),
+                    StatusIndictor(
+                      name: 'Flow',
+                      statusStream: getStatusStream(flowStream),
+                    ),
+                    const PaddingSpacing(
+                      multiplier: 0.25,
+                    ),
+                    StatusIndictor(
+                      name: 'Teugvolume',
+                      statusStream: getStatusStream(pressureStream),
+                    ),
+                    const PaddingSpacing(
+                      multiplier: 0.25,
+                    ),
+                    StatusIndictor(
+                      name: 'FiO2',
+                      statusStream: getStatusStream(fiO2Stream),
+                    ),
+                  ],
+                ),
+                const PaddingSpacing(
+                  multiplier: 2,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    StatusIndictor(
+                      statusStream: getStatusStream(spO2Stream),
+                      name: "SpO2",
+                    ),
+                    const PaddingSpacing(
+                      multiplier: 0.25,
+                    ),
+                    StatusIndictor(
+                      name: 'Pulse',
+                      statusStream: getStatusStream(pulseStream),
+                    ),
+                    const PaddingSpacing(
+                      multiplier: 0.25,
+                    ),
+                    StatusIndictor(
+                      name: 'Leak',
+                      statusStream: getStatusStream(leakStream),
+                    ),
+                    const PaddingSpacing(
+                      multiplier: 0.25,
+                    ),
+                    StatusIndictor(
+                      statusStream: streamsHasData<List<CameraDescription>>(
+                          [fetchCamerasStream()],
+                          validator: (data) => data.isNotEmpty),
+                      name: "Camera",
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
           const PaddingSpacing(
             multiplier: 2,
           ),
