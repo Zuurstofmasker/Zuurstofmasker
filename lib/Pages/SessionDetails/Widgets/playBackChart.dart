@@ -19,7 +19,6 @@ class PlayBackChart extends StatelessWidget {
   final List<ChartLine> chartLines;
   final double? width;
 
-
   const PlayBackChart({
     super.key,
     required this.minY,

@@ -37,7 +37,8 @@ class Nav extends StatelessWidget {
     ),
   ];
 
-  const Nav({super.key, 
+  const Nav({
+    super.key,
     required this.child,
     this.title,
     this.actions,
@@ -159,7 +160,11 @@ class MenuItemBase extends StatelessWidget {
   final Widget? child;
   final Widget Function(BuildContext context) page;
 
-  const MenuItemBase({super.key, required this.index, required this.child, required this.page});
+  const MenuItemBase(
+      {super.key,
+      required this.index,
+      required this.child,
+      required this.page});
 
   @override
   Widget build(BuildContext context) {

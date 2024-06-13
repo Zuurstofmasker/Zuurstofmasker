@@ -35,7 +35,7 @@ void main() {
 
     // Controleer of de waarden correct zijn
     expect(note.id, '456');
-    expect(note.noteTime, Duration(milliseconds: 7200000));
+    expect(note.noteTime, const Duration(milliseconds: 7200000));
     expect(note.title, 'Mijn andere notitie');
     expect(note.description, 'Dit is een andere testnotitie');
   });

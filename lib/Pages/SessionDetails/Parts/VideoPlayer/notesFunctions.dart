@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
-import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Models/note.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';

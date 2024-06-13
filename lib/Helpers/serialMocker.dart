@@ -17,9 +17,10 @@ extension SerialMocker on SerialPort {
     int state = 1;
 
     while (true) {
-      final int segmentLength = random.nextInt(maxSegmentLength - minSegmentLength) +
-          minSegmentLength;
-      final bool timeout = random.nextBool();    
+      final int segmentLength =
+          random.nextInt(maxSegmentLength - minSegmentLength) +
+              minSegmentLength;
+      final bool timeout = random.nextBool();
       for (int i = 0; i < segmentLength; i++) {
         // Adding possible change
         int newStrenth = strength * random.nextInt(randomStrengthMultiplyer);

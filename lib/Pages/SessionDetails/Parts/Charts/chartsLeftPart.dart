@@ -65,10 +65,10 @@ class ChartsLeftPart extends StatelessWidget {
               color: settings.colors.fiO2,
             )
           ],
-          chartLines: [generateLowerTreshhold(),generateUpperTreshhold()],
+          chartLines: [generateLowerTreshhold(), generateUpperTreshhold()],
           videoController: videoController,
           title: "Zuurstofsaturatie + fiO2",
-          width: 30*60,
+          width: 30 * 60,
           onLineTouch: callback,
           bottomWidgetBuilder: () => Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
