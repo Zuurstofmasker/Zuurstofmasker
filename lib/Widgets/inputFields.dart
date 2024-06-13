@@ -268,3 +268,6 @@ class _InputColorState extends State<InputColor> {
     );
   }
 }
+
+String timeOfDayToString(TimeOfDay timeOfDay) =>
+    timeOfDay.toString().substring(10, 15);

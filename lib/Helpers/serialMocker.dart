@@ -8,7 +8,7 @@ extension SerialMocker on SerialPort {
     const int minSegmentLength = 6;
     const int maxSegmentLength = 12;
     const int strength = 2;
-    double value = max * 0.05;
+    final double value = max * 0.05;
     int randomStrengthMultiplyer = value.toInt();
     if (randomStrengthMultiplyer == 0) randomStrengthMultiplyer = 2;
     final Random random = Random();
@@ -17,8 +17,9 @@ extension SerialMocker on SerialPort {
     int state = 1;
 
     while (true) {
-      int segmentLength = random.nextInt(maxSegmentLength - minSegmentLength) +
+      final int segmentLength = random.nextInt(maxSegmentLength - minSegmentLength) +
           minSegmentLength;
+      final bool timeout = random.nextBool();    
       for (int i = 0; i < segmentLength; i++) {
         // Adding possible change
         int newStrenth = strength * random.nextInt(randomStrengthMultiplyer);
@@ -34,7 +35,7 @@ extension SerialMocker on SerialPort {
         await Future.delayed(const Duration(milliseconds: 1000));
 
         // Sending the date to mock the serial port
-        yield doubleToUint8List(heartBeat.toDouble());
+        yield doubleToUint8List(timeout ? 0 : heartBeat.toDouble());
       }
     }
   }

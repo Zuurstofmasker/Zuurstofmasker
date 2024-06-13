@@ -135,8 +135,8 @@ class SessionSerialData {
     for (int i = 0; i < maxValue; i++) {
       final List<String> row = [];
       for (int j = 0; j < timestampsLists.length; j++) {
-        row.add(safeGetValue(timestampsLists[j], i,
-            (v) => v.millisecondsSinceEpoch.toString()));
+        row.add(safeGetValue(
+            timestampsLists[j], i, (v) => v.millisecondsSinceEpoch.toString()));
         row.add(safeGetValue(valueLists[j], i, (v) => v.toString()));
       }
       csvData.add(row);
@@ -144,5 +144,20 @@ class SessionSerialData {
 
     // Saving the data to the file
     return await csvToFile(csvData, "$sessionPath$sessionId/recordedData.csv");
+  }
+
+  void cutDataFrom(DateTime cutDateTime) {
+    for (int i = 0; i < timestampsLists.length; i++) {
+      final List<DateTime> timestamps = timestampsLists[i];
+      final List<double> serialValues = valueLists[i];
+      for (int j = (timestamps.length - 1); j >= 0; j--) {
+        if (timestamps[j].isAfter(cutDateTime)) {
+          timestamps.removeAt(j);
+          serialValues.removeAt(j);
+        } else {
+          break;
+        }
+      }
+    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:zuurstofmasker/Models/sessionSerialData.dart';
 import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
 import 'package:zuurstofmasker/Pages/StartSession/Parts/sessionInfoForm.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
+import 'package:zuurstofmasker/Widgets/inputFields.dart';
 import 'package:zuurstofmasker/Widgets/nav.dart';
 import 'package:zuurstofmasker/Widgets/paddings.dart';
 import 'package:zuurstofmasker/Widgets/popups.dart';
@@ -56,8 +57,8 @@ class ConfirmSession extends StatelessWidget {
 
     bool serialDataError = false;
 
-    if (TimeOfDay.fromDateTime(session.endDateTime) != endTime) {
-      updateSessionSerialData();
+    if (TimeOfDay.fromDateTime(endDateTime) != endTime) {
+      serialData.cutDataFrom(endDateTime);
 
       await serialData.saveToFile(session.id).catchError((error) {
         serialDataError = true;
@@ -78,22 +79,6 @@ class ConfirmSession extends StatelessWidget {
     }
 
     PopupAndLoading.endLoading();
-  }
-
-  void updateSessionSerialData() {
-    DateTime endDateTime = session.endDateTime;
-    for (int i = 0; i < serialData.timestampsLists.length; i++) {
-      final List<DateTime> timestamps = serialData.timestampsLists[i];
-      final List<double> serialValues = serialData.valueLists[i];
-      for (int j = (timestamps.length - 1); j >= 0; j--) {
-        if (timestamps[j].isAfter(endDateTime)) {
-          timestamps.removeAt(j);
-          serialValues.removeAt(j);
-        } else {
-          break;
-        }
-      }
-    }
   }
 
   Future<void> endTimePopup(context) async {
@@ -117,9 +102,6 @@ class ConfirmSession extends StatelessWidget {
   ) =>
       DateUtils.dateOnly(date)
           .add(Duration(minutes: timeOfDayToMinutes(timeOfDay)));
-
-  String timeOfDayToString(TimeOfDay timeOfDay) =>
-      timeOfDay.toString().substring(10, 15);
 
   @override
   Widget build(BuildContext context) {

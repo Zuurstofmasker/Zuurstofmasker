@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Models/session.dart';
-import 'package:zuurstofmasker/Pages/Dashboard/dashboard.dart';
 import 'package:zuurstofmasker/Pages/LiveSession/liveSession.dart';
 import 'package:zuurstofmasker/Widgets/Charts/timeChart.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
@@ -192,11 +191,7 @@ class LowerRightPart extends StatelessWidget {
                                   Button(
                                     text: "Annuleren",
                                     onTap: () {
-                                      replaceAllPages(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Dashboard()),
-                                          context: context);
+                                      popPage();
                                     },
                                   ),
                                 ]

@@ -8,7 +8,6 @@ import 'package:zuurstofmasker/Helpers/serialHelpers.dart';
 import 'package:zuurstofmasker/Models/settings.dart';
 
 // Navigator key used for easy navigation wihtout the need of context
-
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Settings settings = defaultSettings;
@@ -84,12 +83,14 @@ const MediaSettings cameraSettings = MediaSettings(
   enableAudio: true,
 );
 
+// Localisation
 const Locale locale = Locale('nl', 'NL');
 
 // Streams and serial configuration
 const int serialTimeoutInSeconds = 5;
 const int saveDateTimeInSeconds = 30;
 
+// Add serial data streams
 final Stream<Uint8List> pressureStream = createNewStream('', 0, 40);
 final Stream<Uint8List> flowStream = createNewStream('', -75, 75);
 final Stream<Uint8List> tidalVolumeStream = createNewStream('', 0, 10);
