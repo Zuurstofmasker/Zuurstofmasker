@@ -174,7 +174,7 @@ class _LiveSessionState extends State<LiveSession> {
           ),
           title: const Text("Timeout"),
           content: const Text(
-              "Een of meerdere meetapparaturen geeft geen meeting(en). Is er een patient aan het appararaat gevestigd?"),
+              "Een of meerdere meetapparaturen geeft geen meting(en). Is er een patient aan het appararaat gevestigd?"),
           actions: [
             TextButton(
               onPressed: () {
