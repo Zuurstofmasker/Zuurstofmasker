@@ -20,4 +20,23 @@ void main() {
     expect(jsonMap['title'], 'Mijn notitie');
     expect(jsonMap['description'], 'Dit is een testnotitie');
   });
+
+  test('Test JSON to Note conversion', () {
+    // Maak een voorbeeld JSON-map
+    final jsonMap = {
+      'id': '456',
+      'noteTime': 7200000,
+      'title': 'Mijn andere notitie',
+      'description': 'Dit is een andere testnotitie',
+    };
+
+    // Converteer de JSON-map naar een Note-object
+    final note = Note.fromJson(jsonMap);
+
+    // Controleer of de waarden correct zijn
+    expect(note.id, '456');
+    expect(note.noteTime, Duration(milliseconds: 7200000));
+    expect(note.title, 'Mijn andere notitie');
+    expect(note.description, 'Dit is een andere testnotitie');
+  });
 }
