@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zuurstofmasker/Helpers/fileHelpers.dart';
-import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Models/note.dart';
 import 'package:zuurstofmasker/Widgets/buttons.dart';
 import 'package:zuurstofmasker/Widgets/inputFields.dart';
@@ -26,7 +25,7 @@ List<Widget> calcThumbs(
 
   // Iterate over each note and calculate its position
   for (Note note in noteList.value) {
-    final double left = note.noteTime.inMilliseconds /
+    final double left = note.time.inMilliseconds /
         value.duration.inMilliseconds *
         progressBarWidth;
 
@@ -36,7 +35,7 @@ List<Widget> calcThumbs(
         top: -5,
         child: GestureDetector(
           onTap: () {
-            controller.seekTo(note.noteTime);
+            controller.seekTo(note.time);
             controller.pause();
             showNote(note, sessionID, noteList, context);
           },
@@ -63,6 +62,14 @@ void addNote(String sessionID, Duration time,
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  for (Note note in noteList.value) {
+    if ((note.time - time).inSeconds.abs() <= 3) {
+      PopupAndLoading.showError("Notitie te dicht bij andere notitie");
+      print((note.time - time).inSeconds);
+      return;
+    }
+  }
+
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -78,7 +85,7 @@ void addNote(String sessionID, Duration time,
               PopupAndLoading.showLoading();
               noteList.value.add(Note(
                   id: const Uuid().v4(),
-                  noteTime: time,
+                  time: time,
                   description: descriptionController.text,
                   title: titleController.text));
               noteList.notifyListeners();
