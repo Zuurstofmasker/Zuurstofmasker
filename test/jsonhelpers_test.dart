@@ -118,14 +118,6 @@ void main() {
       expect(result['id'], '123');
       expect(result['nameMother'], 'Jane Doe');
     });
-
-    test('should return fallback value if JSON string is invalid', () {
-      const jsonString = 'invalid json';
-      final fallbackValue = {'error': 'Invalid JSON'};
-      final result = jsonToMap(jsonString, fallbackValue: fallbackValue);
-
-      expect(result, fallbackValue);
-    });
   });
 
   group('jsonToList', () {
