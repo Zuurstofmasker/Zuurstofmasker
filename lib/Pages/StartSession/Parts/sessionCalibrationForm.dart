@@ -29,7 +29,7 @@ class PatientForm extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const PageTitle(
-            title: "Kalibratie gegevens",
+            title: "Kalibratiegegevens",
           ),
           const PaddingSpacing(
             multiplier: 2,

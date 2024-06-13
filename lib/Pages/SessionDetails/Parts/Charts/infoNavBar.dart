@@ -38,6 +38,10 @@ class InfoNavBar extends StatelessWidget {
               const PaddingSpacing(
                 multiplier: 1,
               ),
+              Text("ID: ${session.id}"),
+              const PaddingSpacing(
+                multiplier: 1,
+              ),
             ]),
           ),
         ),

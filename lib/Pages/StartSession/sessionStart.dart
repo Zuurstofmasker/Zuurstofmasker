@@ -222,7 +222,7 @@ class StartSession extends StatelessWidget {
                 PopupAndLoading.endLoading();
               }
             },
-            text: "Starten",
+            text: "Starten opname",
           )
         ],
       ),

@@ -49,6 +49,8 @@ class SessionInfoForm extends StatelessWidget {
     int currentValue = int.tryParse(weigthController.text) ?? 0;
     currentValue += value;
 
+    if (currentValue < 800 || currentValue > 6000) return;
+
     if (currentValue >= 0) {
       weigthController.text = currentValue.toString();
     }
@@ -70,14 +72,14 @@ class SessionInfoForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageTitle(
-          title: "Opname gegevens",
+          title: "Opnamegegevens",
         ),
         const PaddingSpacing(
           multiplier: 2,
         ),
         InputField(
           controller: nameController,
-          labelText: "Moeder naam",
+          labelText: "Naam noeder",
           isRequired: isConfirm,
         ),
         const PaddingSpacing(),
@@ -122,7 +124,7 @@ class SessionInfoForm extends StatelessWidget {
             Flexible(
               child: InputField(
                 controller: roomNumberController,
-                labelText: "Kamer nummer",
+                labelText: "Kamernummer",
                 isInt: true,
               ),
             ),
@@ -141,7 +143,7 @@ class SessionInfoForm extends StatelessWidget {
           InputField(
             isRequired: false,
             controller: babyIdController,
-            labelText: "Baby ID",
+            labelText: "Patiënt ID",
           ),
           const PaddingSpacing(),
           InputField(

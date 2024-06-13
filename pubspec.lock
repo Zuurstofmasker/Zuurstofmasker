@@ -522,14 +522,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
-  video_player_win:
-    dependency: "direct main"
-    description:
-      name: video_player_win
-      sha256: b99e8dfe7fa87a6732b5c91caef4955ae3453fd6255fb8860a7686beccdcfe43
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.6"
   vm_service:
     dependency: transitive
     description:

@@ -105,6 +105,7 @@ class Chart extends StatelessWidget {
           ),
           gridData: const FlGridData(show: false),
           extraLinesData: ExtraLinesData(
+            extraLinesOnTop: false,
             horizontalLines: compiledHorizontalLines,
             verticalLines: compiledVerticalLines,
           ),

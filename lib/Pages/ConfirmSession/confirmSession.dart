@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zuurstofmasker/Helpers/dateAndTimeHelpers.dart';
 import 'package:zuurstofmasker/Helpers/navHelper.dart';
 import 'package:zuurstofmasker/Helpers/sessionHelpers.dart';
 import 'package:zuurstofmasker/Models/session.dart';
@@ -93,16 +94,6 @@ class ConfirmSession extends StatelessWidget {
     }
   }
 
-  int timeOfDayToMinutes(TimeOfDay myTime) =>
-      (myTime.hour * 60) + myTime.minute;
-
-  DateTime setTimeOfDayOfDateTime(
-    DateTime date,
-    TimeOfDay timeOfDay,
-  ) =>
-      DateUtils.dateOnly(date)
-          .add(Duration(minutes: timeOfDayToMinutes(timeOfDay)));
-
   @override
   Widget build(BuildContext context) {
     return Nav(
@@ -126,7 +117,7 @@ class ConfirmSession extends StatelessWidget {
               endTimeValidator: () {
                 if (endDateTime.isAfter(session.endDateTime)) {
                   return "Eindtijd mag niet later dan ${timeOfDayToString(TimeOfDay.fromDateTime(session.endDateTime))} worden ingesteld";
-                } else if (endDateTime.isBefore(session.birthDateTime)) {
+                } else if (endDateTime.isBefore(dateTimeMinutePresicion(session.birthDateTime))) {
                   return "Eindtijd mag niet voor de geboortedatum worden ingesteld";
                 }
                 return null;

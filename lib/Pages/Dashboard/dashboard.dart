@@ -24,7 +24,7 @@ class Dashboard extends StatelessWidget {
             height: 50,
           ),
           Button(
-            text: "Start calibratie",
+            text: "Start kalibratie",
             onTap: () => pushPage(
                 MaterialPageRoute(builder: (context) => StartSession())),
           ),

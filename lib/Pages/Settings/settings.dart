@@ -42,13 +42,13 @@ class _SettingsPageState extends State<SettingsPage> {
         children: <Widget>[
           if (hasLoggedIn)
             SettingsInputsContent(
-              editSettings: settings,
+              editSettings: editSettings,
             )
           else
             SettingsPasswordContent(
               onLogin: onLogin,
               formKey: formKey,
-              editSettings: settings,
+              editSettings: editSettings,
             ),
         ],
       ),
@@ -74,7 +74,7 @@ class SettingsPasswordContent extends StatelessWidget {
       leftChild: Form(
         key: formKey,
         child: ListView(padding: pagePadding, children: [
-          const PageTitle(title: 'Password'),
+          const PageTitle(title: 'Wachtwoord'),
           const PaddingSpacing(
             multiplier: 2,
           ),
@@ -82,7 +82,7 @@ class SettingsPasswordContent extends StatelessWidget {
             isPassword: true,
             hintText: 'Vul wachtwoord in',
             validator: (password) {
-              if (password != null && !editSettings.comparePassword(password)) {
+              if (password != null && !settings.comparePassword(password)) {
                 return 'Wachtwoord is incorrect';
               }
 
@@ -146,9 +146,9 @@ class SettingsInputsContent extends StatelessWidget {
         // Go back to the login screen
         pushPage(
             MaterialPageRoute(builder: ((context) => const SettingsPage())));
-        PopupAndLoading.showSuccess('Opslaan gelukt');
+        PopupAndLoading.showSuccess('Instellingen opslaan gelukt');
       }).catchError((error) {
-        PopupAndLoading.showError('Opslaan mislukt');
+        PopupAndLoading.showError('Instellingen opslaan mislukt');
       });
       PopupAndLoading.endLoading();
     }
@@ -170,7 +170,7 @@ class SettingsInputsContent extends StatelessWidget {
         child: ListView(
           padding: pagePadding,
           children: [
-            const PageTitle(title: 'Genswaarden'),
+            const PageTitle(title: 'Grenswaarden'),
             const PaddingSpacing(multiplier: 1),
             const SubTitle(title: 'SpO2'),
             const PaddingSpacing(),
@@ -265,6 +265,16 @@ class SettingsInputsContent extends StatelessWidget {
             InputField(
               isRequired: false,
               hintText: 'Nieuw wachtwoord',
+              validator: (password) {
+                if ((password ?? '') == '') return null;
+
+                if (settings.comparePassword(password!)) {
+                  return 'Nieuw wachtwoord mag niet hetzelfde zijn';
+                } else if (password.length < 8) {
+                  return 'Wachtwoord moet minimaal 8 tekens lang zijn';
+                }
+                return null;
+              },
               onChange: (password) => editSettings
                   .setPassword(password ?? editSettings.passwordHash),
             ),
@@ -295,7 +305,7 @@ class SettingsPageBase extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 325,
+          width: 400,
           height: double.infinity,
           child: leftChild,
         ),
