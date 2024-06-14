@@ -117,7 +117,8 @@ class ConfirmSession extends StatelessWidget {
               endTimeValidator: () {
                 if (endDateTime.isAfter(session.endDateTime)) {
                   return "Eindtijd mag niet later dan ${formatTimeOfDay(TimeOfDay.fromDateTime(session.endDateTime))} worden ingesteld";
-                } else if (endDateTime.isBefore(dateTimeMinutePresicion(session.birthDateTime))) {
+                } else if (endDateTime
+                    .isBefore(dateTimeMinutePresicion(session.birthDateTime))) {
                   return "Eindtijd mag niet voor de geboortedatum worden ingesteld";
                 }
                 return null;

@@ -16,4 +16,4 @@ String formatTimeOfDay(TimeOfDay timeOfDay) {
   String hour = timeOfDay.hour.toString().padLeft(2, '0');
   String minute = timeOfDay.minute.toString().padLeft(2, '0');
   return '$hour:$minute';
-}    
+}
