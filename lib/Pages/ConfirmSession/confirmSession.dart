@@ -34,10 +34,10 @@ class ConfirmSession extends StatelessWidget {
   late TextEditingController roomNumberController =
       TextEditingController(text: session.roomNumber.toString());
   late TextEditingController endTimeController = TextEditingController(
-    text: timeOfDayToString(TimeOfDay.fromDateTime(session.endDateTime)),
+    text: formatTimeOfDay(TimeOfDay.fromDateTime(session.endDateTime)),
   );
   late TextEditingController birthTimeController = TextEditingController(
-    text: timeOfDayToString(TimeOfDay.fromDateTime(session.birthDateTime)),
+    text: formatTimeOfDay(TimeOfDay.fromDateTime(session.birthDateTime)),
   );
 
   late TimeOfDay endTime = TimeOfDay.fromDateTime(session.endDateTime);
@@ -90,7 +90,7 @@ class ConfirmSession extends StatelessWidget {
 
     if (newEndTime != null) {
       endTime = newEndTime;
-      endTimeController.text = timeOfDayToString(endTime);
+      endTimeController.text = formatTimeOfDay(endTime);
     }
   }
 
@@ -116,7 +116,7 @@ class ConfirmSession extends StatelessWidget {
               },
               endTimeValidator: () {
                 if (endDateTime.isAfter(session.endDateTime)) {
-                  return "Eindtijd mag niet later dan ${timeOfDayToString(TimeOfDay.fromDateTime(session.endDateTime))} worden ingesteld";
+                  return "Eindtijd mag niet later dan ${formatTimeOfDay(TimeOfDay.fromDateTime(session.endDateTime))} worden ingesteld";
                 } else if (endDateTime
                     .isBefore(dateTimeMinutePresicion(session.birthDateTime))) {
                   return "Eindtijd mag niet voor de geboortedatum worden ingesteld";

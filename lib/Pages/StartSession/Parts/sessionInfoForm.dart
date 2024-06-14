@@ -72,7 +72,7 @@ class SessionInfoForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageTitle(
-          title: "Opnamegegevens",
+          title: "Opvanggegevens",
         ),
         const PaddingSpacing(
           multiplier: 2,
