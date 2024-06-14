@@ -62,6 +62,7 @@ class ChartsLowerPart extends StatelessWidget {
           child: PlayBackChart(
             minY: 0,
             maxY: 40,
+            horizontalLines: const [25],
             chartTimeLines: [
               TimeChartLine(
                 chartData: pressureGraphData,
@@ -72,10 +73,12 @@ class ChartsLowerPart extends StatelessWidget {
             title: "Druk",
             onLineTouch: callback,
             bottomWidgetBuilder: () => Text(
-                getNearestChartValue(
-                    videoController?.value, pressureGraphData, session),
-                style: liveTitleTextStyle.copyWith(
-                    color: settings.colors.pressure)),
+              getNearestChartValue(
+                  videoController?.value, pressureGraphData, session),
+              style: liveTitleTextStyle.copyWith(
+                color: settings.colors.pressure,
+              ),
+            ),
           ),
         ),
         const PaddingSpacing(
@@ -85,6 +88,7 @@ class ChartsLowerPart extends StatelessWidget {
           child: PlayBackChart(
             minY: -75,
             maxY: 75,
+            horizontalLines: const [0],
             chartTimeLines: [
               TimeChartLine(
                 chartData: flowGraphData,
@@ -108,6 +112,7 @@ class ChartsLowerPart extends StatelessWidget {
           child: PlayBackChart(
             minY: 0,
             maxY: 10,
+            horizontalLines: const [4, 8],
             chartTimeLines: [
               TimeChartLine(
                 chartData: tidalVolumeGraphData,

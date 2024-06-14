@@ -128,7 +128,7 @@ class SessionHistory extends StatelessWidget {
           children: [
             Row(
               children: [
-                const PageTitle(title: 'Opname geschiedenis'),
+                const PageTitle(title: 'Opvang geschiedenis'),
                 const Spacer(),
                 ValueListenableBuilder(
                     valueListenable: searchValueNotifier,

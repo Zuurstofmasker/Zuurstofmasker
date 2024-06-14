@@ -153,6 +153,7 @@ class _LiveSessionState extends State<LiveSession> {
           ),
         ),
       );
+      disposeStreamsAndTimers();
     } catch (e) {
       PopupAndLoading.showError("Opvang stoppen mislukt");
     }
@@ -191,7 +192,7 @@ class _LiveSessionState extends State<LiveSession> {
                 onStopSession(timeoutTime);
               },
               child: Text(
-                  "Stoppen vanaf ${timeOfDayToString(TimeOfDay.fromDateTime(timeoutTime))}"),
+                  "Stoppen vanaf ${formatTimeOfDay(TimeOfDay.fromDateTime(timeoutTime))}"),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -205,9 +206,7 @@ class _LiveSessionState extends State<LiveSession> {
     hasClosedWarning = true;
   }
 
-  @override
-  void dispose() {
-    stopRecording(storeLocation: '$sessionPath${widget.session.id}/video.mp4');
+  void disposeStreamsAndTimers() {
     if (periodicSessionDataSave?.isActive ?? false) {
       periodicSessionDataSave!.cancel();
     }
@@ -217,6 +216,12 @@ class _LiveSessionState extends State<LiveSession> {
     }
 
     timeoutStream?.cancel();
+  }
+
+  @override
+  void dispose() {
+    stopRecording(storeLocation: '$sessionPath${widget.session.id}/video.mp4');
+    disposeStreamsAndTimers();
 
     super.dispose();
   }
