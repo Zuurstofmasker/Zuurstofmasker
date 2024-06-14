@@ -8,10 +8,9 @@ ChartLineBase<FlSpot> generateLowerTreshhold() {
       // Smooth cubic rise over the first 300 seconds (5 minutes)
       double x = index / 600.0;
       return FlSpot(
-          index.toDouble(),
-          20 +
-              40 *
-                  (x * x * (3 - 2 * x))); // Smooth cubic function from 20 to 60
+        index.toDouble(),
+        20 + 40 * (x * x * (3 - 2 * x)),
+      ); // Smooth cubic function from 20 to 60
     } else if (index < 1200) {
       // Gradual linear rise over the next 900 seconds (15 minutes)
       return FlSpot(
@@ -38,10 +37,9 @@ ChartLineBase<FlSpot> generateUpperTreshhold() {
       // Smooth cubic rise over the first 300 seconds (5 minutes)
       double x = index / 600.0;
       return FlSpot(
-          index.toDouble(),
-          65 +
-              20 *
-                  (x * x * (3 - 2 * x))); // Smooth cubic function from 60 to 85
+        index.toDouble(),
+        65 + 20 * (x * x * (3 - 2 * x)),
+      ); // Smooth cubic function from 60 to 85
     } else if (index < 1200) {
       // Gradual linear rise over the next 900 seconds (15 minutes)
       return FlSpot(
