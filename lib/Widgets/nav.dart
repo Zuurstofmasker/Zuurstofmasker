@@ -57,9 +57,15 @@ class Nav extends StatelessWidget {
         child: SizedBox(
           width: 80,
           height: 80,
-          child: Image.asset(
-            "Assets/Images/logo.png",
-            width: 10,
+          child: GestureDetector(
+            onTap: () {
+              replaceAllPages(
+                  MaterialPageRoute(builder: (context) => const Dashboard()));
+            },
+            child: Image.asset(
+              "Assets/Images/logo.png",
+              width: 10,
+            ),
           ),
         ),
       ),

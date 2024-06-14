@@ -6,7 +6,7 @@ void main() {
     // Maak een voorbeeldnotitie
     const note = Note(
       id: '123',
-      noteTime: Duration(seconds: 3600),
+      time: Duration(seconds: 3600),
       title: 'Mijn notitie',
       description: 'Dit is een testnotitie',
     );
@@ -35,7 +35,9 @@ void main() {
 
     // Controleer of de waarden correct zijn
     expect(note.id, '456');
-    expect(note.noteTime, const Duration(milliseconds: 7200000));
+
+    expect(note.time, Duration(milliseconds: 7200000));
+
     expect(note.title, 'Mijn andere notitie');
     expect(note.description, 'Dit is een andere testnotitie');
   });
