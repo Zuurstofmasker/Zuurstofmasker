@@ -79,7 +79,7 @@ class SessionInfoForm extends StatelessWidget {
         ),
         InputField(
           controller: nameController,
-          labelText: "Naam noeder",
+          labelText: "Naam moeder",
           isRequired: isConfirm,
         ),
         const PaddingSpacing(),
