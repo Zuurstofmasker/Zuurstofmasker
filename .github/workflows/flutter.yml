@@ -7,9 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  tests:
     runs-on: windows-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,3 +23,19 @@ jobs:
 
       - name: Run Flutter tests
         run: flutter test
+        
+  quality:
+      runs-on: windows-latest
+      steps:
+      - uses: actions/checkout@v4
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2.16.0
+
+      - name: Dart formatting
+        run: dart format --output=none --set-exit-if-changed .
+        
+      - name: Dart fixes
+        run: dart fix --dry-run
