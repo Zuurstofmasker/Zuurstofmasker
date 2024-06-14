@@ -105,7 +105,10 @@ class LowerLeftPart extends StatelessWidget {
                               color: settings.colors.fiO2,
                             ),
                           ],
-                          chartLines: [generateLowerTreshhold(), generateUpperTreshhold()],
+                          chartLines: [
+                            generateLowerTreshhold(),
+                            generateUpperTreshhold()
+                          ],
                           minY: 0,
                           maxY: 100,
                           chartSize: 60 * 30,

@@ -45,7 +45,7 @@ class TimeChart extends StatelessWidget {
         .map<int>((e) =>
             (e.chartData.firstOrNull?.time.millisecondsSinceEpoch ??
                 DateTime.now().millisecondsSinceEpoch))
-        .reduce(min);   
+        .reduce(min);
 
     return DateTime.fromMillisecondsSinceEpoch(minTime);
   }
@@ -96,7 +96,7 @@ class TimeChart extends StatelessWidget {
       width: width,
       height: height,
       horizontalLines: horizontalLines,
-      verticalLines: verticalLines, 
+      verticalLines: verticalLines,
     );
   }
 }

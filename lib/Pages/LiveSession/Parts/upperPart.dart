@@ -136,9 +136,7 @@ class UpperPart extends StatelessWidget {
                                 stream: flowStream,
                                 builder: (context, snapshot) {
                                   return Text(
-                                    flowData.lastOrNull?.y
-                                            .toInt()
-                                            .toString() ??
+                                    flowData.lastOrNull?.y.toInt().toString() ??
                                         "-",
                                     style: TextStyle(
                                       fontSize: 30,
@@ -211,7 +209,7 @@ class UpperPart extends StatelessWidget {
                     child: StreamBuilder(
                       stream: pressureStream,
                       builder: (context, snapshot) {
-                       saveDateFromStream(snapshot, pressureGraphData);
+                        saveDateFromStream(snapshot, pressureGraphData);
                         return TimeChart(
                           chartTimeLines: [
                             TimeChartLine(
@@ -255,7 +253,7 @@ class UpperPart extends StatelessWidget {
                     child: StreamBuilder(
                       stream: tidalVolumeStream,
                       builder: (context, snapshot) {
-                      saveDateFromStream(snapshot, tidalVolumeGraphData);
+                        saveDateFromStream(snapshot, tidalVolumeGraphData);
                         return TimeChart(
                           chartTimeLines: [
                             TimeChartLine(
