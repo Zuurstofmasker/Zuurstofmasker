@@ -65,7 +65,6 @@ void addNote(String sessionID, Duration time,
   for (Note note in noteList.value) {
     if ((note.time - time).inSeconds.abs() <= 3) {
       PopupAndLoading.showError("Notitie te dicht bij andere notitie");
-      print((note.time - time).inSeconds);
       return;
     }
   }
