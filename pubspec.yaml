@@ -49,8 +49,6 @@ dependencies:
   video_player_win: 2.3.6
   audio_video_progress_bar: 2.0.3
 
-  camera_platform_interface: any
-  video_player: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
